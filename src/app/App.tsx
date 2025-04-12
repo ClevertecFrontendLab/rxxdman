@@ -1,33 +1,80 @@
 import './App.css';
 
-import { useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router';
 
-import reactLogo from '~/assets/react.svg';
+import { Footer } from '~/components/footer/footer';
+import { Header } from '~/components/header/header';
+import { LeftPanel } from '~/components/leftPanel/leftPanel';
+import { RightPanel } from '~/components/rightPanel/rightPanel';
 import { useGetPostsQuery } from '~/query/services/posts.ts';
 
+import { CategorPage } from './pages/categorPage';
+import { HomePage } from './pages/home';
+import { PopularPage } from './pages/popularPage';
+
 function App() {
-    const [count, setCount] = useState(0);
     const { data: _data, isLoading: _isLoading } = useGetPostsQuery();
 
+    const pathname = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
     return (
-        <>
-            <div>
-                <a href='https://vite.dev' target='_blank'>
-                    <img src='/vite.svg' className='logo' alt='Vite logo' />
-                </a>
-                <a href='https://react.dev' target='_blank'>
-                    <img src={reactLogo} className='logo react' alt='React logo' />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className='card'>
-                <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className='read-the-docs'>Click on the Vite and React logos to learn more</p>
-        </>
+        <div id='root'>
+            <Flex direction='column' w='100vw' maxW='100vw' overflow='hidden' minH='100vh'>
+                <Box w='100%' zIndex='999' position={{ base: 'fixed', lg: 'static' }}>
+                    <Header />
+                </Box>
+
+                <Flex>
+                    <Box h='1040px' minW='256px' display={{ base: 'none', lg: 'block' }}>
+                        <LeftPanel />
+                    </Box>
+
+                    <Box
+                        p={{
+                            base: '64px 16px 100px 16px',
+                            md: '64px 20px 100px 20px',
+                            lg: '0 10px 0 24px',
+                            xl: '0 73px 0 23px',
+                        }}
+                        w='100%'
+                        overflow='hidden'
+                    >
+                        <Routes>
+                            <Route path='/' element={<HomePage />} />
+                            <Route path='/popular' element={<PopularPage />} />
+                            <Route
+                                path='/catalog/:category/:subcategor'
+                                element={<CategorPage />}
+                            />
+                        </Routes>
+                    </Box>
+
+                    <Box
+                        h='1040px'
+                        minW={{ base: '100px', xl: '208px' }}
+                        display={{ base: 'none', lg: 'block' }}
+                    >
+                        <RightPanel />
+                    </Box>
+                </Flex>
+
+                <Box
+                    display={{ base: 'block', lg: 'none' }}
+                    w='100%'
+                    zIndex='999'
+                    position='fixed'
+                    bottom='0'
+                >
+                    <Footer />
+                </Box>
+            </Flex>
+        </div>
     );
 }
 
