@@ -58,6 +58,11 @@ export const CardSlider: FC<ICardSliderProps> = ({ title }) => {
                     wrap='nowrap'
                     gap={{ base: '12px', lg: '11px', '2xl': '22px' }}
                     overflowX={{ base: 'auto', lg: 'hidden' }}
+                    sx={{
+                        '&::-webkit-scrollbar': {
+                            display: 'none',
+                        },
+                    }}
                 >
                     {sortCards.slice(0, countCard).map((recipe) => (
                         <ListItem key={recipe.id}>

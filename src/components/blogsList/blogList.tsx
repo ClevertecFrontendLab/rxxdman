@@ -23,8 +23,9 @@ export const BlogList = () => {
                     .map((blog) => (
                         <ListItem
                             flexBasis={{ base: '100%', md: 'calc(100% / 3)' }}
-                            maxW='100%'
+                            w={{ base: '100%', md: 'calc(100% / 3)' }}
                             key={blog.id}
+                            overflow='hidden'
                         >
                             <BlogCard blog={blog} />
                         </ListItem>
