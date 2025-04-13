@@ -78,8 +78,10 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                         </Text>
 
                         <Button
+                            minW='70px'
+                            p={{ base: '8px', '2xl': '6px 12px' }}
                             w={{ base: '70px', '2xl': '87px' }}
-                            size={{ base: 'sm', '2xl': 'sm' }}
+                            size={{ base: 'xs', '2xl': 'sm' }}
                             flexShrink={0}
                             align-self='Stretch'
                             colorScheme='Lime'

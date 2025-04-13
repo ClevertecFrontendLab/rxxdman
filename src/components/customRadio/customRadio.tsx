@@ -17,7 +17,7 @@ export const CustomRadio: FC<CustomRadioProps> = React.memo(
         return (
             <FormLabel
                 m='0'
-                p='2px 8px 2px 52px'
+                p='6px 8px 6px 52px'
                 style={{ cursor: 'pointer' }}
                 _hover={{ bg: '#ffffd3;' }}
                 h='34.5px'

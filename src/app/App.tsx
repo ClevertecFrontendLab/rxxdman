@@ -26,17 +26,20 @@ function App() {
     return (
         <div id='root'>
             <Flex direction='column' w='100vw' maxW='100vw' overflow='hidden' minH='100vh'>
-                <Box
-                    data-test-id='header'
-                    w='100%'
-                    zIndex='999'
-                    position={{ base: 'fixed', lg: 'static' }}
-                >
+                <Box data-test-id='header' w='100%' zIndex='999999' position='fixed'>
                     <Header />
                 </Box>
 
                 <Flex>
-                    <Box h='1040px' minW='256px' display={{ base: 'none', lg: 'block' }}>
+                    <Box
+                        display={{ base: 'none', lg: 'block' }}
+                        maxH='calc(100vh - 80px)'
+                        minW='256px'
+                        h='calc(100vh - 80px)'
+                        position='fixed'
+                        zIndex='999999'
+                        top='80px'
+                    >
                         <LeftPanel />
                     </Box>
 
@@ -44,8 +47,8 @@ function App() {
                         p={{
                             base: '64px 16px 100px 16px',
                             md: '64px 20px 100px 20px',
-                            lg: '0 10px 0 24px',
-                            xl: '0 73px 0 23px',
+                            lg: '80px 120px 8px 265px',
+                            xl: '80px 280px 0 280px',
                         }}
                         w='100%'
                         overflow='hidden'
@@ -61,9 +64,14 @@ function App() {
                     </Box>
 
                     <Box
-                        h='1040px'
-                        minW={{ base: '100px', xl: '208px' }}
                         display={{ base: 'none', lg: 'block' }}
+                        maxH='calc(100vh - 80px)'
+                        w={{ base: '110px', xl: '208px' }}
+                        h='calc(100vh - 80px)'
+                        position='fixed'
+                        zIndex='999999'
+                        right='0'
+                        top='80px'
                     >
                         <RightPanel />
                     </Box>

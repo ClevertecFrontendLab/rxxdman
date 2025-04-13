@@ -239,6 +239,7 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ direct, recipe }) 
         case 'column':
             return (
                 <Card
+                    borderRadius='8px'
                     direction='column'
                     mb='3px'
                     variant='outline'
@@ -253,6 +254,7 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ direct, recipe }) 
                     }}
                 >
                     <Image
+                        borderTopRadius='8px'
                         objectFit='cover'
                         w='100%'
                         h={{ base: '128px', lg: '230px' }}

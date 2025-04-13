@@ -32,9 +32,7 @@ export const CategorPage = () => {
                 />
             </Box>
 
-            <Center mb={{ base: '22px', lg: '25px', '2xl': '10px' }} w='100%' overflowX='scroll'>
-                <TabMenu tabIndex={tabIndex} categor={categor ? categor : undefined} />
-            </Center>
+            <TabMenu tabIndex={tabIndex} categor={categor ? categor : undefined} />
 
             <Flex direction='column'>
                 {/* Самое сочное */}

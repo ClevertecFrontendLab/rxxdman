@@ -7,9 +7,9 @@ export const RightPanel = () => (
         <ProfileNotification />
 
         <Box
-            bg='radial-gradient(50% 50% at 50% 50%, rgba(196, 255, 97, 0.7) 0%, rgba(255, 255, 255, 0) 100%)'
             w='100%'
-            p='80px 8px 52px 8px'
+            bg='radial-gradient(50% 50% at 50% 50%, rgba(196, 255, 97, 0.7) 0%, rgba(255, 255, 255, 0) 100%)'
+            p={{ base: '80px 0 52px 0', xl: '80px 0 52px 30px' }}
         >
             <IconButton
                 isRound={true}

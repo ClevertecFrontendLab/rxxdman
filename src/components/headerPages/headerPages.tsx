@@ -75,6 +75,7 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({ title, subtitle }) => {
                         </InputRightElement>
 
                         <Input
+                            borderRadius='6px'
                             id='headerPages__input'
                             borderColor='rgba(0, 0, 0, 0.48)'
                             color='Lime.800'

@@ -32,14 +32,8 @@ export const MenuList = () => {
     };
 
     return (
-        <RadioGroup
-            maxH='872px'
-            overflowY='scroll'
-            overflowX='hidden'
-            onChange={handleChange}
-            value={value}
-        >
-            <Accordion index={[index]} w='100%' p='10px 0 10px 9px'>
+        <RadioGroup overflowX='hidden' onChange={handleChange} value={value}>
+            <Accordion index={[index]} w='100%'>
                 {categorListData.map((categor) => (
                     <MemoizedAccordionItem
                         key={categor.title}

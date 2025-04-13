@@ -69,7 +69,7 @@ export const MemoizedAccordionItem: FC<MemoizedAccordionItemProps> = React.memo(
                     </AccordionButton>
                 </h2>
 
-                <AccordionPanel p='0' display='flex' flexDirection='column' gap='2px'>
+                <AccordionPanel p='0' display='flex' flexDirection='column' gap='1.5px'>
                     {categor.subCategor.map((item, index) => (
                         <CustomRadio
                             key={`${categor.link}-${index}`} // Уникальный ключ
