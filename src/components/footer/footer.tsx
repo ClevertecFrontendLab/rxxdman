@@ -7,7 +7,7 @@ import { FooterAtribute } from './footerAtribute';
 export const Footer = () => (
     <footer>
         <Flex w='100vw' overflow='hidden' bg='rgba(255, 255, 211, 1)' p='10px 0 9px 0'>
-            <FooterAtribute title='главная' ico='home' />
+            <FooterAtribute title='Главная' ico='home' />
 
             <FooterAtribute title='Поиск' ico='search' />
 
