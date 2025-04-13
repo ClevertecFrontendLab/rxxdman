@@ -16,7 +16,7 @@ export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
         <Center mb={{ base: '22px', lg: '25px', '2xl': '23px' }} w='100%'>
             <Tabs
                 w='100%'
-                overflow={{ base: 'scroll', lg: 'hidden' }}
+                overflow={{ base: 'hidden', lg: 'hidden' }}
                 index={tabIndex}
                 onChange={(index) => {
                     navigation(`/catalog/${categor?.link}/${index}`);
