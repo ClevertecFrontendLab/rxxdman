@@ -1,6 +1,6 @@
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import { Box, IconButton, Menu, MenuButton, MenuList, useBreakpointValue } from '@chakra-ui/react';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 
 import { BreadcrumbNav } from '../breadcrumb/breadcrumb';
@@ -16,14 +16,20 @@ interface IMenuBurgerProps {
 export const MenuBurger: FC<IMenuBurgerProps> = ({ isOpenMenuMobile, onToggle, onClose }) => {
     const location = useLocation();
 
+    const [pathtest, setpathtest] = useState('');
+
     const isShow = useBreakpointValue({
         base: true,
         lg: false,
     });
 
     useEffect(() => {
-        onClose();
-    }, [location.pathname, onClose]);
+        if (pathtest.split('/').length > location.pathname.split('/').length)
+            //Эмуляция
+            onClose();
+
+        setpathtest(location.pathname);
+    }, [location.pathname, onClose, pathtest]);
 
     useEffect(() => {
         if (isOpenMenuMobile) {
@@ -34,9 +40,24 @@ export const MenuBurger: FC<IMenuBurgerProps> = ({ isOpenMenuMobile, onToggle, o
 
         return () => {
             document.body.style.overflow = 'auto';
-            document.body.classList.remove('menu-open');
         };
     }, [isOpenMenuMobile]);
+
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            onClose();
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <>
@@ -52,72 +73,68 @@ export const MenuBurger: FC<IMenuBurgerProps> = ({ isOpenMenuMobile, onToggle, o
                     zIndex={1000}
                 />
             )}
-            <Menu closeOnSelect={false} isOpen={isOpenMenuMobile}>
-                <MenuButton
-                    display={{ base: 'block', lg: 'none' }}
-                    zIndex={2000}
-                    as={IconButton}
-                    size='lg'
-                    variant='ghost'
-                    isRound={true}
-                    aria-label='Header burger'
-                    icon={
-                        isOpenMenuMobile ? (
-                            <CloseIcon boxSize={3} data-test-id='close-icon' />
-                        ) : (
-                            <HamburgerIcon data-test-id='hamburger-icon' />
-                        )
-                    }
-                    onClick={onToggle}
-                    outline='none'
-                    border='none'
-                    boxShadow='none'
-                    bg='transparent'
-                    _focus={{ outline: 'none', border: 'none', bg: 'transparent' }}
-                    _hover={{
-                        outline: 'none',
-                        border: 'none',
-                        boxShadow: 'none',
-                        bg: 'transparent',
-                    }}
-                />
-
-                {(!isShow || isOpenMenuMobile) && (
-                    <MenuList
-                        data-test-id='nav'
-                        display='flex'
-                        flexDirection='column'
-                        gap='12px'
-                        overflowX='hidden'
-                        overflowY='auto'
-                        position='relative'
-                        w='344px'
-                        maxH='calc(100vh - 148px)'
-                        right='8px'
-                        top='1px'
-                        bottom='84px'
-                        bg='white'
-                        pt='16px'
-                        borderBottomRadius='12px'
+            <Box ref={menuRef}>
+                <Menu closeOnSelect={false} isOpen={isOpenMenuMobile}>
+                    <MenuButton
+                        display={{ base: 'block', lg: 'none' }}
+                        data-test-id={isOpenMenuMobile ? 'close-icon' : 'hamburger-icon'}
                         zIndex={2000}
-                    >
-                        <Box w='344px'>
-                            <BreadcrumbNav />
-                        </Box>
+                        as={IconButton}
+                        size='lg'
+                        variant='ghost'
+                        isRound={true}
+                        aria-label='Header burger'
+                        icon={isOpenMenuMobile ? <CloseIcon boxSize={3} /> : <HamburgerIcon />}
+                        onClick={onToggle}
+                        outline='none'
+                        border='none'
+                        boxShadow='none'
+                        bg='transparent'
+                        _focus={{ outline: 'none', border: 'none', bg: 'transparent' }}
+                        _hover={{
+                            outline: 'none',
+                            border: 'none',
+                            boxShadow: 'none',
+                            bg: 'transparent',
+                        }}
+                    />
 
-                        <Box
-                            overflowY='scroll'
-                            p={{ base: '8px 32px 18px 10px', sm: '18px 16px 18px 10px' }}
+                    {(!isShow || isOpenMenuMobile) && (
+                        <MenuList
+                            data-test-id='nav'
+                            display='flex'
+                            flexDirection='column'
+                            gap='12px'
+                            overflowX='hidden'
+                            position='relative'
+                            w='344px'
+                            maxH='calc(100vh - 148px)'
+                            right='8px'
+                            top='1px'
+                            bottom='84px'
+                            bg='white'
+                            pt='16px'
+                            borderBottomRadius='12px'
+                            zIndex={2000}
                         >
-                            {isShow && <NavigationMenu />}
-                        </Box>
+                            <Box w='344px'>
+                                <BreadcrumbNav />
+                            </Box>
 
-                        <Box pt='16px'>
-                            <Footerleft />
-                        </Box>
-                    </MenuList>
-                )}
-            </Menu>
+                            <Box
+                                overflowY='scroll'
+                                p={{ base: '8px 32px 18px 10px', sm: '18px 16px 18px 10px' }}
+                            >
+                                {isShow && <NavigationMenu />}
+                            </Box>
+
+                            <Box pt='16px'>
+                                <Footerleft />
+                            </Box>
+                        </MenuList>
+                    )}
+                </Menu>
+            </Box>
         </>
     );
 };

@@ -19,7 +19,7 @@ export const Header = memo(() => {
         <header>
             <Grid
                 width='100vw'
-                overflow='hidden'
+                // overflow='hidden'
                 alignItems='center'
                 bg={isOpen ? 'white' : 'rgba(255, 255, 211, 1)'}
                 p={{ base: '8px 16px', sm: '8px 20px', lg: '16px 56px 16px 16px' }}
