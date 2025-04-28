@@ -10,7 +10,6 @@ import {
     FormControl,
     FormLabel,
     HStack,
-    IconButton,
     Input,
     Stack,
     Switch,
@@ -262,8 +261,9 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                                 h='20px'
                                                 key={item}
                                                 p='2px 8px'
-                                                variant='outline'
-                                                borderColor='rgba(177, 255, 46, 1)'
+                                                bg='transparent'
+                                                border='1px solid rgba(177, 255, 46, 1)'
+                                                color='rgba(177, 255, 46, 1)'
                                             >
                                                 <TagLabel
                                                     fontSize='12px'
@@ -306,6 +306,7 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                     lineHeight='24px'
                                     letterSpacing='0'
                                     color='blackAlpha.700'
+                                    whiteSpace='nowrap'
                                 >
                                     {isOpen
                                         ? 'Выберите из списка аллергенов'
@@ -348,15 +349,15 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                             id={index.toString()}
                                             isChecked={selectedAllergens.includes(allergen)}
                                             onChange={() => toggleCheckbox(allergen)}
-                                            colorScheme='green'
                                             size='sm'
                                             borderColor='rgba(215, 255, 148, 1)'
+                                            variant='limeCheckbox'
                                         >
                                             {allergen}
                                         </Checkbox>
                                     </Box>
                                 ))}
-                                <HStack p='8px 8px 8px 24px'>
+                                <HStack p='8px 8px 8px 24px' justify='center'>
                                     <Input
                                         data-test-id={indexAcc != -1 ? 'add-other-allergen' : ''}
                                         fontWeight='400'
@@ -373,17 +374,31 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                         }}
                                         size='sm'
                                         _placeholder={{ color: 'rgba(19, 75, 0, 1)' }}
+                                        // mr='12px'
                                     />
 
-                                    <IconButton
+                                    <AddIcon
+                                        data-test-id={setDrawerData ? 'add-allergen-button' : ''}
+                                        onClick={addOtherAllergen}
+                                        boxSize={3}
+                                        bg='rgba(45, 177, 0, 1)'
+                                        color='white'
+                                        borderRadius='999px'
+                                        p='2px'
+                                        _hover={{ cursor: 'pointer' }}
+                                    />
+
+                                    {/* <IconButton
                                         data-test-id={setDrawerData ? 'add-allergen-button' : ''}
                                         aria-label='Добавить'
                                         isRound={true}
-                                        size='xs'
+                                        maxW='12px'
+                                        maxH='12px'
+                                        fontSize='12px'
                                         onClick={addOtherAllergen}
                                         colorScheme='green'
-                                        icon={<AddIcon />}
-                                    />
+                                        // icon={<AddIcon/>}
+                                    /> */}
                                 </HStack>
                             </VStack>
                         </FormControl>

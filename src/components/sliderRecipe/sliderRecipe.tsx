@@ -67,7 +67,7 @@ export const SliderRecipe: React.FC<ISliderRecipeProps> = ({ title }) => {
                     {title}
                 </Heading>
             )}
-            <Box overflow='hidden' pos='relative' zIndex='0'>
+            <Box pos='relative' zIndex='0'>
                 <Swiper
                     data-test-id='carousel'
                     slidesPerView='auto'
@@ -101,7 +101,7 @@ export const SliderRecipe: React.FC<ISliderRecipeProps> = ({ title }) => {
                     data-test-id='carousel-back'
                     display={{ base: 'none', lg: 'flex' }}
                     position='absolute'
-                    top='50%'
+                    top='147px'
                     left='-8px'
                     onClick={handlePrevSlide}
                     size={checkSizeBtn ? 'md' : 'lg'}
@@ -113,14 +113,14 @@ export const SliderRecipe: React.FC<ISliderRecipeProps> = ({ title }) => {
                     icon={<ArrowBackIcon boxSize={{ base: 4, '2xl': 6 }} />}
                     transition='background .2s ease-in-out'
                     _hover={{ bg: 'rgba(0, 0, 0, .7)', border: 'none' }}
-                    zIndex='3'
+                    zIndex='10'
                 />
 
                 <IconButton
                     data-test-id='carousel-forward'
                     display={{ base: 'none', lg: 'flex' }}
                     position='absolute'
-                    top='50%'
+                    top='147px'
                     right='-8px'
                     onClick={handleNextSlide}
                     size={checkSizeBtn ? 'md' : 'lg'}
@@ -132,7 +132,7 @@ export const SliderRecipe: React.FC<ISliderRecipeProps> = ({ title }) => {
                     icon={<ArrowForwardIcon boxSize={6} />}
                     transition='background .2s ease-in-out'
                     _hover={{ bg: 'rgba(0, 0, 0, .7)', border: 'none' }}
-                    zIndex='3'
+                    zIndex='10'
                 />
             </Box>
         </Box>

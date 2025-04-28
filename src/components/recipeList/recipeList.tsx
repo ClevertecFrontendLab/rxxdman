@@ -14,6 +14,7 @@ type filter = 'popular' | 'categor' | 'date';
 interface IRecipeList {
     count: number;
     filter: filter;
+    setCountSearchRecipes?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 function filterMass(array: recipeList, filter: filter, category?: string, subcategor?: string) {
@@ -36,7 +37,7 @@ function filterMass(array: recipeList, filter: filter, category?: string, subcat
     return array;
 }
 
-export const RecipeList: FC<IRecipeList> = ({ count, filter }) => {
+export const RecipeList: FC<IRecipeList> = ({ count, filter, setCountSearchRecipes }) => {
     const { category, subcategor } = useParams();
     const recipeList = [...recipeListMock];
     const filterList = filterMass(recipeList, filter, category, subcategor);
@@ -140,6 +141,10 @@ export const RecipeList: FC<IRecipeList> = ({ count, filter }) => {
                 );
             });
 
+            setCountSearchRecipes &&
+                setCountSearchRecipes(
+                    filteredList.length != filterList.length ? filteredList.length : 0,
+                );
             setVisibleList(filteredList);
         } else {
             setVisibleList(filterList);

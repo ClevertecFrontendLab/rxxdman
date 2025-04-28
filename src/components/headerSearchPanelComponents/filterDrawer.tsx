@@ -160,6 +160,19 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
                 minW={{ base: '344px', lg: '463px' }}
                 maxW={{ base: '344px', lg: '463px' }}
                 p={{ base: '16px', lg: '32px' }}
+                sx={{
+                    '&::-webkit-scrollbar': {
+                        width: '8px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: 'blackAlpha.300',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: '#888',
+                        borderRadius: '8px',
+                        height: '16px',
+                    },
+                }}
             >
                 <DrawerHeader p='0' mb={{ base: '16px', lg: '24px' }}>
                     <Flex justify='space-between' align='center' pb='16px'>

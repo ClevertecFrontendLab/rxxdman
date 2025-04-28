@@ -29,10 +29,57 @@ export const IngredientTable: FC<IIngredientTableProps> = ({ portions, ingredien
 
     return (
         <TableContainer>
-            <Table variant='striped' colorScheme='blackAlpha'>
+            <Table variant='striped' colorScheme='blackAlpha' overflowX='visible'>
                 <Thead>
                     <Tr>
-                        <Th
+                        <Th p={{ base: '0', sm: 'auto' }}>
+                            <Flex
+                                p={{ base: '0', sm: '10px 8px', md: '10px 24px', lg: '16px 24px' }}
+                                justify='space-between'
+                                gap='2px'
+                            >
+                                <Text
+                                    flexBasis='50%'
+                                    color='rgba(45, 177, 0, 1)'
+                                    fontWeight='700'
+                                    fontSize='12px'
+                                    lineHeight='16px'
+                                    p={{ base: '20px 0 20px 0', sm: '20px 24px' }}
+                                    w='fit-content'
+                                >
+                                    Ингридиенты
+                                </Text>
+                                <Flex
+                                    gap={{ base: '12px', md: '16px' }}
+                                    align='center'
+                                    justify='flex-end'
+                                >
+                                    <Text>Порций</Text>
+
+                                    <NumberInput
+                                        onChange={(valueString) =>
+                                            setPortionsCount(Number(valueString))
+                                        }
+                                        value={portionsCount}
+                                        min={1}
+                                        max={20}
+                                        size='md'
+                                        w='90px'
+                                        color='rgba(0, 0, 0, 1)'
+                                        fontWeight='400'
+                                        fontSize='16px'
+                                        lineHeight='24px'
+                                    >
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper data-test-id='increment-stepper' />
+                                            <NumberDecrementStepper data-test-id='decrement-stepper' />
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                </Flex>
+                            </Flex>
+                        </Th>
+                        {/* <Th
                             color='rgba(45, 177, 0, 1)'
                             fontWeight='700'
                             fontSize='12px'
@@ -78,7 +125,7 @@ export const IngredientTable: FC<IIngredientTableProps> = ({ portions, ingredien
                                     </NumberInputStepper>
                                 </NumberInput>
                             </Flex>
-                        </Th>
+                        </Th> */}
                     </Tr>
                 </Thead>
                 <Tbody>

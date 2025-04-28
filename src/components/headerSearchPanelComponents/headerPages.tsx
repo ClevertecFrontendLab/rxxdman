@@ -34,6 +34,8 @@ interface IHeaderPagesProps {
     setParams(text: string, textType: searchType): void;
     clearParams(): void;
     stateFullClear: boolean;
+
+    countSearchRecipe: number;
 }
 
 export const HeaderPages: FC<IHeaderPagesProps> = ({
@@ -50,10 +52,13 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({
     setParams,
     clearParams,
     stateFullClear,
+    countSearchRecipe,
 }) => {
     const [isDisabledSearch, setIsDisabledSearch] = useState(true); //Включение кнопки поиска
     const [errorInputLenght, setErrorInputLenght] = useState(false); //Отслеживание ошибки
     const [headerFocus, setHeaderFocus] = useState(false); //Фокус поиска
+
+    const [localCountRecipe, setLocalCountRecipe] = useState(0);
 
     const [searchInputText, setSearchInputText] = useState(textSearch);
 
@@ -73,6 +78,10 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({
         }
     }, [searchInputText, setParams]);
 
+    useEffect(() => {
+        if (localCountRecipe != countSearchRecipe) setLocalCountRecipe(countSearchRecipe);
+    }, [countSearchRecipe, localCountRecipe]);
+
     const onClickSearchTitle = () => {
         if (searchInputText.length > 0 && searchInputText.length < 3) {
             setErrorInputLenght(true);
@@ -80,6 +89,8 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({
             // clearParams()
         } else {
             setParams(searchInputText, 'title');
+            if (localCountRecipe === 0) setErrorInputLenght(true); //Не найден - подсветить красным
+            console.log(countSearchRecipe);
         }
     };
 

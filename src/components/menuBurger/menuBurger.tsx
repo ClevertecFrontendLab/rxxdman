@@ -123,6 +123,19 @@ export const MenuBurger: FC<IMenuBurgerProps> = ({ isOpenMenuMobile, onToggle, o
 
                             <Box
                                 overflowY='scroll'
+                                sx={{
+                                    '&::-webkit-scrollbar': {
+                                        width: '8px',
+                                    },
+                                    '&::-webkit-scrollbar-track': {
+                                        background: 'blackAlpha.300',
+                                    },
+                                    '&::-webkit-scrollbar-thumb': {
+                                        background: '#888',
+                                        borderRadius: '8px',
+                                        height: '16px',
+                                    },
+                                }}
                                 p={{ base: '8px 32px 18px 10px', sm: '18px 16px 18px 10px' }}
                             >
                                 {isShow && <NavigationMenu />}

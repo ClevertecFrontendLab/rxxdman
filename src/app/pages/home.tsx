@@ -1,5 +1,6 @@
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { Box, Button, Center, Flex, Heading, HStack } from '@chakra-ui/react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { BlogList } from '~/components/blogsList/blogList';
@@ -11,6 +12,8 @@ import { useParamsGlobal } from '~/data/useParams';
 
 export const HomePage = () => {
     const navigate = useNavigate();
+
+    const [countSearchRecipes, setCountSearchRecipes] = useState(0);
 
     const {
         searchState,
@@ -41,6 +44,7 @@ export const HomePage = () => {
                     setParams={setParams}
                     clearParams={clearParams}
                     stateFullClear={stateFullClear}
+                    countSearchRecipe={countSearchRecipes}
                 />
             </Box>
 
@@ -186,7 +190,11 @@ export const HomePage = () => {
                 </Flex>
             ) : (
                 <Flex direction='column' h='100%' justify='space-between'>
-                    <RecipeList count={8} filter='popular' />
+                    <RecipeList
+                        count={8}
+                        filter='popular'
+                        setCountSearchRecipes={setCountSearchRecipes}
+                    />
 
                     {/* Рекомендованная кухня */}
                     <Box>

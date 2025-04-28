@@ -246,6 +246,7 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                             bg='black'
                             color='white'
                             p='6px 12px 6px 10px'
+                            mb='8px'
                         >
                             Готовить
                         </Button>
