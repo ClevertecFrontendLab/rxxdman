@@ -26,6 +26,10 @@ export const BlogList = () => {
                             w={{ base: '100%', md: 'calc(100% / 3)' }}
                             key={blog.id}
                             overflow='hidden'
+                            _hover={{
+                                boxShadow:
+                                    '0px 2px 4px -1px rgba(32, 126, 0, 0.06), 0px 4px 6px -1px rgba(32, 126, 0, 0.1)',
+                            }}
                         >
                             <BlogCard blog={blog} />
                         </ListItem>

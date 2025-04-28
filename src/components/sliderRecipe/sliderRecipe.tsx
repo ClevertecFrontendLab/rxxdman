@@ -1,0 +1,237 @@
+import 'swiper/swiper-bundle.css';
+
+import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { Box, Heading, IconButton, useBreakpointValue } from '@chakra-ui/react';
+import { useRef } from 'react';
+import { Navigation } from 'swiper/modules';
+import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
+
+import { recipeListMock } from '~/data/recipes';
+
+import { SliderRecipeCard } from './sliderRecipeCard';
+
+interface ISliderRecipeProps {
+    title?: string;
+}
+
+export const SliderRecipe: React.FC<ISliderRecipeProps> = ({ title }) => {
+    const swiperRef = useRef<SwiperRef | null>(null);
+
+    const countCard = 10; //Количество карточек
+
+    const sortCards = [...recipeListMock].sort(function (a, b) {
+        if (Date.parse(a.date) > Date.parse(b.date)) {
+            return -1;
+        }
+        if (Date.parse(a.date) < Date.parse(b.date)) {
+            return 1;
+        }
+        return 0;
+    });
+
+    const handleNextSlide = () => {
+        if (swiperRef.current) {
+            swiperRef.current.swiper.slideNext();
+        }
+    };
+
+    const handlePrevSlide = () => {
+        if (swiperRef.current) {
+            swiperRef.current.swiper.slidePrev();
+        }
+    };
+
+    const checkSizeBtn = useBreakpointValue({
+        base: true,
+        '2xl': false,
+    });
+
+    const cardSize = useBreakpointValue({
+        base: '158px',
+        lg: '277px',
+        '2xl': '322px',
+    });
+
+    return (
+        <Box as='section'>
+            {title && (
+                <Heading
+                    as='h2'
+                    textAlign='left'
+                    fontWeight='500'
+                    fontSize={{ base: '24px', lg: '36px', '2xl': '48px' }}
+                    lineHeight={{ base: '32px', lg: '40px', '2xl': '48px' }}
+                    letterSpacing='1px'
+                    mb={{ base: '13px', xl: '27px' }}
+                >
+                    {title}
+                </Heading>
+            )}
+            <Box overflow='hidden' pos='relative' zIndex='0'>
+                <Swiper
+                    data-test-id='carousel'
+                    slidesPerView='auto'
+                    spaceBetween={12}
+                    modules={[Navigation]}
+                    ref={swiperRef}
+                    loop={true}
+                    breakpoints={{
+                        300: {
+                            spaceBetween: '12px',
+                        },
+                        768: {
+                            spaceBetween: '16px',
+                        },
+                        1360: {
+                            spaceBetween: '24px',
+                        },
+                        1600: {
+                            spaceBetween: '24px',
+                        },
+                    }}
+                >
+                    {sortCards.slice(0, countCard).map((recipe, index) => (
+                        <SwiperSlide key={recipe.id} style={{ width: cardSize, height: 'auto' }}>
+                            <SliderRecipeCard recipe={recipe} index={index} />
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+
+                <IconButton
+                    data-test-id='carousel-back'
+                    display={{ base: 'none', lg: 'flex' }}
+                    position='absolute'
+                    top='50%'
+                    left='-8px'
+                    onClick={handlePrevSlide}
+                    size={checkSizeBtn ? 'md' : 'lg'}
+                    colorScheme='black'
+                    variant='solid'
+                    bg='rgba(0, 0, 0, 1)'
+                    color='white'
+                    aria-label='left slider'
+                    icon={<ArrowBackIcon boxSize={{ base: 4, '2xl': 6 }} />}
+                    transition='background .2s ease-in-out'
+                    _hover={{ bg: 'rgba(0, 0, 0, .7)', border: 'none' }}
+                    zIndex='3'
+                />
+
+                <IconButton
+                    data-test-id='carousel-forward'
+                    display={{ base: 'none', lg: 'flex' }}
+                    position='absolute'
+                    top='50%'
+                    right='-8px'
+                    onClick={handleNextSlide}
+                    size={checkSizeBtn ? 'md' : 'lg'}
+                    colorScheme='black'
+                    variant='solid'
+                    bg='rgba(0, 0, 0, 1)'
+                    color='white'
+                    aria-label='right slider'
+                    icon={<ArrowForwardIcon boxSize={6} />}
+                    transition='background .2s ease-in-out'
+                    _hover={{ bg: 'rgba(0, 0, 0, .7)', border: 'none' }}
+                    zIndex='3'
+                />
+            </Box>
+        </Box>
+    );
+};
+
+//     const paddingSlider = useBreakpointValue({
+//         base: '16px',
+//         md: '20px',
+//         lg: '0'
+//     });
+
+//     return (
+//         <Box position='relative'>
+//             {title && (
+//                 <Heading
+//                     as='h2'
+//                     textAlign='left'
+//                     fontWeight='500'
+//                     fontSize={{ base: '24px', lg: '36px', '2xl': '48px' }}
+//                     lineHeight={{ base: '32px', lg: '40px', '2xl': '48px' }}
+//                     letterSpacing='1px'
+//                     mb={{ base: '13px', xl: '27px' }}
+//                 >
+//                     {title}
+//                 </Heading>
+//             )}
+
+//             <Box w={{ base: '100vw', lg: '100%' }} position={{ base: 'relative', lg: 'static' }} left={{ base: '-16px', lg: '0' }} h='100%'>
+//                 <Swiper
+//                     data-test-id='carousel'
+//                     ref={swiperRef}
+//                     slidesPerView='auto'
+//                     modules={[Navigation]}
+
+//                     breakpoints={{
+//                         360: {
+//                             spaceBetween: 12
+//                         },
+//                         1441: {
+//                             spaceBetween: 24
+//                         },
+//                     }}
+
+//                     style={{
+//                         width: '100%',
+//                         height: '100%',
+//                         paddingLeft: paddingSlider,
+//                         alignItems: "stretch",
+//                     }}
+//                 >
+//                     {sortCards.slice(0, countCard).map((recipe, index) => (
+//                         <SwiperSlide data-test-id={`carousel-card-${index}`} key={`slide: ${recipe.id}`} style={{ width: cardSize, height: 'auto' }}>
+//                             <RecipeCard key={`slide-card: ${recipe.id}`} direct='column' recipe={recipe} urlConfig='popular' />
+//                         </SwiperSlide>
+//                     ))}
+//                 </Swiper>
+//             </Box>
+
+//             <IconButton
+//                 data-test-id='carousel-back'
+//                 display={{ base: 'none', lg: 'flex' }}
+//                 position='absolute'
+//                 top='50%'
+//                 left='-8px'
+
+//                 onClick={handlePrevSlide}
+//                 size={checkSizeBtn ? 'md' : 'lg'}
+//                 colorScheme='black'
+//                 variant='solid'
+//                 bg='rgba(0, 0, 0, 1)'
+//                 color='white'
+//                 aria-label='left slider'
+//                 icon={<ArrowBackIcon boxSize={{ base: 4, '2xl': 6 }} />}
+//                 transition='background .2s ease-in-out'
+//                 _hover={{ bg: 'rgba(0, 0, 0, .7)', border: 'none' }}
+//                 zIndex='3'
+//             />
+
+//             <IconButton
+//                 data-test-id='carousel-forward'
+//                 display={{ base: 'none', lg: 'flex' }}
+//                 position='absolute'
+//                 top='50%'
+//                 right='-8px'
+
+//                 onClick={handleNextSlide}
+//                 size={checkSizeBtn ? 'md' : 'lg'}
+//                 colorScheme='black'
+//                 variant='solid'
+//                 bg='rgba(0, 0, 0, 1)'
+//                 color='white'
+//                 aria-label='right slider'
+//                 icon={<ArrowForwardIcon boxSize={6} />}
+//                 transition='background .2s ease-in-out'
+//                 _hover={{ bg: 'rgba(0, 0, 0, .7)', border: 'none' }}
+//                 zIndex='3'
+//             />
+
+//         </Box >
+//     );
+// };

@@ -2,7 +2,7 @@ import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
 import { categor, categorListData } from '~/data/categor';
-import { recipelist, recipeListData } from '~/data/recipes';
+import { recipeList, recipeListMock } from '~/data/recipes';
 
 import { RelevantKitchenCard } from './relevantKitchenCard';
 
@@ -12,7 +12,7 @@ interface IRelevantKitchenProps {
 
 export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
     const [categor, setCategor] = useState<categor | null>(null);
-    const [recipeList, setRecipeList] = useState<recipelist>([]);
+    const [recipeList, setRecipeList] = useState<recipeList>([]);
 
     useEffect(() => {
         const foundCategor = categorListData.find((categor) => categor.id === idCategor) || null;
@@ -21,8 +21,8 @@ export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
 
     useEffect(() => {
         if (categor) {
-            const filteredRecipes = recipeListData.filter((recipe) =>
-                recipe.categor.split('__')[0].includes(categor.link),
+            const filteredRecipes = recipeListMock.filter((recipe) =>
+                recipe.category.find((category) => category === categor.link),
             );
             setRecipeList(filteredRecipes);
         } else {
@@ -78,8 +78,16 @@ export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
                         flexShrink={1}
                         gap={{ base: '12px', lg: '16px', '2xl': '24px' }}
                     >
-                        <RelevantKitchenCard direct='column' recipe={recipeList[0]} />
-                        <RelevantKitchenCard direct='column' recipe={recipeList[1]} />
+                        <RelevantKitchenCard
+                            categor={categor}
+                            direct='column'
+                            recipe={recipeList[0]}
+                        />
+                        <RelevantKitchenCard
+                            categor={categor}
+                            direct='column'
+                            recipe={recipeList[1]}
+                        />
                     </Flex>
 
                     <Flex
@@ -90,9 +98,21 @@ export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
                         flexShrink={1}
                         gap={{ base: '12px', md: '6px', lg: '12px' }}
                     >
-                        <RelevantKitchenCard direct='row' recipe={recipeList[2]} />
-                        <RelevantKitchenCard direct='row' recipe={recipeList[3]} />
-                        <RelevantKitchenCard direct='row' recipe={recipeList[4]} />
+                        <RelevantKitchenCard
+                            categor={categor}
+                            direct='row'
+                            recipe={recipeList[2]}
+                        />
+                        <RelevantKitchenCard
+                            categor={categor}
+                            direct='row'
+                            recipe={recipeList[3]}
+                        />
+                        <RelevantKitchenCard
+                            categor={categor}
+                            direct='row'
+                            recipe={recipeList[4]}
+                        />
                     </Flex>
                 </Flex>
             )}

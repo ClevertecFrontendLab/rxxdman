@@ -1,20 +1,34 @@
-import { Box, Button, Center, Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 
-import { HeaderPages } from '~/components/headerPages/headerPages';
+import { HeaderPages } from '~/components/headerSearchPanelComponents/headerPages';
 import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
 import { TabMenu } from '~/components/tabMenu/tabMenu';
 import { categorListData } from '~/data/categor';
+import { useParamsGlobal } from '~/data/useParams';
 
 export const CategorPage = () => {
     const location = useLocation();
 
+    const {
+        searchState,
+        setParams,
+        clearParams,
+        title,
+        allergens,
+        categors,
+        authorsId,
+        meat,
+        garnish,
+        stateFullClear,
+    } = useParamsGlobal();
+
     const pathnames = location.pathname.split('/').filter((x) => x);
 
-    const categor = categorListData.find((categor) => categor.link === pathnames[1]);
-    const subcategor = categor?.subCategor[Number(pathnames[2])];
+    const categor = categorListData.find((categor) => categor.link === pathnames[0]);
+    const subcategor = categor?.subCategor.find((subCategor) => subCategor.link === pathnames[1]);
 
     const [tabIndex, setTabIndex] = useState(Number(subcategor?.id) || 0);
 
@@ -23,39 +37,30 @@ export const CategorPage = () => {
     }, [pathnames, subcategor?.id]);
 
     return (
-        <Flex direction='column'>
+        <Flex direction='column' h='100%'>
             {/* Хеддер страницы */}
-            <Box mb={{ base: '27px', lg: '0' }}>
+            <Box mb={{ base: '31px', lg: '20px' }}>
                 <HeaderPages
-                    title={categor != undefined ? categor.title : 'Категория отсутсвует'}
-                    subtitle={categor?.subTitle}
+                    title={categor?.title || ''}
+                    searchState={searchState}
+                    textSearch={title}
+                    allergensSearch={allergens}
+                    categorsSearch={categors}
+                    authorsSearch={authorsId}
+                    meatSearch={meat}
+                    garnishSearch={garnish}
+                    setParams={setParams}
+                    clearParams={clearParams}
+                    stateFullClear={stateFullClear}
                 />
             </Box>
 
-            <TabMenu tabIndex={tabIndex} categor={categor ? categor : undefined} />
+            {categors.length === 0 && (
+                <TabMenu tabIndex={tabIndex} categor={categor ? categor : undefined} />
+            )}
 
-            <Flex direction='column'>
-                {/* Самое сочное */}
-                <Box mb={{ base: '32px', md: '32px', lg: '38px' }}>
-                    <RecipeList filter='popular' count={8} />
-
-                    <Center mt='8px'>
-                        <Button
-                            data-test-id='juiciest-link-mobile'
-                            fontWeight='600'
-                            fontSize='16px'
-                            lineHeight='24px'
-                            mt='4px'
-                            color='black'
-                            bg='rgba(177, 255, 46, 1)'
-                            size='md'
-                            colorScheme='teal'
-                            variant='solid'
-                        >
-                            Загрузить ещё
-                        </Button>
-                    </Center>
-                </Box>
+            <Flex h='100%' direction='column' justify='space-between'>
+                <RecipeList filter='categor' count={8} />
 
                 {/* Рекомендованная кухня */}
                 <Box>

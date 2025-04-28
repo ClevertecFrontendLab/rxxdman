@@ -1,23 +1,27 @@
-import { HamburgerIcon } from '@chakra-ui/icons';
-import { Grid, GridItem, HStack, IconButton, Image, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Grid, GridItem, HStack, useBreakpointValue, useDisclosure } from '@chakra-ui/react';
+import { memo } from 'react';
 
 import { BreadcrumbNav } from '../breadcrumb/breadcrumb';
+import { Logo } from '../logo/logo';
+import { MenuBurger } from '../menuBurger/menuBurger';
 import { ProfileNotification } from '../profileNotification/profileNotification';
 import { UserCard } from '../userCard/userCard';
 
-export const Header = () => {
-    const logoSrc = useBreakpointValue({
-        base: '/src/assets/logo-mobile.svg',
-        sm: '/src/assets/logo.svg',
+export const Header = memo(() => {
+    const { isOpen, onToggle, onClose } = useDisclosure();
+
+    const isShowTest = useBreakpointValue({
+        base: false,
+        lg: true,
     });
 
     return (
-        <header data-test-id='header'>
+        <header>
             <Grid
                 width='100vw'
                 overflow='hidden'
                 alignItems='center'
-                bg='rgba(255, 255, 211, 1)'
+                bg={isOpen ? 'white' : 'rgba(255, 255, 211, 1)'}
                 p={{ base: '8px 16px', sm: '8px 20px', lg: '16px 56px 16px 16px' }}
                 templateAreas={{
                     base: `"logo gap menuMobile"`,
@@ -30,32 +34,32 @@ export const Header = () => {
                     lg: '263.2px 1fr 432px',
                 }}
             >
-                <GridItem area='logo'>
-                    <Image src={logoSrc} alt='logo' />
+                <GridItem area='logo' zIndex='10000'>
+                    <Logo />
                 </GridItem>
 
                 <GridItem area='breadcrumb' mr='auto' display={{ base: 'none', lg: 'block' }}>
-                    <BreadcrumbNav />
+                    {isShowTest && <BreadcrumbNav />}
                 </GridItem>
 
                 <GridItem pl='53px' area='user' display={{ base: 'none', lg: 'block' }}>
                     <UserCard id='0' />
                 </GridItem>
 
-                <GridItem area='menuMobile' display={{ base: 'block', lg: 'none' }}>
+                <GridItem area='menuMobile'>
                     <HStack gap='0'>
-                        <ProfileNotification />
-                        <IconButton
-                            size='lg'
-                            variant='ghost'
-                            isRound={true}
-                            aria-label='Header burger'
-                            _focus={{ outline: 'none', border: 'none' }}
-                            icon={<HamburgerIcon />}
+                        <Box display={{ base: isOpen ? 'none' : 'block', lg: 'none' }}>
+                            <ProfileNotification />
+                        </Box>
+
+                        <MenuBurger
+                            isOpenMenuMobile={isOpen}
+                            onToggle={onToggle}
+                            onClose={onClose}
                         />
                     </HStack>
                 </GridItem>
             </Grid>
         </header>
     );
-};
+});
