@@ -3,11 +3,15 @@
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
-    letter-spacing: 0%;
     text-align: center;
     vertical-align: middle;
-
     color: rgba(0, 0, 0, 0.64);
+}
+
+.breadctrumpNav ol {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: '4px';
 }
 
 .breadctrumpNav__link:last-child {

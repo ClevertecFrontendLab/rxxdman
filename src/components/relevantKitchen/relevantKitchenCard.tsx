@@ -1,31 +1,30 @@
 import { Button, Card, CardBody, Flex, Image, Tag, Text } from '@chakra-ui/react';
 import { FC } from 'react';
+import { useNavigate } from 'react-router';
 
-import {
-    ProfileNotificationAtributeLike,
-    ProfileNotificationAtributeSave,
-} from '~/assets/createSvg';
-import { categorListData } from '~/data/categor';
+import { LikesCount, SaveCount } from '~/assets/createSvg';
+import { categor, categorListData } from '~/data/categor';
 import { recipe } from '~/data/recipes';
+import { generationCategorSubCategor } from '~/function/function';
 
-import { ProfileNotificationAtribute } from '../profileNotificationAtribute/profileNotificationAtribute';
+import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
 
 type direct = 'row' | 'column';
 
 interface IRecipeCardProps {
     direct: direct;
+    categor: categor | null;
     recipe: recipe;
 }
 
-export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) => {
-    const categorSubCategor = recipe.categor.split('__');
+export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, categor, recipe }) => {
+    const navigate = useNavigate();
 
-    const categor = categorListData.find((categor) => categor.link === categorSubCategor[0]); //Объект
+    const arrLink = generationCategorSubCategor(recipe);
 
-    const subCategor = categor?.subCategor[Number(categorSubCategor[1])].title; //Название подкатегории
+    const subCategorArray = arrLink.get(categor?.link || '') || [];
 
-    const ico =
-        categorListData.find((categor) => categor.title === subCategor)?.ico || categor?.ico;
+    const ico = categorListData.find((categor) => categor.link === recipe.category[0])?.ico;
 
     switch (direct) {
         case 'row':
@@ -91,6 +90,11 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                             fontSize={{ base: '12px', lg: '14px', '2xl': '20px' }}
                             fontWeight='600'
                             lineHeight={{ base: '16px', lg: '20px', '2xl': '28px' }}
+                            onClick={(e) => {
+                                // Предотвращаем множественные клики
+                                e.preventDefault();
+                                navigate(`/${categor?.link}/${subCategorArray[0]}/${recipe.id}`);
+                            }}
                         >
                             Готовить
                         </Button>
@@ -109,9 +113,11 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                     boxSizing='border-box'
                     flexShrink={1}
                     _hover={{
+                        cursor: 'pointer',
                         boxShadow:
                             '0px 2px 4px -1px rgba(32, 126, 0, 0.06), 0px 4px 6px -1px rgba(32, 126, 0, 0.1)',
                     }}
+                    onClick={() => navigate(`/${categor?.link}/${subCategorArray[0]}/${recipe.id}`)}
                 >
                     <CardBody
                         w='100%'
@@ -150,7 +156,7 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                             textAlign='left'
                             mb={{ base: '16px', md: 'auto' }}
                         >
-                            {recipe.subtitle}
+                            {recipe.description}
                         </Text>
 
                         <Flex
@@ -159,17 +165,17 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                             gap={{ base: '8px', lg: '10px' }}
                             justify='flex-end'
                         >
-                            {recipe.save > 0 && (
+                            {recipe.bookmarks > 0 && (
                                 <ProfileNotificationAtribute
-                                    Ico={ProfileNotificationAtributeSave}
-                                    title={recipe.save.toString()}
+                                    Ico={SaveCount}
+                                    title={recipe.bookmarks.toString()}
                                     type='Card'
                                 />
                             )}
-                            {recipe.like > 0 && (
+                            {recipe.likes > 0 && (
                                 <ProfileNotificationAtribute
-                                    Ico={ProfileNotificationAtributeLike}
-                                    title={recipe.like.toString()}
+                                    Ico={LikesCount}
+                                    title={recipe.likes.toString()}
                                     type='Card'
                                 />
                             )}
@@ -191,7 +197,7 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                             alt={categor?.tag}
                         />
                         <Text fontSize='14' fontWeight='400' lineHeight='20px' whiteSpace='nowrap'>
-                            {categor?.subCategor[Number(categorSubCategor[1])].title}
+                            {categor?.subCategor[0].title}
                         </Text>
                     </Tag>
                 </Card>

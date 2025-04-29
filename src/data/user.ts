@@ -5,6 +5,9 @@ export type user = {
     password: string;
     mail: string;
     ico: string;
+    recipes: string[]; //Созданные рецепты
+    recommendsRecipes: string[];
+    followers: number;
 };
 
 export type userList = user[];
@@ -16,7 +19,10 @@ export const users: userList = [
         surname: 'Константинопольская',
         password: '1234',
         mail: 'bake_and_pie',
-        ico: '/src/assets/stubs/user.jpg',
+        ico: '/src/assets/users/user.jpg',
+        recipes: [],
+        recommendsRecipes: [],
+        followers: 1,
     },
     {
         id: '1',
@@ -24,7 +30,10 @@ export const users: userList = [
         surname: 'Высоцкая',
         password: '1234',
         mail: 'elenapovar',
-        ico: '/src/assets/stubs/user2.jpg',
+        ico: '/src/assets/users/user2.jpg',
+        recipes: [],
+        recommendsRecipes: [],
+        followers: 1,
     },
     {
         id: '2',
@@ -32,6 +41,20 @@ export const users: userList = [
         surname: 'Cook',
         password: '1234',
         mail: 'funtasticooking',
-        ico: '/src/assets/stubs/user3.jpg',
+        ico: '/src/assets/users/user3.jpg',
+        recipes: [],
+        recommendsRecipes: [],
+        followers: 1,
+    },
+    {
+        id: '3',
+        name: 'Сергей ',
+        surname: 'разумов',
+        password: '1234',
+        mail: 'serge25',
+        ico: '/src/assets/users/user4.jpg',
+        recipes: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
+        recommendsRecipes: [],
+        followers: 125,
     },
 ];
