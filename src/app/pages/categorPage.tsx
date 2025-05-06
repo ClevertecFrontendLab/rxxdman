@@ -1,16 +1,20 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
+import { category, useGetCategoriesQuery } from '~/API/categorsApi';
 import { HeaderPages } from '~/components/headerSearchPanelComponents/headerPages';
-import { RecipeList } from '~/components/recipeList/recipeList';
+import { filterList, RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
 import { TabMenu } from '~/components/tabMenu/tabMenu';
-import { categorListData } from '~/data/categor';
+import { useListParams } from '~/data/useListParams';
 import { useParamsGlobal } from '~/data/useParams';
 
 export const CategorPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const [listFilter, setListFilter] = useState<filterList>('categor');
 
     const {
         searchState,
@@ -25,16 +29,43 @@ export const CategorPage = () => {
         stateFullClear,
     } = useParamsGlobal();
 
+    useEffect(() => {
+        setListFilter(searchState ? 'popular' : 'categor');
+    }, [searchState]);
+
     const pathnames = location.pathname.split('/').filter((x) => x);
 
-    const categor = categorListData.find((categor) => categor.link === pathnames[0]);
-    const subcategor = categor?.subCategor.find((subCategor) => subCategor.link === pathnames[1]);
+    const { data: categories, isSuccess } = useGetCategoriesQuery();
 
-    const [tabIndex, setTabIndex] = useState(Number(subcategor?.id) || 0);
+    const categor =
+        categories &&
+        categories.find((categor) => categor.category === pathnames[0] && categor.subCategories);
+    const subCategor =
+        categories &&
+        categories.find(
+            (subCategor) => subCategor.category === pathnames[1] && subCategor.rootCategoryId,
+        );
+
+    const [tabIndex, setTabIndex] = useState(0);
+
+    const { visibleList, isLoading, page, totalPage, onClickAddRecipes } = useListParams(
+        8,
+        listFilter,
+    );
 
     useEffect(() => {
-        setTabIndex(Number(subcategor?.id));
-    }, [pathnames, subcategor?.id]);
+        setTabIndex(
+            Number(
+                categor?.subCategories?.findIndex(
+                    (subcategor) => subcategor.category === subCategor?.category,
+                ),
+            ) || 0,
+        );
+    }, [categor?.subCategories, pathnames, subCategor?.category]);
+
+    useEffect(() => {
+        if (isSuccess && (!categor || !subCategor)) navigate('/not-found');
+    }, [categor, isSuccess, navigate, subCategor]);
 
     return (
         <Flex direction='column' h='100%'>
@@ -42,6 +73,7 @@ export const CategorPage = () => {
             <Box mb={{ base: '31px', lg: '20px' }}>
                 <HeaderPages
                     title={categor?.title || ''}
+                    subtitle={categor?.description}
                     searchState={searchState}
                     textSearch={title}
                     allergensSearch={allergens}
@@ -52,19 +84,32 @@ export const CategorPage = () => {
                     setParams={setParams}
                     clearParams={clearParams}
                     stateFullClear={stateFullClear}
+                    isLoading={isLoading}
+                    totalPage={totalPage}
                 />
             </Box>
 
-            {categors.length === 0 && (
-                <TabMenu tabIndex={tabIndex} categor={categor ? categor : undefined} />
+            {!searchState && (
+                <TabMenu
+                    tabIndex={tabIndex}
+                    categor={categor ? (categor as category) : undefined}
+                />
             )}
 
             <Flex h='100%' direction='column' justify='space-between'>
-                <RecipeList filter='categor' count={8} />
+                <RecipeList
+                    filter={listFilter}
+                    count={8}
+                    list={visibleList}
+                    isLoading={isLoading}
+                    page={page}
+                    totalPage={totalPage}
+                    onClickAddPageRecipes={onClickAddRecipes}
+                />
 
                 {/* Рекомендованная кухня */}
                 <Box>
-                    <RelevantKitchen idCategor='4' />
+                    <RelevantKitchen />
                 </Box>
             </Flex>
         </Flex>

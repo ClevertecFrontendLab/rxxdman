@@ -53,19 +53,19 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
     stateFullClear,
     setAllergenSynchronData,
 }) => {
-    // const [selectedCategor, setSelectedCategor] = useState<string[]>(categorsSearch.length > 0 ? categorsSearch.split('--').filter(Boolean) : []);
+    // const [selectedCategor, setSelectedCategor] = useState<string[]>(categorsSearch.length > 0 ? categorsSearch.split(',').filter(Boolean) : []);
     const [selectedCategor, setSelectedCategor] = useState<string[]>([]); //для теста
     const [selectedAuthor, setSelectedAuthor] = useState<string[]>(
-        authorsSearch.length > 0 ? authorsSearch.split('--').filter(Boolean) : [],
+        authorsSearch.length > 0 ? authorsSearch.split(',').filter(Boolean) : [],
     );
     const [selectedMeat, setSelectedMeat] = useState<string[]>(
-        meatSearch.length > 0 ? meatSearch.split('--').filter(Boolean) : [],
+        meatSearch.length > 0 ? meatSearch.split(',').filter(Boolean) : [],
     );
     const [selectedGarnish, setSelectedGarnish] = useState<string[]>(
-        garnishSearch.length > 0 ? garnishSearch.split('--').filter(Boolean) : [],
+        garnishSearch.length > 0 ? garnishSearch.split(',').filter(Boolean) : [],
     );
     const [selectedAllergens, setSelectedAllergens] = useState<string[]>(
-        allergensSearch.length > 0 ? allergensSearch.split('--').filter(Boolean) : [],
+        allergensSearch.length > 0 ? allergensSearch.split(',').filter(Boolean) : [],
     );
 
     const [allSearchLists, setAllSearchLists] = useState([] as string[]);
@@ -93,23 +93,23 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
 
     useEffect(() => {
         setSelectedCategor([]); //Для теста
-        // setSelectedCategor(categorsSearch.split('--'))
+        // setSelectedCategor(categorsSearch.split(','))
     }, [categorsSearch]);
 
     useEffect(() => {
-        setSelectedAuthor(authorsSearch.split('--'));
+        setSelectedAuthor(authorsSearch.split(','));
     }, [authorsSearch]);
 
     useEffect(() => {
-        setSelectedMeat(meatSearch.split('--'));
+        setSelectedMeat(meatSearch.split(','));
     }, [meatSearch]);
 
     useEffect(() => {
-        setSelectedGarnish(garnishSearch.split('--'));
+        setSelectedGarnish(garnishSearch.split(','));
     }, [garnishSearch]);
 
     useEffect(() => {
-        setSelectedAllergens(allergensSearch.split('--'));
+        setSelectedAllergens(allergensSearch.split(','));
     }, [allergensSearch]);
 
     function clearFilter() {
@@ -123,18 +123,18 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
 
     function searchRecipe() {
         if (selectedCategor.length > 0)
-            setParams(selectedCategor.filter(Boolean).join('--'), 'categors');
+            setParams(selectedCategor.filter(Boolean).join(','), 'categors');
         else setParams('', 'categors');
 
         if (selectedAuthor.length > 0)
-            setParams(selectedAuthor.filter(Boolean).join('--'), 'authors');
+            setParams(selectedAuthor.filter(Boolean).join(','), 'authors');
         else setParams('', 'authors');
 
-        if (selectedMeat.length > 0) setParams(selectedMeat.filter(Boolean).join('--'), 'meat');
+        if (selectedMeat.length > 0) setParams(selectedMeat.filter(Boolean).join(','), 'meat');
         else setParams('', 'meat');
 
         if (selectedGarnish.length > 0)
-            setParams(selectedGarnish.filter(Boolean).join('--'), 'garnish');
+            setParams(selectedGarnish.filter(Boolean).join(','), 'garnish');
         else setParams('', 'garnish');
 
         if (selectedAllergens.length > 0) {

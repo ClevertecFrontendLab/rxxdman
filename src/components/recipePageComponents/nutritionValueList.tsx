@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { nutritionValue } from '~/data/recipes';
+import { nutritionValue } from '~/API/recipeApi';
 
 import { NutritionValueAtribute } from './nutritionValueAtribute';
 
@@ -27,7 +27,7 @@ export const NutritionValueList: FC<INutritionValueListProps> = ({ nutritionValu
             gap={{ base: '12px', '2xl': '24px' }}
         >
             <NutritionValueAtribute type='calories' value={nutritionValue.calories} />
-            <NutritionValueAtribute type='proteins' value={nutritionValue.proteins} />
+            <NutritionValueAtribute type='proteins' value={nutritionValue.protein} />
             <NutritionValueAtribute type='fats' value={nutritionValue.fats} />
             <NutritionValueAtribute type='carbohydrates' value={nutritionValue.carbohydrates} />
         </Flex>

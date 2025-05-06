@@ -1,5 +1,7 @@
 import { Box, Grid, GridItem, HStack, useBreakpointValue, useDisclosure } from '@chakra-ui/react';
-import { memo } from 'react';
+import { FC, memo } from 'react';
+
+import { CategoriesResponse } from '~/API/categorsApi';
 
 import { BreadcrumbNav } from '../breadcrumb/breadcrumb';
 import { Logo } from '../logo/logo';
@@ -7,7 +9,11 @@ import { MenuBurger } from '../menuBurger/menuBurger';
 import { ProfileNotification } from '../profileNotification/profileNotification';
 import { UserCard } from '../userCard/userCard';
 
-export const Header = memo(() => {
+interface IHeaderProps {
+    categors?: CategoriesResponse;
+}
+
+export const Header: FC<IHeaderProps> = memo(({ categors }) => {
     const { isOpen, onToggle, onClose } = useDisclosure();
 
     const isShowTest = useBreakpointValue({
@@ -39,7 +45,7 @@ export const Header = memo(() => {
                 </GridItem>
 
                 <GridItem area='breadcrumb' mr='auto' display={{ base: 'none', lg: 'block' }}>
-                    {isShowTest && <BreadcrumbNav />}
+                    {isShowTest && <BreadcrumbNav categors={categors} />}
                 </GridItem>
 
                 <GridItem pl='53px' area='user' display={{ base: 'none', lg: 'block' }}>

@@ -1,7 +1,7 @@
 import { Box, Checkbox, FormControl, Text, VStack } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { meatsList } from '~/data/recipes';
+import { meatsList } from '~/data/drawerData';
 
 interface IFilterDrawerMeatProps {
     selectedMeat: string[];
@@ -24,7 +24,7 @@ export const FilterDrawerMeat: FC<IFilterDrawerMeatProps> = ({ selectedMeat, set
                 <VStack spacing='12px' align='stretch'>
                     {meatsList.map((meat) => (
                         <Box
-                            key={meat.titleEn}
+                            key={meat.titleRu}
                             fontSize='14px'
                             fontWeight='400'
                             lineHeight='20px'
@@ -32,9 +32,9 @@ export const FilterDrawerMeat: FC<IFilterDrawerMeatProps> = ({ selectedMeat, set
                         >
                             <Checkbox
                                 id={meat.titleEn}
-                                isChecked={selectedMeat.includes(meat.titleEn)}
-                                onChange={() => toggleCheckbox(meat.titleEn)}
-                                colorScheme='green'
+                                isChecked={selectedMeat.includes(meat.titleRu)}
+                                onChange={() => toggleCheckbox(meat.titleRu)}
+                                variant='limeCheckbox'
                                 size='md'
                                 borderColor='rgba(215, 255, 148, 1)'
                             >

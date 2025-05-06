@@ -1,22 +1,27 @@
 import './App.css';
 
-import { Box, Flex, useBreakpointValue } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { Box, Center, Flex, useBreakpointValue, useDisclosure } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router';
 
+import { categoriesResponse, useGetCategoriesQuery } from '~/API/categorsApi';
+import { ErrorAllert } from '~/components/errorAlert/errorAllert';
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header/header';
 import { LeftPanel } from '~/components/leftPanel/leftPanel';
+import { Loader } from '~/components/loader/loader';
 import { RightPanel } from '~/components/rightPanel/rightPanel';
 import { useGetPostsQuery } from '~/query/services/posts.ts';
 
 import { CategorPage } from './pages/categorPage';
 import { HomePage } from './pages/home';
+import { NotFoundPage } from './pages/notFountPage';
 import { PopularPage } from './pages/popularPage';
 import { RecipePage } from './pages/recipePage';
 
 function App() {
     const { data: _data, isLoading: _isLoading } = useGetPostsQuery();
+    const { data: categories, error, isLoading, isSuccess } = useGetCategoriesQuery();
 
     const pathname = useLocation();
 
@@ -29,11 +34,59 @@ function App() {
         window.scrollTo(0, 0);
     }, [pathname]);
 
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
+    useEffect(() => {
+        if (error) onOpen();
+    }, [error, onOpen]);
+
+    // Локальный стейт для категорий с резервом из localStorage
+    const [categoriesData, setCategoriesData] = useState<categoriesResponse | null>(null);
+
+    // При успешном получении сохраняем в localStorage и локальный стейт
+    useEffect(() => {
+        if (categories) {
+            setCategoriesData(categories);
+            localStorage.setItem('categoriesBackup', JSON.stringify(categories));
+        }
+    }, [categories]);
+
+    // Если ошибка — пытаемся загрузить из localStorage
+    useEffect(() => {
+        if (error && !categoriesData) {
+            const backup = localStorage.getItem('categoriesBackup');
+            if (backup) {
+                setCategoriesData(JSON.parse(backup));
+            }
+        }
+    }, [error, categoriesData]);
+
     return (
         <div id='root'>
+            {isLoading && (
+                <Center
+                    zIndex={100000}
+                    bg='rgba(0, 0, 0, 0.16)'
+                    position='fixed'
+                    h='100vh'
+                    w='100vw'
+                    backdropFilter='blur(1px)'
+                >
+                    <Loader testId='app-loader' />
+                </Center>
+            )}
+
+            {isOpen && (
+                <ErrorAllert
+                    title='Ошибка сервера'
+                    message='Попробуйте поискать снова попозже'
+                    onClose={onClose}
+                />
+            )}
+
             <Flex direction='column' w='100vw' maxW='100vw' overflow='hidden' minH='100vh'>
                 <Box w='100%' zIndex={1000} position='fixed' mb='80px' data-test-id='header'>
-                    <Header />
+                    <Header categors={categories} />
                 </Box>
 
                 <Flex>
@@ -47,7 +100,7 @@ function App() {
                             zIndex='10'
                             top='80px'
                         >
-                            <LeftPanel />
+                            {isSuccess && <LeftPanel />}
                         </Box>
                     )}
 
@@ -65,12 +118,15 @@ function App() {
                         <Routes>
                             <Route path='/' element={<HomePage />} />
                             <Route path='/the-juiciest' element={<PopularPage />} />
+
                             <Route path='/:category/:subcategor' element={<CategorPage />} />
                             <Route
                                 path='/:category/:subcategor/:idRecipe'
                                 element={<RecipePage />}
                             />
                             <Route path='/the-juiciest/:idRecipe' element={<RecipePage />} />
+
+                            <Route path='/not-found' element={<NotFoundPage />} />
                         </Routes>
                     </Box>
 

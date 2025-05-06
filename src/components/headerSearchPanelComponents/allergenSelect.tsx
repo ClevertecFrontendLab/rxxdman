@@ -44,6 +44,10 @@ interface IAllergenSelectProps {
     setDrawerData?: React.Dispatch<React.SetStateAction<string[]>>;
 
     allergenSynchronData?: string[];
+
+    //Для изменения логики поведения срабатывания поиска аллергенов
+    setIsAllergen?: React.Dispatch<React.SetStateAction<boolean>>; //Отслеживает кол-во аллергенов  включает кнопку
+    setSelectedAllergensLocal?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
@@ -53,18 +57,26 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
     stateFullClear,
     setDrawerData,
     allergenSynchronData,
+    setIsAllergen,
+    setSelectedAllergensLocal,
 }) => {
     const [indexAcc, setIndex] = useState(-1);
     const ref = useRef<HTMLDivElement | null>(null);
 
     const [selectedAllergens, setSelectedAllergens] = useState<string[]>(
         allergensSearch
-            .split('--')
+            .split(',')
             .map((allergen) => allergen.trim())
             .filter(Boolean) || [],
     );
     const [isChecked, setIschecked] = useState(true);
     const [otherAllergen, setOtherAllergen] = useState('');
+
+    useEffect(() => {
+        if (setIsAllergen)
+            if (selectedAllergens.length > 0) setIsAllergen(true);
+            else setIsAllergen(false);
+    }, [selectedAllergens.length, setIsAllergen]);
 
     useEffect(() => {
         if (allergenSynchronData) {
@@ -162,22 +174,29 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
 
     //Фильтр аллергенов из шапки (срабатывает сразу-же при изменении)
     useEffect(() => {
-        if (!isOpen) {
+        if (setSelectedAllergensLocal) {
+            // if (selectedAllergens.length > 0) {
+            //     setParams(selectedAllergens.join(','), 'allergens');
+            // } else {
+            //     setParams('', 'allergens');
+            // }
             if (selectedAllergens.length > 0) {
-                setParams(selectedAllergens.join('--'), 'allergens');
+                setSelectedAllergensLocal(selectedAllergens);
             } else {
+                setSelectedAllergensLocal([]);
                 setParams('', 'allergens');
             }
         }
-    }, [isOpen, selectedAllergens, setParams]);
+    }, [isOpen, selectedAllergens, setParams, setSelectedAllergensLocal]);
 
     return (
         <Stack
             align={isOpen ? 'stretch' : 'center'}
-            justify='flex-end'
+            justify='center'
             gap='16px'
             direction='row'
-            display={{ base: isOpen ? 'flex' : 'none', lg: 'flex' }}
+            // mt='8px' //убрать ТЕСТ
+            display={{ base: isOpen ? 'flex' : 'none', lg: 'flex' }} //Поменять на lg
             flexDirection={isOpen ? 'column' : 'row'}
         >
             <Stack align='center' gap='12px' direction='row'>
@@ -387,18 +406,6 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                         p='2px'
                                         _hover={{ cursor: 'pointer' }}
                                     />
-
-                                    {/* <IconButton
-                                        data-test-id={setDrawerData ? 'add-allergen-button' : ''}
-                                        aria-label='Добавить'
-                                        isRound={true}
-                                        maxW='12px'
-                                        maxH='12px'
-                                        fontSize='12px'
-                                        onClick={addOtherAllergen}
-                                        colorScheme='green'
-                                        // icon={<AddIcon/>}
-                                    /> */}
                                 </HStack>
                             </VStack>
                         </FormControl>

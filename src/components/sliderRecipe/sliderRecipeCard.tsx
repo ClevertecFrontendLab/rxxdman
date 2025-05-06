@@ -12,10 +12,9 @@ import {
 import React, { FC } from 'react';
 import { NavLink } from 'react-router';
 
+import { useGetCategoriesQuery } from '~/API/categorsApi';
+import { recipe } from '~/API/recipeApi';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
-import { recipe } from '~/data/recipes';
-// import { users } from '~/data/user';
-import { generationCategorSubCategor } from '~/function/function';
 
 import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
 import { RecipeCardTag } from '../recipeCard/recipeCardTag';
@@ -26,7 +25,12 @@ interface ISliderRecipeCardProps {
 }
 
 export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe, index }) => {
-    const arrLink = generationCategorSubCategor(recipe);
+    const { data: categories } = useGetCategoriesQuery();
+
+    const subcategor = categories?.find((subCategor) => subCategor._id === recipe.categoriesIds[0]);
+    const categor = categories?.find((categor) =>
+        categor.subCategories?.find((subcategorLocal) => subcategorLocal._id === subcategor?._id),
+    );
 
     const sizeCheck = useBreakpointValue({
         base: false,
@@ -37,7 +41,7 @@ export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe
         <NavLink
             data-test-id={`carousel-card-${index}`}
             style={{ height: '100%' }}
-            to={`/${recipe.category[0]}/${arrLink.get(recipe.category[0])?.[0]}/${recipe.id}`}
+            to={`/${categor?.category}/${subcategor?.category}/${recipe._id}`}
         >
             <Card
                 borderRadius='8px'
@@ -61,7 +65,7 @@ export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe
                     objectFit='cover'
                     w='100%'
                     h={{ base: '128px', lg: '230px' }}
-                    src={recipe.image}
+                    src={`https://training-api.clevertec.ru/${recipe.image}`}
                     alt={recipe.title}
                     flexShrink={0}
                 />
@@ -133,10 +137,10 @@ export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe
                         <Flex align='flex-end' justify='space-between' mt='auto'>
                             {sizeCheck && (
                                 <Stack w='fit-content' overflow='hidden'>
-                                    {recipe.category.map((category) => (
+                                    {recipe.categoriesIds.map((category) => (
                                         <RecipeCardTag
                                             key={category}
-                                            categorLink={category}
+                                            subCategorId={category}
                                             color='rgba(215, 255, 148, 1)'
                                         />
                                     ))}
@@ -173,13 +177,13 @@ export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe
                         bottom={{ base: 'auto', lg: '12px', '2xl': '19px' }}
                         left={{ base: '8px', lg: '12px', '2xl': '24px' }}
                     >
-                        {recipe.category.map((category) => (
+                        {/* {recipe.category.map((category) => (
                             <RecipeCardTag
                                 key={category}
                                 categorLink={category}
                                 color='rgba(215, 255, 148, 1)'
                             />
-                        ))}
+                        ))} */}
                     </Stack>
                 )}
             </Card>

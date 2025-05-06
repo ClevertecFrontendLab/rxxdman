@@ -1,37 +1,78 @@
-import { Box, Flex, Heading, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, useDisclosure } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
+import { useLocation } from 'react-router';
 
-import { categor, categorListData } from '~/data/categor';
-import { recipeList, recipeListMock } from '~/data/recipes';
+import { category, subCategory, useGetCategoriesQuery } from '~/API/categorsApi';
+import { useGetRecipeCategorQuery } from '~/API/recipeApi';
 
+import { ErrorAllert } from '../errorAlert/errorAllert';
 import { RelevantKitchenCard } from './relevantKitchenCard';
 
-interface IRelevantKitchenProps {
-    idCategor: string;
-}
+export const RelevantKitchen: FC = () => {
+    const { data: categories } = useGetCategoriesQuery(); //Все категории
+    const location = useLocation();
 
-export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
-    const [categor, setCategor] = useState<categor | null>(null);
-    const [recipeList, setRecipeList] = useState<recipeList>([]);
+    const [categor, setCategor] = useState<category>(); //Категория
+    const [subCategor, setSubCategor] = useState<subCategory>(); //ПодКатегория
 
+    const [path, setPath] = useState(location.pathname.split('/').filter(Boolean)[0]);
+    const [refetchRelevant, setRefetchRelevant] = useState(true);
+
+    //Логика работы смены рекомендации
     useEffect(() => {
-        const foundCategor = categorListData.find((categor) => categor.id === idCategor) || null;
-        setCategor(foundCategor);
-    }, [idCategor]);
-
-    useEffect(() => {
-        if (categor) {
-            const filteredRecipes = recipeListMock.filter((recipe) =>
-                recipe.category.find((category) => category === categor.link),
-            );
-            setRecipeList(filteredRecipes);
-        } else {
-            setRecipeList([]);
+        if (location.pathname.split('/').filter(Boolean)[0] != path) {
+            setPath(location.pathname.split('/').filter(Boolean)[0]);
+            setRefetchRelevant(true);
         }
-    }, [categor]);
+    }, [location.pathname, path]);
+
+    const subCategies =
+        categories && [...categories].filter((subcategor) => subcategor.rootCategoryId);
+
+    useEffect(() => {
+        if (categories) {
+            if (refetchRelevant && subCategies) {
+                const random = Math.floor(Math.random() * (subCategies.length - 0) + 0);
+                setSubCategor(subCategies[random] as subCategory);
+                const categor = categories.find(
+                    (categor) => categor._id === subCategies[random].rootCategoryId,
+                ) as category;
+                setCategor(categor);
+                setRefetchRelevant(false);
+            }
+        }
+    }, [categories, refetchRelevant, subCategies]);
+
+    //Фильтруем рецепты по их категориям
+
+    const { data: categorData, error } = useGetRecipeCategorQuery(
+        {
+            idCategor: subCategor?._id || '',
+            params: {
+                limit: 5,
+            },
+        },
+        {
+            skip: !subCategor,
+        },
+    );
+
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
+    useEffect(() => {
+        if (error) onOpen();
+    }, [error, onOpen]);
 
     return (
         <Box borderTop='1px solid rgba(0, 0, 0, 0.08)'>
+            {isOpen && (
+                <ErrorAllert
+                    title='Ошибка сервера'
+                    message='Попробуйте поискать снова попозже'
+                    onClose={onClose}
+                />
+            )}
+
             <Flex
                 display='flex'
                 direction={{ base: 'column', lg: 'row' }}
@@ -59,11 +100,11 @@ export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
                     color='blackAlpha.700'
                     textAlign='left'
                 >
-                    {categor?.subTitle}
+                    {categor?.description}
                 </Text>
             </Flex>
 
-            {recipeList.length > 1 && (
+            {categorData && categorData.data.length > 0 && (
                 <Flex
                     w='100%'
                     direction={{ base: 'column', md: 'row' }}
@@ -78,16 +119,13 @@ export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
                         flexShrink={1}
                         gap={{ base: '12px', lg: '16px', '2xl': '24px' }}
                     >
-                        <RelevantKitchenCard
-                            categor={categor}
-                            direct='column'
-                            recipe={recipeList[0]}
-                        />
-                        <RelevantKitchenCard
-                            categor={categor}
-                            direct='column'
-                            recipe={recipeList[1]}
-                        />
+                        {categorData.data[0] && (
+                            <RelevantKitchenCard direct='column' recipe={categorData.data[0]} />
+                        )}
+
+                        {categorData.data[1] && (
+                            <RelevantKitchenCard direct='column' recipe={categorData.data[1]} />
+                        )}
                     </Flex>
 
                     <Flex
@@ -98,21 +136,15 @@ export const RelevantKitchen: FC<IRelevantKitchenProps> = ({ idCategor }) => {
                         flexShrink={1}
                         gap={{ base: '12px', md: '6px', lg: '12px' }}
                     >
-                        <RelevantKitchenCard
-                            categor={categor}
-                            direct='row'
-                            recipe={recipeList[2]}
-                        />
-                        <RelevantKitchenCard
-                            categor={categor}
-                            direct='row'
-                            recipe={recipeList[3]}
-                        />
-                        <RelevantKitchenCard
-                            categor={categor}
-                            direct='row'
-                            recipe={recipeList[4]}
-                        />
+                        {categorData.data[2] && (
+                            <RelevantKitchenCard direct='row' recipe={categorData.data[2]} />
+                        )}
+                        {categorData.data[3] && (
+                            <RelevantKitchenCard direct='row' recipe={categorData.data[3]} />
+                        )}
+                        {categorData.data[4] && (
+                            <RelevantKitchenCard direct='row' recipe={categorData.data[4]} />
+                        )}
                     </Flex>
                 </Flex>
             )}

@@ -121,7 +121,7 @@ export const FilterDrawerAuthor: FC<IFilterDrawerAuthorProps> = ({
                                         id={'select-user:' + author.id}
                                         isChecked={selectedAuthor.includes(author.id)}
                                         onChange={() => toggleCheckbox(author.id)}
-                                        colorScheme='green'
+                                        variant='limeCheckbox'
                                         size='sm'
                                         borderColor='rgba(215, 255, 148, 1)'
                                     >

@@ -44,19 +44,6 @@ export const IngredientTableRow: FC<IIngredientTableRowProps> = ({
                     </Text>
                 </Flex>
             </Td>
-
-            {/* <Td p={{ base: '10px 8px', md: '10px 24px', lg: '16px 24px' }} maxW='fit-content' border='none'>
-               
-            </Td>
-
-            <Td
-                data-test-id={`ingredient-quantity-${index}`}
-                p={{ base: '10px 12px', md: '10px 24px', lg: '16px 24px' }}
-                border='none'
-                isNumeric
-            >
-                {Number(ingredient.count) > 0 && count} {ingredient.measureUnit}
-            </Td> */}
         </Tr>
     );
 };

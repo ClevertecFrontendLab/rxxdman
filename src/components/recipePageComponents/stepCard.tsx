@@ -19,7 +19,7 @@ export const StepCard: FC<IStepCardProps> = ({ lastElement, step }) => (
         {step.image && (
             <Image
                 objectFit='cover'
-                src={step.image}
+                src={`https://training-api.clevertec.ru/${step.image}`}
                 alt={step.description}
                 w={{ base: '158px', lg: '158px', xl: '346px' }}
                 h={{ base: '128px', lg: '244px' }}

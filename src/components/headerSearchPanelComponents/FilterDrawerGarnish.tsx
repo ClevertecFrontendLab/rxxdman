@@ -1,7 +1,7 @@
 import { Box, Checkbox, FormControl, Text, VStack } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { garnishList } from '~/data/recipes';
+import { garnishList } from '~/data/drawerData';
 
 interface IFilterDrawerGarnishProps {
     selectedGarnish: string[];
@@ -27,7 +27,7 @@ export const FilterDrawerGarnish: FC<IFilterDrawerGarnishProps> = ({
                 <VStack spacing='12px' align='stretch'>
                     {garnishList.map((garnish) => (
                         <Box
-                            key={garnish.titleEn}
+                            key={garnish.titleRu}
                             fontSize='14px'
                             fontWeight='400'
                             lineHeight='20px'
@@ -35,10 +35,10 @@ export const FilterDrawerGarnish: FC<IFilterDrawerGarnishProps> = ({
                         >
                             <Checkbox
                                 data-test-id={`checkbox-${garnish.titleRu.toLowerCase()}`}
-                                id={garnish.titleEn}
-                                isChecked={selectedGarnish.includes(garnish.titleEn)}
-                                onChange={() => toggleCheckbox(garnish.titleEn)}
-                                colorScheme='green'
+                                id={garnish.titleRu}
+                                isChecked={selectedGarnish.includes(garnish.titleRu)}
+                                onChange={() => toggleCheckbox(garnish.titleRu)}
+                                variant='limeCheckbox'
                                 size='md'
                                 borderColor='rgba(215, 255, 148, 1)'
                             >

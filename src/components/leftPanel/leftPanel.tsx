@@ -1,10 +1,10 @@
 import { Flex, GridItem, useBreakpointValue } from '@chakra-ui/react';
-import { memo } from 'react';
+import { FC, memo } from 'react';
 
 import { Footerleft } from '../footer/footerLeft';
 import { NavigationMenu } from '../navigationMenu/navigationMenu';
 
-export const LeftPanel = memo(() => {
+export const LeftPanel: FC = memo(() => {
     const isShow = useBreakpointValue({
         base: false,
         lg: true,
@@ -29,6 +29,7 @@ export const LeftPanel = memo(() => {
                 flex='1'
                 overflowY='auto'
                 overflowX='hidden'
+                w='100%'
                 sx={{
                     '&::-webkit-scrollbar': {
                         width: '8px',

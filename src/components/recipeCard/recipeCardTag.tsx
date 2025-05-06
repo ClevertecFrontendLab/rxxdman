@@ -1,23 +1,27 @@
 import { Image, Tag, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { categorListData } from '~/data/categor';
+import { useGetCategoriesQuery } from '~/API/categorsApi';
 
 interface IRecipeCardTagProps {
-    categorLink: string;
+    subCategorId: string;
     color: string;
 }
 
-export const RecipeCardTag: FC<IRecipeCardTagProps> = ({ categorLink, color }) => {
-    const categor = categorListData.find((categor) => categor.link === categorLink);
+export const RecipeCardTag: FC<IRecipeCardTagProps> = ({ subCategorId, color }) => {
+    const { data: categories } = useGetCategoriesQuery();
+
+    const categor = categories?.find((categor) =>
+        categor.subCategories?.find((subcategorLocal) => subcategorLocal._id === subCategorId),
+    );
 
     return (
         <Tag p={{ base: '2px 4px', lg: '2px 8px' }} bg={color} gap={{ base: '2px', lg: '8px' }}>
             <Image
                 h='16px'
                 w='16px'
-                src={`/src/assets/menuIco/${categor?.ico}`}
-                alt={categor?.tag}
+                src={`https://training-api.clevertec.ru/${categor?.icon}`}
+                alt={categor?.title}
             />
             <Text
                 fontSize='14'
@@ -27,7 +31,7 @@ export const RecipeCardTag: FC<IRecipeCardTagProps> = ({ categorLink, color }) =
                 overflow='hidden'
                 textOverflow='ellipsis'
             >
-                {categor?.tag}
+                {categor?.title}
             </Text>
         </Tag>
     );

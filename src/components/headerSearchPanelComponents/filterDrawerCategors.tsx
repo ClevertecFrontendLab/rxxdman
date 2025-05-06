@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
-import { categorListData } from '~/data/categor';
+import { categories, useGetCategoriesQuery } from '~/API/categorsApi';
 
 interface IFilterDrawerCategorsProps {
     selectedCategor: string[];
@@ -44,6 +44,11 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
             prev.includes(categor) ? prev.filter((item) => item !== categor) : [...prev, categor],
         );
     };
+
+    const { data: categories } = useGetCategoriesQuery();
+    const categorsArray = [...(categories as categories)].filter(
+        (categor) => categor.subCategories,
+    );
 
     return (
         <Accordion
@@ -106,9 +111,9 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
                 >
                     <FormControl>
                         <VStack spacing={0} align='stretch'>
-                            {categorListData.map((categor, index) => (
+                            {categorsArray.map((categor, index) => (
                                 <Box
-                                    key={categor.id}
+                                    key={categor._id}
                                     p='6px 16px'
                                     bg={index % 2 === 1 ? 'white' : 'blackAlpha.100'}
                                     _hover={{ bg: 'gray.100' }}
@@ -119,10 +124,10 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
                                 >
                                     <Checkbox
                                         data-test-id={`checkbox-${categor.title.toLowerCase()}`}
-                                        id={'select-' + categor.link}
-                                        isChecked={selectedCategor.includes(categor.link)}
-                                        onChange={() => toggleCheckbox(categor.link)}
-                                        colorScheme='green'
+                                        id={'select-' + categor.category}
+                                        isChecked={selectedCategor.includes(categor.category)}
+                                        onChange={() => toggleCheckbox(categor.category)}
+                                        variant='limeCheckbox'
                                         size='sm'
                                         borderColor='rgba(215, 255, 148, 1)'
                                     >

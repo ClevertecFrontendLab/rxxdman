@@ -2,33 +2,32 @@ import './breadcrumb.css';
 
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
-import { categorListData } from '~/data/categor';
-import { recipeListMock } from '~/data/recipes';
+import { useGetCategoriesQuery } from '~/API/categorsApi';
+import { useGetRecipeIdQuery } from '~/API/recipeApi';
 
-export const BreadcrumbNav = () => {
+export const BreadcrumbNav: FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
     const pathnames = location.pathname.split('/').filter((x) => x);
-
     const isPopular = pathnames.find((value) => value === 'the-juiciest');
 
-    const categor = categorListData.find((categor) => categor.link === pathnames[0]);
-    const subcategor = categor?.subCategor.find((subCategor) => subCategor.link === pathnames[1]);
-    const recipe = recipeListMock.find(
-        (recipe) => recipe.id === (isPopular ? pathnames[1] : pathnames[2]),
-    );
+    const { data: categories } = useGetCategoriesQuery();
 
-    useEffect(() => {
-        if (pathnames.length > 0 && !isPopular && categor === undefined && subcategor === undefined)
-            navigate(`/`);
+    const categor = categories && categories.find((categor) => categor.category === pathnames[0]);
+    const subcategor =
+        categories && categories.find((categor) => categor.category === pathnames[1]);
 
-        if (pathnames.length > 0 && !isPopular && categor !== undefined && subcategor === undefined)
-            navigate(`/${categor.link}/${categor.subCategor[0].link}`);
-    }, [categor, subcategor, isPopular, navigate, pathnames]);
+    const { data: popularRecipe } = useGetRecipeIdQuery(pathnames[1], {
+        skip: !isPopular || !pathnames[1],
+    });
+
+    const { data: categoriesRecipe } = useGetRecipeIdQuery(pathnames[2], {
+        skip: !categor || !subcategor || !pathnames[2],
+    });
 
     return (
         <Breadcrumb
@@ -57,7 +56,10 @@ export const BreadcrumbNav = () => {
                     <BreadcrumbLink
                         whiteSpace='nowrap'
                         className='breadctrumpNav__link'
-                        onClick={() => navigate(`/${categor.link}/${categor.subCategor[0].link}`)}
+                        onClick={() =>
+                            categor.subCategories &&
+                            navigate(`/${categor.category}/${categor.subCategories[0].category}`)
+                        }
                     >
                         {categor?.title}
                     </BreadcrumbLink>
@@ -69,17 +71,20 @@ export const BreadcrumbNav = () => {
                     <BreadcrumbLink
                         whiteSpace='nowrap'
                         className='breadctrumpNav__link'
-                        onClick={() => recipe && navigate(`/${categor.link}/${subcategor.link}`)}
+                        onClick={() =>
+                            categoriesRecipe &&
+                            navigate(`/${categor.category}/${subcategor.category}`)
+                        }
                     >
                         {subcategor?.title}
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             )}
 
-            {categor && subcategor && recipe && (
+            {categor && subcategor && categoriesRecipe && pathnames[2] && (
                 <BreadcrumbItem>
                     <BreadcrumbLink whiteSpace='wrap' className='breadctrumpNav__link'>
-                        {recipe?.title}
+                        {categoriesRecipe.title}
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             )}
@@ -90,17 +95,17 @@ export const BreadcrumbNav = () => {
                     <BreadcrumbLink
                         className='breadctrumpNav__link'
                         whiteSpace='nowrap'
-                        onClick={() => recipe && navigate(`/popular`)}
+                        onClick={() => popularRecipe && navigate(`/popular`)}
                     >
                         Самое сочное
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             )}
 
-            {isPopular && recipe && (
+            {isPopular && popularRecipe && pathnames[1] && (
                 <BreadcrumbItem>
                     <BreadcrumbLink className='breadctrumpNav__link' whiteSpace='wrap'>
-                        {recipe?.title}
+                        {popularRecipe?.title}
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             )}

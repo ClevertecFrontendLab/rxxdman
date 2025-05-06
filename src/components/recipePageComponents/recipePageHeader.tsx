@@ -15,8 +15,8 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
+import { recipe } from '~/API/recipeApi';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
-import { recipe } from '~/data/recipes';
 
 import { RecipeCardTag } from '../recipeCard/recipeCardTag';
 
@@ -58,7 +58,7 @@ export const RecipePageHeader: FC<IRecipePageHeaderProps> = ({ recipe }) => {
             flexShrink={1}
         >
             <Image
-                src={recipe.image}
+                src={`https://training-api.clevertec.ru/${recipe.image}`}
                 alt={recipe.title}
                 borderRadius='8px'
                 objectFit='cover'
@@ -82,10 +82,10 @@ export const RecipePageHeader: FC<IRecipePageHeaderProps> = ({ recipe }) => {
                 <CardHeader p='0' mb='32px'>
                     <Flex gap='20px' justify='space-between' align='flex-start'>
                         <Flex flexWrap='wrap' gap='8px'>
-                            {recipe.category.map((category) => (
+                            {recipe.categoriesIds.map((subCategory) => (
                                 <RecipeCardTag
-                                    key={category}
-                                    categorLink={category}
+                                    key={subCategory}
+                                    subCategorId={subCategory}
                                     color='rgba(255, 255, 211, 1)'
                                 />
                             ))}

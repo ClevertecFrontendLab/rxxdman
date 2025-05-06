@@ -1,6 +1,5 @@
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { Box, Button, Center, Flex, Heading, HStack } from '@chakra-ui/react';
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { BlogList } from '~/components/blogsList/blogList';
@@ -8,12 +7,11 @@ import { HeaderPages } from '~/components/headerSearchPanelComponents/headerPage
 import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
 import { SliderRecipe } from '~/components/sliderRecipe/sliderRecipe';
+import { useListParams } from '~/data/useListParams';
 import { useParamsGlobal } from '~/data/useParams';
 
 export const HomePage = () => {
     const navigate = useNavigate();
-
-    const [countSearchRecipes, setCountSearchRecipes] = useState(0);
 
     const {
         searchState,
@@ -27,6 +25,11 @@ export const HomePage = () => {
         garnish,
         stateFullClear,
     } = useParamsGlobal();
+
+    const { visibleList, isLoading, page, totalPage, onClickAddRecipes } = useListParams(
+        searchState ? 8 : 4,
+        'popular',
+    );
 
     return (
         <Flex direction='column' h='100%'>
@@ -44,7 +47,8 @@ export const HomePage = () => {
                     setParams={setParams}
                     clearParams={clearParams}
                     stateFullClear={stateFullClear}
-                    countSearchRecipe={countSearchRecipes}
+                    isLoading={isLoading}
+                    totalPage={totalPage}
                 />
             </Box>
 
@@ -79,7 +83,7 @@ export const HomePage = () => {
                                 onClick={() => {
                                     navigate(`/the-juiciest`);
                                 }}
-                                display={{ base: 'none', lg: 'flex' }}
+                                display={{ base: 'none', md: 'flex' }}
                                 alignItems='center'
                                 fontWeight='600'
                                 fontSize='18px'
@@ -96,7 +100,15 @@ export const HomePage = () => {
                             </Button>
                         </HStack>
 
-                        <RecipeList filter='popular' count={4} />
+                        <RecipeList
+                            filter='popular'
+                            count={4}
+                            list={visibleList}
+                            isLoading={isLoading}
+                            page={page}
+                            totalPage={totalPage}
+                            onClickAddPageRecipes={onClickAddRecipes}
+                        />
 
                         <Center mt='7px' display={{ base: 'block', lg: 'none' }}>
                             <Button
@@ -185,7 +197,7 @@ export const HomePage = () => {
 
                     {/* Рекомендованная кухня */}
                     <Box>
-                        <RelevantKitchen idCategor='6' />
+                        <RelevantKitchen />
                     </Box>
                 </Flex>
             ) : (
@@ -193,12 +205,17 @@ export const HomePage = () => {
                     <RecipeList
                         count={8}
                         filter='popular'
-                        setCountSearchRecipes={setCountSearchRecipes}
+                        list={visibleList}
+                        isLoading={isLoading}
+                        page={page}
+                        totalPage={totalPage}
+                        onClickAddPageRecipes={onClickAddRecipes}
+                        searchState={true}
                     />
 
                     {/* Рекомендованная кухня */}
                     <Box>
-                        <RelevantKitchen idCategor='6' />
+                        <RelevantKitchen />
                     </Box>
                 </Flex>
             )}

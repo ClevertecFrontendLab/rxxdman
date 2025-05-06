@@ -14,8 +14,8 @@ import {
 import React, { FC, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 
+import { recipe } from '~/API/recipeApi';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
-import { recipe } from '~/data/recipes';
 import { useParamsGlobal } from '~/data/useParams';
 
 // import { users } from '~/data/user';
@@ -33,9 +33,6 @@ interface IRecipeCardProps {
 
 export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig, index }) => {
     const { category, subcategor } = useParams();
-    // const arrLink = generationCategorSubCategor(recipe);
-
-    // const subCategorArray = arrLink.get(recipe.category[0] || '') || [];
 
     const { searchParam } = useParamsGlobal();
 
@@ -84,7 +81,7 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                 objectFit='cover'
                 w={{ base: '158px', lg: '346px' }}
                 h='100%'
-                src={recipe.image}
+                src={`https://training-api.clevertec.ru/${recipe.image}`}
                 alt={recipe.title}
                 flexShrink={0}
             />
@@ -99,10 +96,10 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                 <Flex w='100%' justify='space-between'>
                     {sizeCheck && (
                         <Stack w='fit-content' overflow='hidden' maxH='56px'>
-                            {recipe.category.map((category) => (
+                            {recipe.categoriesIds.map((subCategory) => (
                                 <RecipeCardTag
-                                    key={category}
-                                    categorLink={category}
+                                    key={subCategory}
+                                    subCategorId={subCategory}
                                     color='rgba(255, 255, 211, 1)'
                                 />
                             ))}
@@ -236,8 +233,8 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                     <Link
                         to={
                             urlConfig === 'popular'
-                                ? `/the-juiciest/${recipe.id}`
-                                : `/${category}/${subcategor}/${recipe.id}`
+                                ? `/the-juiciest/${recipe._id}`
+                                : `/${category}/${subcategor}/${recipe._id}`
                         }
                     >
                         <Button
@@ -261,10 +258,10 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                     top={{ base: '8px', lg: '20px' }}
                     left={{ base: '8px', lg: '370px' }}
                 >
-                    {recipe.category.map((category) => (
+                    {recipe.categoriesIds.map((subCategory) => (
                         <RecipeCardTag
-                            key={category}
-                            categorLink={category}
+                            key={subCategory}
+                            subCategorId={subCategory}
                             color='rgba(255, 255, 211, 1)'
                         />
                     ))}
