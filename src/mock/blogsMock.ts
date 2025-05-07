@@ -1,13 +1,6 @@
-export type blog = {
-    id: string;
-    userId: string;
-    text: string;
-    date: Date;
-};
+import { BlogsList } from '~/types/blog';
 
-export type blogsList = blog[];
-
-export const blogsData: blogsList = [
+export const blogsData: BlogsList = [
     {
         id: '0',
         userId: '2',

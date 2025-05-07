@@ -1,18 +1,6 @@
-export type user = {
-    id: string;
-    name: string;
-    surname: string;
-    password: string;
-    mail: string;
-    ico: string;
-    recipes: string[]; //Созданные рецепты
-    recommendsRecipes: string[];
-    followers: number;
-};
+import { UserList } from '~/types/user';
 
-export type userList = user[];
-
-export const users: userList = [
+export const users: UserList = [
     {
         id: '0',
         name: 'Екатерина ',

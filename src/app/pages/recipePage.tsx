@@ -1,8 +1,10 @@
 import { Box, Center, Flex, useDisclosure } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 
-import { useGetRecipeIdQuery } from '~/API/recipeApi';
+import { RECIPES_SLIDER_LIMIT } from '~/api/constants/apiConstant';
+import { useGetRecipeIdQuery, useGetRecipesQuery } from '~/api/query/recipeQuery';
 import { ErrorAllert } from '~/components/errorAlert/errorAllert';
 import { AuthorCard } from '~/components/recipePageComponents/authorCard';
 import { IngredientTable } from '~/components/recipePageComponents/ingredientsTable';
@@ -10,12 +12,28 @@ import { NutritionValueList } from '~/components/recipePageComponents/nutritionV
 import { RecipePageHeader } from '~/components/recipePageComponents/recipePageHeader';
 import { StepsList } from '~/components/recipePageComponents/stepsList';
 import { SliderRecipe } from '~/components/sliderRecipe/sliderRecipe';
+import { ERROR_DESCRIPTION, ERROR_TITLE } from '~/constants/errorAlert';
+import { NEW_RECIPES_TITLE } from '~/constants/titleBlocks';
+import { setRecipeId } from '~/store/slice/recipe-slice';
 
 export const RecipePage = () => {
     const { idRecipe } = useParams();
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(setRecipeId(idRecipe));
+    }, [idRecipe, dispatch]);
+
     const navigate = useNavigate();
 
     const { data: recipe, error, isLoading } = useGetRecipeIdQuery(idRecipe ? idRecipe : '');
+
+    const { data: sliderList, error: errorSlider } = useGetRecipesQuery({
+        limit: RECIPES_SLIDER_LIMIT,
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+    });
 
     const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -29,11 +47,7 @@ export const RecipePage = () => {
     return (
         <Box>
             {isOpen && (
-                <ErrorAllert
-                    title='Ошибка сервера'
-                    message='Попробуйте поискать снова попозже'
-                    onClose={onClose}
-                />
+                <ErrorAllert title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
             )}
             {recipe && (
                 <Flex
@@ -78,7 +92,12 @@ export const RecipePage = () => {
 
             {!isLoading && (
                 <Box>
-                    <SliderRecipe title='Новые рецепты' key='sliderRecipePage' />
+                    <SliderRecipe
+                        title={NEW_RECIPES_TITLE}
+                        key='sliderRecipePage'
+                        error={errorSlider}
+                        sliderList={sliderList}
+                    />
                 </Box>
             )}
         </Box>

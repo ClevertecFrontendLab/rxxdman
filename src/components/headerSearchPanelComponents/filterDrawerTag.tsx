@@ -1,13 +1,13 @@
 import { Tag, TagCloseButton, TagLabel } from '@chakra-ui/react';
 import { FC } from 'react';
 
-interface IFilterDrawerTag {
+type FilterDrawerTag = {
     title: string;
     setRemove: React.Dispatch<React.SetStateAction<string[]>>;
     removeTitle?: string;
-}
+};
 
-export const FilterDrawerTag: FC<IFilterDrawerTag> = ({ title, setRemove, removeTitle }) => {
+export const FilterDrawerTag: FC<FilterDrawerTag> = ({ title, setRemove, removeTitle }) => {
     const removeTag = (itemSelected: string) => {
         setRemove((prev) => prev.filter((item) => item !== itemSelected));
     };

@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
-import { recipe } from '~/API/recipeApi';
+import { recipe } from '~/api/query/recipeQuery';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
 
 import { RecipeCardTag } from '../recipeCard/recipeCardTag';

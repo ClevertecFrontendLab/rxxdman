@@ -1,14 +1,16 @@
 import { Center, Icon, IconButton, Text } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
+import { FOOTER_BUTTON_HOME } from '~/constants/footer';
+
 type SelectIco = 'home' | 'search' | 'write';
 
-interface footerAtributeProps {
+type FooterAtributeProps = {
     title: string;
     ico: SelectIco;
-}
+};
 
-export const FooterAtribute: FC<footerAtributeProps> = ({ title, ico }) => {
+export const FooterAtribute: FC<FooterAtributeProps> = ({ title, ico }) => {
     const [checkMove, setCheckMove] = useState(false);
 
     const HomeIco = (
@@ -82,10 +84,10 @@ export const FooterAtribute: FC<footerAtributeProps> = ({ title, ico }) => {
             flexBasis='25%'
             pt='4px'
             pb='1px'
-            fontWeight={title === 'Главная' ? '500' : checkMove ? '500' : '400'}
-            color={title === 'Главная' ? 'black' : checkMove ? 'black' : 'blackAlpha.700'}
+            fontWeight={title === FOOTER_BUTTON_HOME ? '500' : checkMove ? '500' : '400'}
+            color={title === FOOTER_BUTTON_HOME ? 'black' : checkMove ? 'black' : 'blackAlpha.700'}
             bgGradient={
-                title === 'Главная'
+                title === FOOTER_BUTTON_HOME
                     ? 'radial-gradient(62.5% 62.5% at 48.89% 37.5%, rgba(196, 255, 97, 0.7) 0%, rgba(255, 255, 255, 0) 100%)'
                     : checkMove
                       ? 'radial-gradient(62.5% 62.5% at 48.89% 37.5%, rgba(196, 255, 97, 0.7) 0%, rgba(255, 255, 255, 0) 100%)'
@@ -95,8 +97,8 @@ export const FooterAtribute: FC<footerAtributeProps> = ({ title, ico }) => {
             <IconButton
                 isRound={true}
                 size='md'
-                variant={title === 'Главная' ? 'solid' : checkMove ? 'solid' : 'ghost'}
-                bg={title === 'Главная' ? 'black' : checkMove ? 'black' : ''}
+                variant={title === FOOTER_BUTTON_HOME ? 'solid' : checkMove ? 'solid' : 'ghost'}
+                bg={title === FOOTER_BUTTON_HOME ? 'black' : checkMove ? 'black' : ''}
                 colorScheme='teal'
                 aria-label={title}
                 mb='4px'

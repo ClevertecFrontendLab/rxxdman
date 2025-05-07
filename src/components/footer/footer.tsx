@@ -1,17 +1,23 @@
 import { Avatar, Center, Flex, Text } from '@chakra-ui/react';
 
-import { users } from '~/data/user';
+import {
+    FOOTER_BUTTON_HOME,
+    FOOTER_BUTTON_MY_PROFILE,
+    FOOTER_BUTTON_RECORD,
+    FOOTER_BUTTON_SEARCH,
+} from '~/constants/footer';
+import { users } from '~/mock/usersMock';
 
 import { FooterAtribute } from './footerAtribute';
 
 export const Footer = () => (
     <footer>
         <Flex w='100vw' overflow='hidden' bg='rgba(255, 255, 211, 1)' p='10px 0 9px 0'>
-            <FooterAtribute title='Главная' ico='home' />
+            <FooterAtribute title={FOOTER_BUTTON_HOME} ico='home' />
 
-            <FooterAtribute title='Поиск' ico='search' />
+            <FooterAtribute title={FOOTER_BUTTON_SEARCH} ico='search' />
 
-            <FooterAtribute title='Записать' ico='write' />
+            <FooterAtribute title={FOOTER_BUTTON_RECORD} ico='write' />
 
             <Center
                 display='flex'
@@ -30,7 +36,7 @@ export const Footer = () => (
                     src={users[0].ico}
                 />
                 <Text fontSize='12px' lineHeight='16px'>
-                    Мой профиль
+                    {FOOTER_BUTTON_MY_PROFILE}
                 </Text>
             </Center>
         </Flex>

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 
-import { category, useGetCategoriesQuery } from '~/API/categorsApi';
-import { recipe, useGetRecipeCategorQuery, useGetRecipesQuery } from '~/API/recipeApi';
-import { useParamsGlobal } from '~/data/useParams';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { useGetRecipeFromCategorQuery, useGetRecipesQuery } from '~/api/query/recipeQuery';
+import { Category } from '~/api/types/category';
+import { Recipe } from '~/api/types/recipe';
+import { FilterList } from '~/types/filterList';
 
-import { filterList } from '../components/recipeList/recipeList';
+import { useParamsGlobal } from './useParams';
 
-export const useListParams = (count: number, filter: filterList) => {
+export const useListParams = (count: number, filter: FilterList) => {
     const { data: categories, isLoading: categorIsLoading } = useGetCategoriesQuery();
 
     const location = useLocation();
@@ -34,7 +36,7 @@ export const useListParams = (count: number, filter: filterList) => {
         setGarnishSearch(searchParam.get('garnish') || '');
     }, [searchParam]);
 
-    const [visibleList, setVisibleList] = useState<recipe[]>([]);
+    const [visibleList, setVisibleList] = useState<Recipe[]>([]);
     const [page, setPage] = useState(1);
     const [localParams, setLocalParams] = useState(searchParam);
 
@@ -46,13 +48,11 @@ export const useListParams = (count: number, filter: filterList) => {
         newParams.set('sortBy', 'likes');
         newParams.set('sortOrder', 'desc');
 
-        //Ввод текста
-        if (recipeSearch.length > 0) {
+        if (recipeSearch.length) {
             newParams.set('searchString', recipeSearch);
         }
 
-        //Выбор аллергенов
-        if (allergenSearch.length > 0) {
+        if (allergenSearch.length) {
             newParams.set('allergens', allergenSearch);
         }
 
@@ -60,22 +60,18 @@ export const useListParams = (count: number, filter: filterList) => {
             (categor) => categor.subCategories && categor.category === pathname[0],
         );
 
-        const findCategor = categorsSearch.split(','); //ID категорий, которые ищем
+        const findCategor = categorsSearch.split(',');
 
         const categorsSearchParam = categories
             ?.flatMap((categor) => {
-                // Проверяем, входит ли ID текущей категории в массив искомых категорий
                 if (findCategor.includes(categor.category) && categor.subCategories) {
-                    // Если да, возвращаем массив ID всех подкатегорий данной категории
                     return categor.subCategories.map((subCat) => subCat._id);
                 }
-                // Если нет, возвращаем пустой массив
                 return [];
             })
-            .join(','); // Объединяем все ID в строку через запятую
+            .join(',');
 
-        //Выбор категорий
-        if ((categor as category) || categorsSearch.length > 0) {
+        if ((categor as Category) || categorsSearch.length) {
             newParams.set(
                 'subcategoriesIds',
                 categor?.subCategories?.map((subCategor) => subCategor._id).join(',') ||
@@ -84,25 +80,21 @@ export const useListParams = (count: number, filter: filterList) => {
             );
         }
 
-        //Выбор авторов
-        if (authorSearch.length > 0) {
+        if (authorSearch.length) {
             newParams.set('authorsId', authorSearch);
         }
 
-        //Выбор мяса
-        if (meatSearch.length > 0) {
+        if (meatSearch.length) {
             newParams.set('meat', meatSearch);
         }
 
-        //Выбор гарнира
-        if (garnishSearch.length > 0) {
+        if (garnishSearch.length) {
             newParams.set('garnish', garnishSearch);
         }
 
         return Object.fromEntries(newParams);
     };
 
-    //Пупулярный + поиск
     const {
         data: dataRecipeListPopular,
         isSuccess: popularIsSucces,
@@ -110,16 +102,15 @@ export const useListParams = (count: number, filter: filterList) => {
         status: statusPopular,
         refetch: refetchSearch,
     } = useGetRecipesQuery(params(), {
-        skip: filter != 'popular' && searchParam.toString().length === 0,
+        skip: (filter != 'popular' && searchParam.toString().length < 1) || categorIsLoading,
     });
 
-    //Категории
     const {
         data: dataRecipeListCategor,
         isSuccess: categorIsSucces,
         isError: categorIsError,
         status: statusCategor,
-    } = useGetRecipeCategorQuery(
+    } = useGetRecipeFromCategorQuery(
         {
             idCategor: categories?.find((categor) => categor.category === pathname[1])?._id || '',
             params: {
@@ -132,13 +123,11 @@ export const useListParams = (count: number, filter: filterList) => {
         },
     );
 
-    //Стартовая очистка
     useEffect(() => {
         setVisibleList([]);
     }, []);
 
     useEffect(() => {
-        //При изменении параметров
         if (filter === 'popular' && localParams != searchParam && dataRecipeListPopular) {
             setVisibleList([]);
             setPage(1);
@@ -146,7 +135,6 @@ export const useListParams = (count: number, filter: filterList) => {
         }
     }, [dataRecipeListPopular, filter, localParams, searchParam]);
 
-    //При изменении пути обнуляем список
     useEffect(() => {
         if (pathname !== location.pathname.split('/').filter(Boolean) && filter === 'categor') {
             setVisibleList([]);
@@ -158,7 +146,7 @@ export const useListParams = (count: number, filter: filterList) => {
         if (filter === 'popular' && popularIsSucces && dataRecipeListPopular.data)
             setVisibleList((prevList) => [
                 ...prevList,
-                ...(dataRecipeListPopular.data as recipe[]),
+                ...(dataRecipeListPopular.data as Recipe[]),
             ]);
     }, [dataRecipeListPopular?.data, filter, popularIsSucces]);
 
@@ -166,7 +154,7 @@ export const useListParams = (count: number, filter: filterList) => {
         if (filter === 'categor' && categorIsSucces && dataRecipeListCategor.data)
             setVisibleList((prevList) => [
                 ...prevList,
-                ...(dataRecipeListCategor.data as recipe[]),
+                ...(dataRecipeListCategor.data as Recipe[]),
             ]);
     }, [categorIsSucces, dataRecipeListCategor?.data, filter]);
 
@@ -177,7 +165,7 @@ export const useListParams = (count: number, filter: filterList) => {
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
-    const [totalPage, setIsTotalPage] = useState(0);
+    const [totalPage, setIsTotalPage] = useState(10);
 
     useEffect(() => {
         if (filter === 'popular') {

@@ -12,14 +12,16 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
-import { categories, useGetCategoriesQuery } from '~/API/categorsApi';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { Categories } from '~/api/types/category';
+import { DRAWER_CATEGOR_TITLE } from '~/constants/drawer';
 
-interface IFilterDrawerCategorsProps {
+type FilterDrawerCategorsProps = {
     selectedCategor: string[];
     setSelectedCategor: React.Dispatch<React.SetStateAction<string[]>>;
-}
+};
 
-export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
+export const FilterDrawerCategors: FC<FilterDrawerCategorsProps> = ({
     selectedCategor,
     setSelectedCategor,
 }) => {
@@ -46,7 +48,7 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
     };
 
     const { data: categories } = useGetCategoriesQuery();
-    const categorsArray = [...(categories as categories)].filter(
+    const categorsArray = [...(categories as Categories)].filter(
         (categor) => categor.subCategories,
     );
 
@@ -93,7 +95,7 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
                         letterSpacing='0'
                         color='blackAlpha.700'
                     >
-                        Категория
+                        {DRAWER_CATEGOR_TITLE}
                     </Text>
                     <AccordionIcon ml={2} />
                 </AccordionButton>

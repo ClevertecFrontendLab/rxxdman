@@ -1,11 +1,12 @@
 import { AbsoluteCenter, Box, Flex } from '@chakra-ui/react';
 
+import { RECIPES_DEFAULT_LIMIT } from '~/api/constants/apiConstant';
 import { HeaderPages } from '~/components/headerSearchPanelComponents/headerPages';
 import { Loader } from '~/components/loader/loader';
 import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
-import { useListParams } from '~/data/useListParams';
-import { useParamsGlobal } from '~/data/useParams';
+import { useListParams } from '~/hooks/useListParams';
+import { useParamsGlobal } from '~/hooks/useParams';
 
 export const PopularPage = () => {
     const {
@@ -22,14 +23,14 @@ export const PopularPage = () => {
     } = useParamsGlobal();
 
     const { visibleList, isLoading, isSuccess, page, totalPage, onClickAddRecipes } = useListParams(
-        8,
+        RECIPES_DEFAULT_LIMIT,
         'popular',
     );
 
     return (
         <Flex direction='column' h='100%' justify='space-between'>
             {isLoading && (
-                <AbsoluteCenter zIndex={100000} position='fixed'>
+                <AbsoluteCenter zIndex={10} position='fixed'>
                     <Loader testId='app-loader' />
                 </AbsoluteCenter>
             )}
@@ -58,7 +59,7 @@ export const PopularPage = () => {
                     {isSuccess && (
                         <RecipeList
                             filter='popular'
-                            count={8}
+                            count={RECIPES_DEFAULT_LIMIT}
                             list={visibleList}
                             isLoading={isLoading}
                             page={page}

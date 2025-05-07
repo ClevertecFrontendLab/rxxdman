@@ -1,30 +1,21 @@
-import {
-    // Avatar,
-    Card,
-    CardBody,
-    Flex,
-    Image,
-    Stack,
-    // Tag,
-    Text,
-    useBreakpointValue,
-} from '@chakra-ui/react';
+import { Card, CardBody, Flex, Image, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { NavLink } from 'react-router';
 
-import { useGetCategoriesQuery } from '~/API/categorsApi';
-import { recipe } from '~/API/recipeApi';
+import { IMAGE_API_URL } from '~/api/constants/apiConstant';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { Recipe } from '~/api/types/recipe';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
 
 import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
 import { RecipeCardTag } from '../recipeCard/recipeCardTag';
 
-interface ISliderRecipeCardProps {
-    recipe: recipe;
+type SliderRecipeCardProps = {
+    recipe: Recipe;
     index: number;
-}
+};
 
-export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe, index }) => {
+export const SliderRecipeCard: FC<SliderRecipeCardProps> = React.memo(({ recipe, index }) => {
     const { data: categories } = useGetCategoriesQuery();
 
     const subcategor = categories?.find((subCategor) => subCategor._id === recipe.categoriesIds[0]);
@@ -65,7 +56,7 @@ export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe
                     objectFit='cover'
                     w='100%'
                     h={{ base: '128px', lg: '230px' }}
-                    src={`https://training-api.clevertec.ru/${recipe.image}`}
+                    src={`${IMAGE_API_URL}${recipe.image}`}
                     alt={recipe.title}
                     flexShrink={0}
                 />
@@ -176,15 +167,7 @@ export const SliderRecipeCard: FC<ISliderRecipeCardProps> = React.memo(({ recipe
                         top={{ base: '8px', lg: 'auto' }}
                         bottom={{ base: 'auto', lg: '12px', '2xl': '19px' }}
                         left={{ base: '8px', lg: '12px', '2xl': '24px' }}
-                    >
-                        {/* {recipe.category.map((category) => (
-                            <RecipeCardTag
-                                key={category}
-                                categorLink={category}
-                                color='rgba(215, 255, 148, 1)'
-                            />
-                        ))} */}
-                    </Stack>
+                    ></Stack>
                 )}
             </Card>
         </NavLink>

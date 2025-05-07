@@ -15,13 +15,14 @@ import {
 import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 
 import { HeaderPageFilterIco } from '~/assets/createSvg';
-import { searchType } from '~/data/useParams';
+import { NOT_FOUND_RECIPES_SEARCH_PANEL, PLACEHOLDER_SEARCH_PANEL } from '~/constants/searchPanel';
+import { GlobalCategorSearchType } from '~/types/searchType';
 
 import { Loader } from '../loader/loader';
 import { AllergenSelect } from './allergenSelect';
 import { FilterDrawer } from './filterDrawer';
 
-interface IHeaderPagesProps {
+type HeaderPagesProps = {
     title: string;
     subtitle?: string;
 
@@ -32,15 +33,15 @@ interface IHeaderPagesProps {
     authorsSearch: string;
     meatSearch: string;
     garnishSearch: string;
-    setParams(text: string, textType: searchType): void;
+    setParams(text: string, textType: GlobalCategorSearchType): void;
     clearParams(): void;
     stateFullClear: boolean;
 
     isLoading: boolean;
     totalPage: number;
-}
+};
 
-export const HeaderPages: FC<IHeaderPagesProps> = ({
+export const HeaderPages: FC<HeaderPagesProps> = ({
     title,
     subtitle,
 
@@ -56,15 +57,15 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({
     stateFullClear,
 
     isLoading,
-    totalPage,
+    totalPage = 0,
 }) => {
-    const [isDisabledSearch, setIsDisabledSearch] = useState(true); //Включение кнопки поиска
-    const [errorInputLenght, setErrorInputLenght] = useState(false); //Отслеживание ошибки
-    const [headerFocus, setHeaderFocus] = useState(false); //Фокус поиска
+    const [isDisabledSearch, setIsDisabledSearch] = useState(true);
+    const [errorInputLenght, setErrorInputLenght] = useState(false);
+    const [headerFocus, setHeaderFocus] = useState(false);
 
     const [searchInputText, setSearchInputText] = useState(textSearch);
 
-    const [isAllergen, setIsAllergen] = useState(false); //Включение кнопки поиска с помощью аллергенов
+    const [isAllergen, setIsAllergen] = useState(false);
 
     const [selectedAllergensLocal, setSelectedAllergensLocal] = useState<string[]>([]);
 
@@ -87,9 +88,7 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({
     const onClickSearchTitle = () => {
         if (searchInputText.length > 0 && searchInputText.length < 3) {
             setErrorInputLenght(true);
-        } else if (searchInputText.length === 0) {
-            // clearParams()
-        } else {
+        } else if (searchInputText.length > 2) {
             setParams(searchInputText, 'title');
         }
 
@@ -184,9 +183,9 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({
                             fontSize={{ base: '14px', xl: '16px' }}
                             lineHeight={{ base: '20px', xl: '24px' }}
                             mb={{ base: '16px', xl: '33px' }}
+                            whiteSpace='pre-line'
                         >
-                            По вашему запросу ничего не найдено. <br />
-                            Попробуйте другой запрос
+                            {NOT_FOUND_RECIPES_SEARCH_PANEL}
                         </Text>
                     )}
 
@@ -242,7 +241,7 @@ export const HeaderPages: FC<IHeaderPagesProps> = ({
                                     borderColor={!errorInputLenght ? 'rgba(0, 0, 0, 0.48)' : 'red'}
                                     color='rgba(19, 75, 0, 1)'
                                     minW='284px'
-                                    placeholder='Название или ингредиент...'
+                                    placeholder={PLACEHOLDER_SEARCH_PANEL}
                                     _placeholder={{
                                         color: '#134b00;',
                                     }}

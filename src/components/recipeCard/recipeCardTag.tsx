@@ -1,7 +1,7 @@
 import { Image, Tag, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { useGetCategoriesQuery } from '~/API/categorsApi';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
 
 interface IRecipeCardTagProps {
     subCategorId: string;

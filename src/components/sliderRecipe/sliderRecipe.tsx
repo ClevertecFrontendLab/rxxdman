@@ -2,39 +2,33 @@ import 'swiper/swiper-bundle.css';
 
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { Box, Center, Heading, IconButton, Text, useBreakpointValue } from '@chakra-ui/react';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { useEffect, useRef, useState } from 'react';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
-import { recipe, useGetRecipesQuery } from '~/API/recipeApi';
+import { Recipe } from '~/api/types/recipe';
+import { RecipeResponse } from '~/api/types/responce';
 
 import { SliderRecipeCard } from './sliderRecipeCard';
 
-interface ISliderRecipeProps {
+type SliderRecipeProps = {
     title?: string;
-}
+    error: FetchBaseQueryError | SerializedError | undefined;
+    sliderList: RecipeResponse | undefined;
+};
 
-export const SliderRecipe: React.FC<ISliderRecipeProps> = ({ title }) => {
-    const {
-        data: recipeList,
-        error,
-        isSuccess,
-    } = useGetRecipesQuery({
-        limit: 10,
-        sortBy: 'createdAt',
-        sortOrder: 'desc',
-    });
-
-    const [array, setArray] = useState<recipe[]>([]);
-    //Для теста
+export const SliderRecipe: React.FC<SliderRecipeProps> = ({ title, error, sliderList }) => {
+    const [array, setArray] = useState<Recipe[]>([]);
     useEffect(() => {
-        if (isSuccess) {
-            const recipeListTest = [...recipeList.data].sort(
+        if (sliderList) {
+            const recipeListTest = [...sliderList.data].sort(
                 (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
             );
             setArray(recipeListTest);
         }
-    }, [isSuccess, recipeList?.data]);
+    }, [sliderList, sliderList?.data]);
 
     const swiperRef = useRef<SwiperRef | null>(null);
 

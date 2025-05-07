@@ -2,7 +2,7 @@ import { Center, Tab, TabList, Tabs } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
-import { category } from '~/API/categorsApi';
+import { category } from '~/api/query/categorsQuery';
 
 interface UTabMenuProps {
     tabIndex: number;

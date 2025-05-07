@@ -2,23 +2,25 @@ import { Box, Flex, Heading, Text, useDisclosure } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 
-import { category, subCategory, useGetCategoriesQuery } from '~/API/categorsApi';
-import { useGetRecipeCategorQuery } from '~/API/recipeApi';
+import { RECIPES_RELEVANT_KITCHEN_LIMIT } from '~/api/constants/apiConstant';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { useGetRecipeFromCategorQuery } from '~/api/query/recipeQuery';
+import { Category, SubCategory } from '~/api/types/category';
+import { ERROR_DESCRIPTION, ERROR_TITLE } from '~/constants/errorAlert';
 
 import { ErrorAllert } from '../errorAlert/errorAllert';
 import { RelevantKitchenCard } from './relevantKitchenCard';
 
 export const RelevantKitchen: FC = () => {
-    const { data: categories } = useGetCategoriesQuery(); //Все категории
+    const { data: categories, isLoading } = useGetCategoriesQuery();
     const location = useLocation();
 
-    const [categor, setCategor] = useState<category>(); //Категория
-    const [subCategor, setSubCategor] = useState<subCategory>(); //ПодКатегория
+    const [categor, setCategor] = useState<Category>();
+    const [subCategor, setSubCategor] = useState<SubCategory>();
 
     const [path, setPath] = useState(location.pathname.split('/').filter(Boolean)[0]);
     const [refetchRelevant, setRefetchRelevant] = useState(true);
 
-    //Логика работы смены рекомендации
     useEffect(() => {
         if (location.pathname.split('/').filter(Boolean)[0] != path) {
             setPath(location.pathname.split('/').filter(Boolean)[0]);
@@ -30,30 +32,26 @@ export const RelevantKitchen: FC = () => {
         categories && [...categories].filter((subcategor) => subcategor.rootCategoryId);
 
     useEffect(() => {
-        if (categories) {
-            if (refetchRelevant && subCategies) {
-                const random = Math.floor(Math.random() * (subCategies.length - 0) + 0);
-                setSubCategor(subCategies[random] as subCategory);
-                const categor = categories.find(
-                    (categor) => categor._id === subCategies[random].rootCategoryId,
-                ) as category;
-                setCategor(categor);
-                setRefetchRelevant(false);
-            }
+        if (categories && refetchRelevant && subCategies) {
+            const random = Math.floor(Math.random() * (subCategies.length - 0) + 0);
+            setSubCategor(subCategies[random] as SubCategory);
+            const categor = categories.find(
+                (categor) => categor._id === subCategies[random].rootCategoryId,
+            ) as Category;
+            setCategor(categor);
+            setRefetchRelevant(false);
         }
     }, [categories, refetchRelevant, subCategies]);
 
-    //Фильтруем рецепты по их категориям
-
-    const { data: categorData, error } = useGetRecipeCategorQuery(
+    const { data: categorData, error } = useGetRecipeFromCategorQuery(
         {
             idCategor: subCategor?._id || '',
             params: {
-                limit: 5,
+                limit: RECIPES_RELEVANT_KITCHEN_LIMIT,
             },
         },
         {
-            skip: !subCategor,
+            skip: !subCategor || isLoading,
         },
     );
 
@@ -66,11 +64,7 @@ export const RelevantKitchen: FC = () => {
     return (
         <Box borderTop='1px solid rgba(0, 0, 0, 0.08)'>
             {isOpen && (
-                <ErrorAllert
-                    title='Ошибка сервера'
-                    message='Попробуйте поискать снова попозже'
-                    onClose={onClose}
-                />
+                <ErrorAllert title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
             )}
 
             <Flex
@@ -104,7 +98,7 @@ export const RelevantKitchen: FC = () => {
                 </Text>
             </Flex>
 
-            {categorData && categorData.data.length > 0 && (
+            {categorData?.data.length && (
                 <Flex
                     w='100%'
                     direction={{ base: 'column', md: 'row' }}
@@ -119,11 +113,11 @@ export const RelevantKitchen: FC = () => {
                         flexShrink={1}
                         gap={{ base: '12px', lg: '16px', '2xl': '24px' }}
                     >
-                        {categorData.data[0] && (
+                        {categorData?.data[0] && (
                             <RelevantKitchenCard direct='column' recipe={categorData.data[0]} />
                         )}
 
-                        {categorData.data[1] && (
+                        {categorData?.data[1] && (
                             <RelevantKitchenCard direct='column' recipe={categorData.data[1]} />
                         )}
                     </Flex>
@@ -136,13 +130,13 @@ export const RelevantKitchen: FC = () => {
                         flexShrink={1}
                         gap={{ base: '12px', md: '6px', lg: '12px' }}
                     >
-                        {categorData.data[2] && (
+                        {categorData?.data[2] && (
                             <RelevantKitchenCard direct='row' recipe={categorData.data[2]} />
                         )}
-                        {categorData.data[3] && (
+                        {categorData?.data[3] && (
                             <RelevantKitchenCard direct='row' recipe={categorData.data[3]} />
                         )}
-                        {categorData.data[4] && (
+                        {categorData?.data[4] && (
                             <RelevantKitchenCard direct='row' recipe={categorData.data[4]} />
                         )}
                     </Flex>

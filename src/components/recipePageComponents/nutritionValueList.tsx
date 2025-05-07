@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { nutritionValue } from '~/API/recipeApi';
+import { nutritionValue } from '~/api/query/recipeQuery';
 
 import { NutritionValueAtribute } from './nutritionValueAtribute';
 

@@ -1,7 +1,7 @@
 import { Avatar, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { author } from '~/API/recipeApi';
+import { author } from '~/api/query/recipeQuery';
 import { SubsctibeIco, UsersCount } from '~/assets/createSvg';
 
 import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';

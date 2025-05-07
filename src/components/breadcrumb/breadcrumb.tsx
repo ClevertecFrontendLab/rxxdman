@@ -3,30 +3,26 @@ import './breadcrumb.css';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 
-import { useGetCategoriesQuery } from '~/API/categorsApi';
-import { useGetRecipeIdQuery } from '~/API/recipeApi';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { useGetRecipeIdQuery } from '~/api/query/recipeQuery';
+import { pagesApp } from '~/data/pages';
+import { selectRecipeId } from '~/store/slice/recipe-slice';
 
 export const BreadcrumbNav: FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
     const pathnames = location.pathname.split('/').filter((x) => x);
-    const isPopular = pathnames.find((value) => value === 'the-juiciest');
 
     const { data: categories } = useGetCategoriesQuery();
 
-    const categor = categories && categories.find((categor) => categor.category === pathnames[0]);
-    const subcategor =
-        categories && categories.find((categor) => categor.category === pathnames[1]);
+    const recipeId = useSelector(selectRecipeId);
 
-    const { data: popularRecipe } = useGetRecipeIdQuery(pathnames[1], {
-        skip: !isPopular || !pathnames[1],
-    });
-
-    const { data: categoriesRecipe } = useGetRecipeIdQuery(pathnames[2], {
-        skip: !categor || !subcategor || !pathnames[2],
+    const { data: recipe, status } = useGetRecipeIdQuery(recipeId || '', {
+        skip: !recipeId,
     });
 
     return (
@@ -51,64 +47,42 @@ export const BreadcrumbNav: FC = () => {
                 </BreadcrumbLink>
             </BreadcrumbItem>
 
-            {categor && (
-                <BreadcrumbItem>
-                    <BreadcrumbLink
-                        whiteSpace='nowrap'
-                        className='breadctrumpNav__link'
-                        onClick={() =>
-                            categor.subCategories &&
-                            navigate(`/${categor.category}/${categor.subCategories[0].category}`)
-                        }
-                    >
-                        {categor?.title}
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-            )}
+            {pathnames.map((path, index) => {
+                const page = pagesApp.find((page) => page.path === `/${path}`);
+                const categor = categories?.find(
+                    (categor) => categor.category === path && categor.subCategories,
+                );
+                const subcategor = categories?.find(
+                    (categor) => categor.category === path && categor.rootCategoryId,
+                );
 
-            {categor && subcategor && (
-                <BreadcrumbItem>
-                    <BreadcrumbLink
-                        whiteSpace='nowrap'
-                        className='breadctrumpNav__link'
-                        onClick={() =>
-                            categoriesRecipe &&
-                            navigate(`/${categor.category}/${subcategor.category}`)
-                        }
-                    >
-                        {subcategor?.title}
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-            )}
-
-            {categor && subcategor && categoriesRecipe && pathnames[2] && (
-                <BreadcrumbItem>
-                    <BreadcrumbLink whiteSpace='wrap' className='breadctrumpNav__link'>
-                        {categoriesRecipe.title}
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-            )}
-
-            {/* Самое сочное */}
-            {isPopular && (
-                <BreadcrumbItem>
-                    <BreadcrumbLink
-                        className='breadctrumpNav__link'
-                        whiteSpace='nowrap'
-                        onClick={() => popularRecipe && navigate(`/popular`)}
-                    >
-                        Самое сочное
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-            )}
-
-            {isPopular && popularRecipe && pathnames[1] && (
-                <BreadcrumbItem>
-                    <BreadcrumbLink className='breadctrumpNav__link' whiteSpace='wrap'>
-                        {popularRecipe?.title}
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-            )}
+                return (
+                    <BreadcrumbItem>
+                        <BreadcrumbLink
+                            whiteSpace='nowrap'
+                            className='breadctrumpNav__link'
+                            onClick={() =>
+                                index != pathnames.length - 1 &&
+                                navigate(
+                                    `/${[...pathnames]
+                                        .slice(0, index + 1)
+                                        .map((path) =>
+                                            categor && categor.subCategories
+                                                ? `${categor.category}/${categor.subCategories[0].category}`
+                                                : path,
+                                        )
+                                        .join('/')}`,
+                                )
+                            }
+                        >
+                            {page?.title ||
+                                categor?.title ||
+                                subcategor?.title ||
+                                (status !== 'pending' && recipe?.title)}
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                );
+            })}
         </Breadcrumb>
     );
 };

@@ -9,20 +9,20 @@ import {
 } from '@chakra-ui/react';
 import { FC } from 'react';
 
-interface IErrorAllertProps {
+type ErrorAllertProps = {
     title: string;
     message: string;
     onClose(): void;
-}
+};
 
-export const ErrorAllert: FC<IErrorAllertProps> = ({ title, message, onClose }) => (
+export const ErrorAllert: FC<ErrorAllertProps> = ({ title, message, onClose }) => (
     <Center>
         <Alert
             data-test-id='error-notification'
             status='error'
             position='fixed'
             bottom='80px'
-            zIndex={100000}
+            zIndex={10}
             w={{ base: '328px', lg: '400px' }}
             textAlign='left'
             bg='rgba(229, 62, 62, 1)'

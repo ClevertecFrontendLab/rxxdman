@@ -1,5 +1,4 @@
 import {
-    // Avatar,
     Button,
     Card,
     CardBody,
@@ -7,31 +6,28 @@ import {
     IconButton,
     Image,
     Stack,
-    // Tag,
     Text,
     useBreakpointValue,
 } from '@chakra-ui/react';
 import React, { FC, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 
-import { recipe } from '~/API/recipeApi';
+import { IMAGE_API_URL } from '~/api/constants/apiConstant';
+import { Recipe } from '~/api/types/recipe';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
-import { useParamsGlobal } from '~/data/useParams';
+import { useParamsGlobal } from '~/hooks/useParams';
+import { UrlConfig } from '~/types/urlConfig';
 
-// import { users } from '~/data/user';
-// import { generationCategorSubCategor } from '~/function/function';
 import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
 import { RecipeCardTag } from './recipeCardTag';
 
-type urlConfig = 'popular' | 'categor';
-
-interface IRecipeCardProps {
-    recipe: recipe;
-    urlConfig: urlConfig;
+type RecipeCardProps = {
+    recipe: Recipe;
+    urlConfig: UrlConfig;
     index: number;
-}
+};
 
-export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig, index }) => {
+export const RecipeCard: FC<RecipeCardProps> = React.memo(({ recipe, urlConfig, index }) => {
     const { category, subcategor } = useParams();
 
     const { searchParam } = useParamsGlobal();
@@ -48,7 +44,6 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
             recipeTitleParams.length > 0 &&
             recipe.title.toLowerCase().includes(recipeTitleParams.toLowerCase())
         ) {
-            //Логика только для заголовка рецепта
             setIsSearch(true);
             setIndexSearchTitle(
                 recipe.title.toLowerCase().indexOf(recipeTitleParams.toLowerCase()),
@@ -58,8 +53,6 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
             setIndexSearchTitle(-1);
         }
     }, [recipe.title, recipeTitleParams, searchParam]);
-
-    // const userRecomendation = users.find((user) => user.id === recipe.userRecommendation);
 
     const sizeCheck = useBreakpointValue({
         base: false,
@@ -81,7 +74,7 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                 objectFit='cover'
                 w={{ base: '158px', lg: '346px' }}
                 h='100%'
-                src={`https://training-api.clevertec.ru/${recipe.image}`}
+                src={`${IMAGE_API_URL}${recipe.image}`}
                 alt={recipe.title}
                 flexShrink={0}
             />
@@ -128,8 +121,6 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                         )}
                     </Flex>
                 </Flex>
-
-                {/* Заголовок рецепта*/}
                 {sizeCheck ? (
                     !isSearch ? (
                         <Text
@@ -189,7 +180,6 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                     </Text>
                 )}
 
-                {/* Описание рецепта*/}
                 <Text
                     overflow='hidden'
                     textOverflow='ellipsis'
@@ -251,7 +241,6 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                 </Flex>
             </CardBody>
 
-            {/* Тег категории */}
             {!sizeCheck && (
                 <Stack
                     position='absolute'
@@ -267,37 +256,6 @@ export const RecipeCard: FC<IRecipeCardProps> = React.memo(({ recipe, urlConfig,
                     ))}
                 </Stack>
             )}
-
-            {/* Рекомендация пользователя */}
-            {/* {recipe.userRecommendation && (
-                        <Tag
-                            position='absolute'
-                            bottom='20px'
-                            left='24px'
-                            p='4px 8px'
-                            bg='rgba(215, 255, 148, 1)'
-                            gap='8px'
-                            display={{ base: 'none', lg: 'flex' }}
-                        >
-                            <Avatar
-                                size='2xs'
-                                bg='gray.400'
-                                name={userRecomendation?.name + ' ' + userRecomendation?.surname}
-                                src={userRecomendation?.ico}
-                            />
-                            <Text
-                                fontSize='14'
-                                fontWeight='400'
-                                lineHeight='20px'
-                                whiteSpace='nowrap'
-                            >
-                                {userRecomendation?.name +
-                                    ' ' +
-                                    userRecomendation?.surname +
-                                    ' рекомендует'}
-                            </Text>
-                        </Tag>
-                    )} */}
         </Card>
     );
 });

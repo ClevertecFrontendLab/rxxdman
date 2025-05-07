@@ -2,22 +2,19 @@ import './App.css';
 
 import { Box, Center, Flex, useBreakpointValue, useDisclosure } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router';
+import { useLocation } from 'react-router';
 
-import { categoriesResponse, useGetCategoriesQuery } from '~/API/categorsApi';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { categoriesResponse } from '~/api/types/responce';
 import { ErrorAllert } from '~/components/errorAlert/errorAllert';
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header/header';
 import { LeftPanel } from '~/components/leftPanel/leftPanel';
 import { Loader } from '~/components/loader/loader';
 import { RightPanel } from '~/components/rightPanel/rightPanel';
+import { RoutesApp } from '~/components/routes/routesApp';
+import { ERROR_DESCRIPTION, ERROR_TITLE } from '~/constants/errorAlert';
 import { useGetPostsQuery } from '~/query/services/posts.ts';
-
-import { CategorPage } from './pages/categorPage';
-import { HomePage } from './pages/home';
-import { NotFoundPage } from './pages/notFountPage';
-import { PopularPage } from './pages/popularPage';
-import { RecipePage } from './pages/recipePage';
 
 function App() {
     const { data: _data, isLoading: _isLoading } = useGetPostsQuery();
@@ -40,10 +37,8 @@ function App() {
         if (error) onOpen();
     }, [error, onOpen]);
 
-    // Локальный стейт для категорий с резервом из localStorage
     const [categoriesData, setCategoriesData] = useState<categoriesResponse | null>(null);
 
-    // При успешном получении сохраняем в localStorage и локальный стейт
     useEffect(() => {
         if (categories) {
             setCategoriesData(categories);
@@ -51,7 +46,6 @@ function App() {
         }
     }, [categories]);
 
-    // Если ошибка — пытаемся загрузить из localStorage
     useEffect(() => {
         if (error && !categoriesData) {
             const backup = localStorage.getItem('categoriesBackup');
@@ -65,7 +59,7 @@ function App() {
         <div id='root'>
             {isLoading && (
                 <Center
-                    zIndex={100000}
+                    zIndex={1001}
                     bg='rgba(0, 0, 0, 0.16)'
                     position='fixed'
                     h='100vh'
@@ -77,16 +71,12 @@ function App() {
             )}
 
             {isOpen && (
-                <ErrorAllert
-                    title='Ошибка сервера'
-                    message='Попробуйте поискать снова попозже'
-                    onClose={onClose}
-                />
+                <ErrorAllert title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
             )}
 
             <Flex direction='column' w='100vw' maxW='100vw' overflow='hidden' minH='100vh'>
                 <Box w='100%' zIndex={1000} position='fixed' mb='80px' data-test-id='header'>
-                    <Header categors={categories} />
+                    <Header />
                 </Box>
 
                 <Flex>
@@ -115,19 +105,7 @@ function App() {
                         overflow='hidden'
                         minH='100vh'
                     >
-                        <Routes>
-                            <Route path='/' element={<HomePage />} />
-                            <Route path='/the-juiciest' element={<PopularPage />} />
-
-                            <Route path='/:category/:subcategor' element={<CategorPage />} />
-                            <Route
-                                path='/:category/:subcategor/:idRecipe'
-                                element={<RecipePage />}
-                            />
-                            <Route path='/the-juiciest/:idRecipe' element={<RecipePage />} />
-
-                            <Route path='/not-found' element={<NotFoundPage />} />
-                        </Routes>
+                        <RoutesApp />
                     </Box>
 
                     {isShow && (

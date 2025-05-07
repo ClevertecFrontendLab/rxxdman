@@ -1,21 +1,19 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import { categoryApi } from '~/API/categorsApi';
-import { healthApi } from '~/API/healtApi';
-import { recipeCategorApi, recipeIdApi, recipesApi } from '~/API/recipeApi';
+import { categoryApi } from '~/api/query/categorsQuery';
+import { recipesApi } from '~/api/query/recipeQuery';
 import { apiSlice } from '~/query/create-api';
 
 import appReducer, { appSlice } from './app-slice';
+import recipeReducer from './slice/recipe-slice';
 const isProduction = false;
 
 const rootReducer = combineReducers({
     [appSlice.name]: appReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
-    [healthApi.reducerPath]: healthApi.reducer,
-    [categoryApi.reducerPath]: categoryApi.reducer, //Категории
-    [recipesApi.reducerPath]: recipesApi.reducer, //Рецепты
-    [recipeIdApi.reducerPath]: recipeIdApi.reducer, //рецепт{id}
-    [recipeCategorApi.reducerPath]: recipeCategorApi.reducer, //рецепт по категории
+    [categoryApi.reducerPath]: categoryApi.reducer,
+    [recipesApi.reducerPath]: recipesApi.reducer,
+    recipe: recipeReducer,
 });
 
 export type ApplicationState = ReturnType<typeof rootReducer>;
@@ -25,10 +23,9 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(apiSlice.middleware)
-            .concat(healthApi.middleware)
-            .concat(categoryApi.middleware) //Категории
-            .concat(recipesApi.middleware) //рецепты
-            .concat(recipeIdApi.middleware) //рецепт{id}
-            .concat(recipeCategorApi.middleware), //рецепт{id}
+            .concat(categoryApi.middleware)
+            .concat(recipesApi.middleware),
     devTools: !isProduction,
 });
+
+export type RootState = ReturnType<typeof store.getState>;

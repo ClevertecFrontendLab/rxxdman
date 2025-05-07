@@ -2,13 +2,27 @@ import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { Box, Button, Center, Flex, Heading, HStack } from '@chakra-ui/react';
 import { useNavigate } from 'react-router';
 
+import {
+    RECIPES_DEFAULT_LIMIT,
+    RECIPES_HOME_PAGE_LIMIT,
+    RECIPES_SLIDER_LIMIT,
+} from '~/api/constants/apiConstant';
+import { useGetRecipesQuery } from '~/api/query/recipeQuery';
 import { BlogList } from '~/components/blogsList/blogList';
 import { HeaderPages } from '~/components/headerSearchPanelComponents/headerPages';
 import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
 import { SliderRecipe } from '~/components/sliderRecipe/sliderRecipe';
-import { useListParams } from '~/data/useListParams';
-import { useParamsGlobal } from '~/data/useParams';
+import { BUTTON_TITLE_ALL_AUTHORS, BUTTON_TITLE_ALL_SELECTION } from '~/constants/button';
+import { PATH_THE_JUICIEST } from '~/constants/path';
+import { DEFAULT_TITLE_SEARCH_PANEL } from '~/constants/searchPanel';
+import {
+    CULINARY_BLOGS_TITLE,
+    NEW_RECIPES_TITLE,
+    THE_JUICIUS_TITLE,
+} from '~/constants/titleBlocks';
+import { useListParams } from '~/hooks/useListParams';
+import { useParamsGlobal } from '~/hooks/useParams';
 
 export const HomePage = () => {
     const navigate = useNavigate();
@@ -26,17 +40,26 @@ export const HomePage = () => {
         stateFullClear,
     } = useParamsGlobal();
 
-    const { visibleList, isLoading, page, totalPage, onClickAddRecipes } = useListParams(
-        searchState ? 8 : 4,
+    const { visibleList, isLoading, page, totalPage, onClickAddRecipes, isSuccess } = useListParams(
+        searchState ? RECIPES_DEFAULT_LIMIT : RECIPES_HOME_PAGE_LIMIT,
         'popular',
     );
 
+    const {
+        data: sliderList,
+        error: errorSlider,
+        isSuccess: isSuccesSlider,
+    } = useGetRecipesQuery({
+        limit: RECIPES_SLIDER_LIMIT,
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+    });
+
     return (
         <Flex direction='column' h='100%'>
-            {/* Хеддер страницы */}
             <Box mb={{ base: '31px', lg: '20px' }}>
                 <HeaderPages
-                    title='Приятного аппетита!'
+                    title={DEFAULT_TITLE_SEARCH_PANEL}
                     searchState={searchState}
                     textSearch={title}
                     allergensSearch={allergens}
@@ -54,85 +77,91 @@ export const HomePage = () => {
 
             {!searchState ? (
                 <Flex direction='column'>
-                    {/* Слайдер "Новые рецепты" */}
-                    <Box mb={{ base: '28px', lg: '33px' }}>
-                        <SliderRecipe title='Новые рецепты' key='sliderHomePage' />
-                    </Box>
+                    {isSuccesSlider && (
+                        <Box mb={{ base: '28px', lg: '33px' }}>
+                            <SliderRecipe
+                                title={NEW_RECIPES_TITLE}
+                                key='sliderHomePage'
+                                sliderList={sliderList}
+                                error={errorSlider}
+                            />
+                        </Box>
+                    )}
 
-                    {/* Самое сочное */}
-                    <Box mb={{ base: '32px', md: '32px', lg: '38px' }}>
-                        <HStack
-                            display='flex'
-                            justify='space-between'
-                            align='center'
-                            mb={{ base: '11px', lg: '14px', '2xl': '24px' }}
-                        >
-                            <Heading
-                                as='h2'
-                                textAlign='left'
-                                fontWeight='500'
-                                fontSize={{ base: '24px', lg: '36px', '2xl': '48px' }}
-                                lineHeight={{ base: '32px', lg: '40px', '2xl': '48px' }}
-                                letterSpacing='1.6px'
+                    {isSuccess && (
+                        <Box mb={{ base: '32px', md: '32px', lg: '38px' }}>
+                            <HStack
+                                display='flex'
+                                justify='space-between'
+                                align='center'
+                                mb={{ base: '11px', lg: '14px', '2xl': '24px' }}
                             >
-                                Самое сочное
-                            </Heading>
+                                <Heading
+                                    as='h2'
+                                    textAlign='left'
+                                    fontWeight='500'
+                                    fontSize={{ base: '24px', lg: '36px', '2xl': '48px' }}
+                                    lineHeight={{ base: '32px', lg: '40px', '2xl': '48px' }}
+                                    letterSpacing='1.6px'
+                                >
+                                    {THE_JUICIUS_TITLE}
+                                </Heading>
 
-                            <Button
-                                data-test-id='juiciest-link'
-                                onClick={() => {
-                                    navigate(`/the-juiciest`);
-                                }}
-                                display={{ base: 'none', md: 'flex' }}
-                                alignItems='center'
-                                fontWeight='600'
-                                fontSize='18px'
-                                lineHeight='28px'
-                                mt='4px'
-                                color='black'
-                                bg='rgba(177, 255, 46, 1)'
-                                size={{ lg: 'md', '2xl': 'lg' }}
-                                rightIcon={<ArrowForwardIcon h='16px' w='16px' />}
-                                colorScheme='green'
-                                variant='solid'
-                            >
-                                Вся подборка
-                            </Button>
-                        </HStack>
+                                <Button
+                                    data-test-id='juiciest-link'
+                                    onClick={() => {
+                                        navigate(PATH_THE_JUICIEST);
+                                    }}
+                                    display={{ base: 'none', md: 'flex' }}
+                                    alignItems='center'
+                                    fontWeight='600'
+                                    fontSize='18px'
+                                    lineHeight='28px'
+                                    mt='4px'
+                                    color='black'
+                                    bg='rgba(177, 255, 46, 1)'
+                                    size={{ lg: 'md', '2xl': 'lg' }}
+                                    rightIcon={<ArrowForwardIcon h='16px' w='16px' />}
+                                    colorScheme='green'
+                                    variant='solid'
+                                >
+                                    {BUTTON_TITLE_ALL_SELECTION}
+                                </Button>
+                            </HStack>
 
-                        <RecipeList
-                            filter='popular'
-                            count={4}
-                            list={visibleList}
-                            isLoading={isLoading}
-                            page={page}
-                            totalPage={totalPage}
-                            onClickAddPageRecipes={onClickAddRecipes}
-                        />
+                            <RecipeList
+                                filter='popular'
+                                count={RECIPES_HOME_PAGE_LIMIT}
+                                list={visibleList}
+                                isLoading={isLoading}
+                                page={page}
+                                totalPage={totalPage}
+                                onClickAddPageRecipes={onClickAddRecipes}
+                            />
 
-                        <Center mt='7px' display={{ base: 'block', lg: 'none' }}>
-                            <Button
-                                data-test-id='juiciest-link-mobile'
-                                onClick={() => {
-                                    navigate(`/the-juiciest`);
-                                }}
-                                fontWeight='600'
-                                fontSize='16px'
-                                lineHeight='24px'
-                                mt='4px'
-                                color='black'
-                                bg='rgba(177, 255, 46, 1)'
-                                size='md'
-                                rightIcon={<ArrowForwardIcon />}
-                                colorScheme='teal'
-                                variant='solid'
-                            >
-                                Вся подборка
-                            </Button>
-                        </Center>
-                    </Box>
+                            <Center mt='7px' display={{ base: 'block', lg: 'none' }}>
+                                <Button
+                                    data-test-id='juiciest-link-mobile'
+                                    onClick={() => {
+                                        navigate(PATH_THE_JUICIEST);
+                                    }}
+                                    fontWeight='600'
+                                    fontSize='16px'
+                                    lineHeight='24px'
+                                    mt='4px'
+                                    color='black'
+                                    bg='rgba(177, 255, 46, 1)'
+                                    size='md'
+                                    rightIcon={<ArrowForwardIcon />}
+                                    colorScheme='teal'
+                                    variant='solid'
+                                >
+                                    {BUTTON_TITLE_ALL_SELECTION}
+                                </Button>
+                            </Center>
+                        </Box>
+                    )}
 
-                    {/* Кулинарные блоги */}
                     <Box
                         mb={{ base: '31px', lg: '40px' }}
                         bg='rgba(196, 255, 97, 1)'
@@ -157,7 +186,7 @@ export const HomePage = () => {
                                 lineHeight={{ base: '32px', lg: '36px', '2xl': '40px' }}
                                 letterSpacing='1px'
                             >
-                                Кулинарные блоги
+                                {CULINARY_BLOGS_TITLE}
                             </Heading>
 
                             <Button
@@ -173,7 +202,7 @@ export const HomePage = () => {
                                 colorScheme='teal'
                                 variant='ghost'
                             >
-                                Все авторы
+                                {BUTTON_TITLE_ALL_AUTHORS}
                             </Button>
                         </HStack>
 
@@ -190,12 +219,11 @@ export const HomePage = () => {
                                 colorScheme='teal'
                                 variant='ghost'
                             >
-                                Все авторы
+                                {BUTTON_TITLE_ALL_AUTHORS}
                             </Button>
                         </Center>
                     </Box>
 
-                    {/* Рекомендованная кухня */}
                     <Box>
                         <RelevantKitchen />
                     </Box>
@@ -203,7 +231,7 @@ export const HomePage = () => {
             ) : (
                 <Flex direction='column' h='100%' justify='space-between'>
                     <RecipeList
-                        count={8}
+                        count={RECIPES_DEFAULT_LIMIT}
                         filter='popular'
                         list={visibleList}
                         isLoading={isLoading}
@@ -213,7 +241,6 @@ export const HomePage = () => {
                         searchState={true}
                     />
 
-                    {/* Рекомендованная кухня */}
                     <Box>
                         <RelevantKitchen />
                     </Box>

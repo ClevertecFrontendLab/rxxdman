@@ -1,12 +1,11 @@
 import { Flex, ListItem, UnorderedList } from '@chakra-ui/react';
 
-import { blogsData } from '~/data/blogs';
+import { BLOGS_LIMIT_HOME_PAGE } from '~/constants/blogs';
+import { blogsData } from '~/mock/blogsMock';
 
 import { BlogCard } from '../blogCard/blogCard';
 
 export const BlogList = () => {
-    const count = 3;
-
     const list = [...blogsData];
 
     return (
@@ -18,12 +17,15 @@ export const BlogList = () => {
                 justify='space-between'
             >
                 {list
-                    .slice(-count)
+                    .slice(-BLOGS_LIMIT_HOME_PAGE)
                     .reverse()
                     .map((blog) => (
                         <ListItem
-                            flexBasis={{ base: '100%', md: 'calc(100% / 3)' }}
-                            w={{ base: '100%', md: 'calc(100% / 3)' }}
+                            flexBasis={{
+                                base: '100%',
+                                md: `calc(100% / ${BLOGS_LIMIT_HOME_PAGE})`,
+                            }}
+                            w={{ base: '100%', md: `calc(100% / ${BLOGS_LIMIT_HOME_PAGE})` }}
                             key={blog.id}
                             overflow='hidden'
                             _hover={{

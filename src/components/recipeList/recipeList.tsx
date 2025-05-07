@@ -1,24 +1,23 @@
 import { Box, Button, Center, Flex, ListItem, UnorderedList } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { recipe } from '~/API/recipeApi';
+import { Recipe } from '~/api/types/recipe';
+import { FilterList } from '~/types/filterList';
 
 import { RecipeCard } from '../recipeCard/recipeCard';
 
-export type filterList = 'popular' | 'categor';
-
-interface IRecipeList {
-    list: recipe[];
+type RecipeProps = {
+    list: Recipe[];
     count: number;
-    filter: filterList;
+    filter: FilterList;
     isLoading: boolean;
     page: number;
     totalPage: number;
     onClickAddPageRecipes(): void;
     searchState?: boolean;
-}
+};
 
-export const RecipeList: FC<IRecipeList> = ({
+export const RecipeList: FC<RecipeProps> = ({
     list,
     count,
     filter,
@@ -81,7 +80,7 @@ export const RecipeList: FC<IRecipeList> = ({
                         colorScheme='teal'
                         variant='solid'
                         onClick={onClickAddPageRecipes}
-                        // disabled={isLoading}
+                        disabled={isLoading}
                     >
                         {isLoading ? 'Загрузка' : 'Загрузить ещё'}
                     </Button>

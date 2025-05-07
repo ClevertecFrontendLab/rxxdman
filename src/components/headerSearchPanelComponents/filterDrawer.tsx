@@ -14,7 +14,12 @@ import {
 import type { FocusableElement } from '@chakra-ui/utils';
 import { FC, useEffect, useState } from 'react';
 
-import { searchType } from '~/data/useParams';
+import {
+    DRAWER_BUTTON_CLEAR_TITLE,
+    DRAWER_BUTTON_SEARCH_TITLE,
+    DRAWER_TITLE,
+} from '~/constants/drawer';
+import { GlobalCategorSearchType } from '~/types/searchType';
 
 import { AllergenSelect } from './allergenSelect';
 import { FilterDrawerAuthor } from './filterDrawerAuthor';
@@ -33,7 +38,7 @@ interface FilterDriwerProps {
     authorsSearch: string;
     meatSearch: string;
     garnishSearch: string;
-    setParams(text: string, textType: searchType): void;
+    setParams(text: string, textType: GlobalCategorSearchType): void;
     clearParams(): void;
     stateFullClear: boolean;
     setAllergenSynchronData: React.Dispatch<React.SetStateAction<string[]>>;
@@ -53,19 +58,18 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
     stateFullClear,
     setAllergenSynchronData,
 }) => {
-    // const [selectedCategor, setSelectedCategor] = useState<string[]>(categorsSearch.length > 0 ? categorsSearch.split(',').filter(Boolean) : []);
-    const [selectedCategor, setSelectedCategor] = useState<string[]>([]); //для теста
+    const [selectedCategor, setSelectedCategor] = useState<string[]>([]);
     const [selectedAuthor, setSelectedAuthor] = useState<string[]>(
-        authorsSearch.length > 0 ? authorsSearch.split(',').filter(Boolean) : [],
+        authorsSearch.length ? authorsSearch.split(',').filter(Boolean) : [],
     );
     const [selectedMeat, setSelectedMeat] = useState<string[]>(
-        meatSearch.length > 0 ? meatSearch.split(',').filter(Boolean) : [],
+        meatSearch.length ? meatSearch.split(',').filter(Boolean) : [],
     );
     const [selectedGarnish, setSelectedGarnish] = useState<string[]>(
-        garnishSearch.length > 0 ? garnishSearch.split(',').filter(Boolean) : [],
+        garnishSearch.length ? garnishSearch.split(',').filter(Boolean) : [],
     );
     const [selectedAllergens, setSelectedAllergens] = useState<string[]>(
-        allergensSearch.length > 0 ? allergensSearch.split(',').filter(Boolean) : [],
+        allergensSearch.length ? allergensSearch.split(',').filter(Boolean) : [],
     );
 
     const [allSearchLists, setAllSearchLists] = useState([] as string[]);
@@ -81,7 +85,7 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
                 ...selectedAllergens,
             ].filter(Boolean),
         );
-        allSearchLists.length > 0 ? setIsSearchButtonEnable(true) : setIsSearchButtonEnable(false);
+        setIsSearchButtonEnable(allSearchLists.length ? true : false);
     }, [
         allSearchLists.length,
         selectedAllergens,
@@ -92,8 +96,7 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
     ]);
 
     useEffect(() => {
-        setSelectedCategor([]); //Для теста
-        // setSelectedCategor(categorsSearch.split(','))
+        setSelectedCategor([]);
     }, [categorsSearch]);
 
     useEffect(() => {
@@ -122,24 +125,15 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
     }
 
     function searchRecipe() {
-        if (selectedCategor.length > 0)
-            setParams(selectedCategor.filter(Boolean).join(','), 'categors');
-        else setParams('', 'categors');
+        setParams(selectedCategor.filter(Boolean).join(',') || '', 'categors');
 
-        if (selectedAuthor.length > 0)
-            setParams(selectedAuthor.filter(Boolean).join(','), 'authors');
-        else setParams('', 'authors');
+        setParams(selectedAuthor.filter(Boolean).join(',') || '', 'authors');
 
-        if (selectedMeat.length > 0) setParams(selectedMeat.filter(Boolean).join(','), 'meat');
-        else setParams('', 'meat');
+        setParams(selectedMeat.filter(Boolean).join(',') || '', 'meat');
 
-        if (selectedGarnish.length > 0)
-            setParams(selectedGarnish.filter(Boolean).join(','), 'garnish');
-        else setParams('', 'garnish');
+        setParams(selectedGarnish.filter(Boolean).join(',') || '', 'garnish');
 
-        if (selectedAllergens.length > 0) {
-            setAllergenSynchronData(selectedAllergens.filter(Boolean));
-        } else setAllergenSynchronData([]);
+        setAllergenSynchronData(selectedAllergens.filter(Boolean) || []);
 
         setTimeout(() => onClose(), 100);
     }
@@ -177,7 +171,7 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
                 <DrawerHeader p='0' mb={{ base: '16px', lg: '24px' }}>
                     <Flex justify='space-between' align='center' pb='16px'>
                         <Text fontWeight='700' fontSize='24px' lineHeight='32px'>
-                            Фильтр
+                            {DRAWER_TITLE}
                         </Text>
 
                         <IconButton
@@ -260,7 +254,7 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
                             color='blackAlpha.800'
                             onClick={clearFilter}
                         >
-                            Очистить фильтр
+                            {DRAWER_BUTTON_CLEAR_TITLE}
                         </Button>
 
                         <Button
@@ -274,7 +268,7 @@ export const FilterDrawer: FC<FilterDriwerProps> = ({
                             isDisabled={!isSearchButtonEnable}
                             pointerEvents={isSearchButtonEnable ? 'auto' : 'none'}
                         >
-                            Найти рецепт
+                            {DRAWER_BUTTON_SEARCH_TITLE}
                         </Button>
                     </Flex>
                 </DrawerFooter>

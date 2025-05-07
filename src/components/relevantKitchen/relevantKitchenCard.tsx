@@ -2,20 +2,21 @@ import { Button, Card, CardBody, Flex, Image, Tag, Text } from '@chakra-ui/react
 import { FC } from 'react';
 import { useNavigate } from 'react-router';
 
-import { useGetCategoriesQuery } from '~/API/categorsApi';
-import { recipe } from '~/API/recipeApi';
+import { IMAGE_API_URL } from '~/api/constants/apiConstant';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { Recipe } from '~/api/types/recipe';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
 
 import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
 
-type direct = 'row' | 'column';
+type Direct = 'row' | 'column';
 
-interface IRecipeCardProps {
-    direct: direct;
-    recipe: recipe;
-}
+type RecipeCardProps = {
+    direct: Direct;
+    recipe: Recipe;
+};
 
-export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) => {
+export const RelevantKitchenCard: FC<RecipeCardProps> = ({ direct, recipe }) => {
     const navigate = useNavigate();
 
     const { data: categories } = useGetCategoriesQuery();
@@ -57,7 +58,7 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                         <Image
                             h='24px'
                             w='24px'
-                            src={`https://training-api.clevertec.ru/${categor?.icon}`}
+                            src={`${IMAGE_API_URL}${categor?.icon}`}
                             alt={recipe.title}
                         />
 
@@ -90,7 +91,6 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                             fontWeight='600'
                             lineHeight={{ base: '16px', lg: '20px', '2xl': '28px' }}
                             onClick={(e) => {
-                                // Предотвращаем множественные клики
                                 e.preventDefault();
                                 navigate(
                                     `/${categor?.category}/${subcategor?.category}/${recipe._id}`,
@@ -196,7 +196,7 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, recipe }) =>
                         <Image
                             h='16px'
                             w='16px'
-                            src={`https://training-api.clevertec.ru/${categor?.icon}`}
+                            src={`${IMAGE_API_URL}${categor?.icon}`}
                             alt={categor?.title}
                         />
                         <Text fontSize='14' fontWeight='400' lineHeight='20px' whiteSpace='nowrap'>
