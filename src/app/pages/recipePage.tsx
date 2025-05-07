@@ -1,22 +1,55 @@
-import { Box, Center, Flex, Text } from '@chakra-ui/react';
-import { useParams } from 'react-router';
+import { Box, Center, Flex, useDisclosure } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router';
 
+import { RECIPES_SLIDER_LIMIT } from '~/api/constants/apiConstant';
+import { useGetRecipeIdQuery, useGetRecipesQuery } from '~/api/query/recipeQuery';
+import { ErrorAllert } from '~/components/errorAlert/errorAllert';
 import { AuthorCard } from '~/components/recipePageComponents/authorCard';
 import { IngredientTable } from '~/components/recipePageComponents/ingredientsTable';
 import { NutritionValueList } from '~/components/recipePageComponents/nutritionValueList';
 import { RecipePageHeader } from '~/components/recipePageComponents/recipePageHeader';
 import { StepsList } from '~/components/recipePageComponents/stepsList';
 import { SliderRecipe } from '~/components/sliderRecipe/sliderRecipe';
-import { recipeListMock } from '~/data/recipes';
+import { ERROR_DESCRIPTION, ERROR_TITLE } from '~/constants/errorAlert';
+import { NEW_RECIPES_TITLE } from '~/constants/titleBlocks';
+import { setRecipeId } from '~/store/slice/recipe-slice';
 
 export const RecipePage = () => {
     const { idRecipe } = useParams();
 
-    const recipe = recipeListMock.find((recipe) => recipe.id === idRecipe);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(setRecipeId(idRecipe));
+    }, [idRecipe, dispatch]);
+
+    const navigate = useNavigate();
+
+    const { data: recipe, error, isLoading } = useGetRecipeIdQuery(idRecipe ? idRecipe : '');
+
+    const { data: sliderList, error: errorSlider } = useGetRecipesQuery({
+        limit: RECIPES_SLIDER_LIMIT,
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+    });
+
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
+    useEffect(() => {
+        if (error) {
+            onOpen();
+            navigate(-1);
+        }
+    }, [error, navigate, onOpen]);
 
     return (
         <Box>
-            {recipe ? (
+            {isOpen && (
+                <ErrorAllert title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
+            )}
+            {recipe && (
                 <Flex
                     direction='column'
                     gap={{ base: '24px', lg: '40px' }}
@@ -51,23 +84,22 @@ export const RecipePage = () => {
 
                     <Center>
                         <Box w={{ base: '100%', md: '604px', lg: '578px', '2xl': '668px' }}>
-                            <AuthorCard idRecipe={recipe.id} />
+                            <AuthorCard author={recipe.authorData} />
                         </Box>
-                    </Center>
-                </Flex>
-            ) : (
-                <Flex direction='column' pt={{ base: '56px' }} pb={{ base: '32px' }} mb='12px'>
-                    <Center>
-                        <Text fontWeight='600' fontSize='64px'>
-                            Рецепт отсутствует
-                        </Text>
                     </Center>
                 </Flex>
             )}
 
-            <Box>
-                <SliderRecipe title='Новые рецепты' key='sliderRecipePage' />
-            </Box>
+            {!isLoading && (
+                <Box>
+                    <SliderRecipe
+                        title={NEW_RECIPES_TITLE}
+                        key='sliderRecipePage'
+                        error={errorSlider}
+                        sliderList={sliderList}
+                    />
+                </Box>
+            )}
         </Box>
     );
 };

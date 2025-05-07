@@ -1,5 +1,5 @@
 import { Box, Grid, GridItem, HStack, useBreakpointValue, useDisclosure } from '@chakra-ui/react';
-import { memo } from 'react';
+import { FC, memo } from 'react';
 
 import { BreadcrumbNav } from '../breadcrumb/breadcrumb';
 import { Logo } from '../logo/logo';
@@ -7,7 +7,7 @@ import { MenuBurger } from '../menuBurger/menuBurger';
 import { ProfileNotification } from '../profileNotification/profileNotification';
 import { UserCard } from '../userCard/userCard';
 
-export const Header = memo(() => {
+export const Header: FC = memo(() => {
     const { isOpen, onToggle, onClose } = useDisclosure();
 
     const isShowTest = useBreakpointValue({
@@ -19,7 +19,6 @@ export const Header = memo(() => {
         <header>
             <Grid
                 width='100vw'
-                // overflow='hidden'
                 alignItems='center'
                 bg={isOpen ? 'white' : 'rgba(255, 255, 211, 1)'}
                 p={{ base: '8px 16px', sm: '8px 20px', lg: '16px 56px 16px 16px' }}

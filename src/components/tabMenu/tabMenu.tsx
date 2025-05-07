@@ -2,11 +2,11 @@ import { Center, Tab, TabList, Tabs } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
-import { categor } from '~/data/categor';
+import { category } from '~/api/query/categorsQuery';
 
 interface UTabMenuProps {
     tabIndex: number;
-    categor: categor | undefined;
+    categor: category | undefined;
 }
 
 export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
@@ -30,13 +30,7 @@ export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
 
     return (
         <Center mb={{ base: '22px', lg: '25px', '2xl': '23px' }} w='100%'>
-            <Tabs
-                w='100%'
-                index={tabIndex}
-                onChange={(index) => {
-                    navigation(`/${categor?.link}/${categor?.subCategor[index].link}`);
-                }}
-            >
+            <Tabs w='100%' index={tabIndex}>
                 <TabList
                     ref={tabListRef}
                     justifyContent={{ base: 'flex-start', lg: 'center' }}
@@ -53,9 +47,9 @@ export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
                         },
                     }}
                 >
-                    {categor?.subCategor.map((tab, index) => (
+                    {categor?.subCategories.map((tab, index) => (
                         <Tab
-                            data-test-id={`tab-${tab.link}-${index}`}
+                            data-test-id={`tab-${tab.category}-${index}`}
                             key={index}
                             ref={(el) => (tabRefs.current[index] = el)}
                             fontWeight='500'
@@ -73,6 +67,11 @@ export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
                                 border: 'none',
                                 borderBottom: '2px solid rgba(45, 177, 0, 1)',
                             }}
+                            onClick={() =>
+                                navigation(
+                                    `/${categor?.category}/${categor?.subCategories[index].category}`,
+                                )
+                            }
                         >
                             {tab.title}
                         </Tab>

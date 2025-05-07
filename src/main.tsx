@@ -9,7 +9,7 @@ import { BrowserRouter } from 'react-router';
 import App from '~/app/App.tsx';
 import { store } from '~/store/configure-store.ts';
 
-import { checkboxTheme } from './configComponents/configComponents';
+import { checkboxTheme } from './configComponents/checkBox';
 
 const theme = extendTheme({
     components: {

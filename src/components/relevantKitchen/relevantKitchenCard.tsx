@@ -2,29 +2,29 @@ import { Button, Card, CardBody, Flex, Image, Tag, Text } from '@chakra-ui/react
 import { FC } from 'react';
 import { useNavigate } from 'react-router';
 
+import { IMAGE_API_URL } from '~/api/constants/apiConstant';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { Recipe } from '~/api/types/recipe';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
-import { categor, categorListData } from '~/data/categor';
-import { recipe } from '~/data/recipes';
-import { generationCategorSubCategor } from '~/function/function';
 
 import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
 
-type direct = 'row' | 'column';
+type Direct = 'row' | 'column';
 
-interface IRecipeCardProps {
-    direct: direct;
-    categor: categor | null;
-    recipe: recipe;
-}
+type RecipeCardProps = {
+    direct: Direct;
+    recipe: Recipe;
+};
 
-export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, categor, recipe }) => {
+export const RelevantKitchenCard: FC<RecipeCardProps> = ({ direct, recipe }) => {
     const navigate = useNavigate();
 
-    const arrLink = generationCategorSubCategor(recipe);
+    const { data: categories } = useGetCategoriesQuery();
 
-    const subCategorArray = arrLink.get(categor?.link || '') || [];
-
-    const ico = categorListData.find((categor) => categor.link === recipe.category[0])?.ico;
+    const subcategor = categories?.find((subCategor) => subCategor._id === recipe.categoriesIds[0]);
+    const categor = categories?.find((categor) =>
+        categor.subCategories?.find((subcategorLocal) => subcategorLocal._id === subcategor?._id),
+    );
 
     switch (direct) {
         case 'row':
@@ -58,8 +58,8 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, categor, rec
                         <Image
                             h='24px'
                             w='24px'
-                            src={`/src/assets/menuIco/${ico}`}
-                            alt={categor?.tag}
+                            src={`${IMAGE_API_URL}${categor?.icon}`}
+                            alt={recipe.title}
                         />
 
                         <Text
@@ -91,9 +91,10 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, categor, rec
                             fontWeight='600'
                             lineHeight={{ base: '16px', lg: '20px', '2xl': '28px' }}
                             onClick={(e) => {
-                                // Предотвращаем множественные клики
                                 e.preventDefault();
-                                navigate(`/${categor?.link}/${subCategorArray[0]}/${recipe.id}`);
+                                navigate(
+                                    `/${categor?.category}/${subcategor?.category}/${recipe._id}`,
+                                );
                             }}
                         >
                             Готовить
@@ -117,7 +118,9 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, categor, rec
                         boxShadow:
                             '0px 2px 4px -1px rgba(32, 126, 0, 0.06), 0px 4px 6px -1px rgba(32, 126, 0, 0.1)',
                     }}
-                    onClick={() => navigate(`/${categor?.link}/${subCategorArray[0]}/${recipe.id}`)}
+                    onClick={() =>
+                        navigate(`/${categor?.category}/${subcategor?.category}/${recipe._id}`)
+                    }
                 >
                     <CardBody
                         w='100%'
@@ -193,11 +196,11 @@ export const RelevantKitchenCard: FC<IRecipeCardProps> = ({ direct, categor, rec
                         <Image
                             h='16px'
                             w='16px'
-                            src={`/src/assets/menuIco/${ico}`}
-                            alt={categor?.tag}
+                            src={`${IMAGE_API_URL}${categor?.icon}`}
+                            alt={categor?.title}
                         />
                         <Text fontSize='14' fontWeight='400' lineHeight='20px' whiteSpace='nowrap'>
-                            {categor?.subCategor[0].title}
+                            {categor?.title}
                         </Text>
                     </Tag>
                 </Card>

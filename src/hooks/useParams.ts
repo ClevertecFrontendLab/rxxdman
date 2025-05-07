@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
-export type searchType = 'title' | 'allergens' | 'categors' | 'authors' | 'meat' | 'garnish';
+import { GlobalCategorSearchType } from '~/types/searchType';
 
 export const useParamsGlobal = () => {
     const [searchParam, setSearchParam] = useSearchParams();
@@ -27,33 +27,27 @@ export const useParamsGlobal = () => {
     const params = useMemo(() => {
         const newParams = new Map<string, string>();
 
-        //Ввод текста
-        if (title.length > 0) {
+        if (title.length) {
             newParams.set('title', title);
         }
 
-        //Выбор аллергенов
-        if (allergens.length > 0) {
+        if (allergens.length) {
             newParams.set('allergens', allergens);
         }
 
-        //Выбор категорий
-        if (categors.length > 0) {
+        if (categors.length) {
             newParams.set('categors', categors);
         }
 
-        //Выбор авторов
-        if (authorsId.length > 0) {
+        if (authorsId.length) {
             newParams.set('authorsId', authorsId);
         }
 
-        //Выбор мяса
-        if (meat.length > 0) {
+        if (meat.length) {
             newParams.set('meat', meat);
         }
 
-        //Выбор гарнира
-        if (garnish.length > 0) {
+        if (garnish.length) {
             newParams.set('garnish', garnish);
         }
 
@@ -71,7 +65,7 @@ export const useParamsGlobal = () => {
     }, [params]);
 
     const setParams = useCallback(
-        (text: string, searchType: searchType) => {
+        (text: string, searchType: GlobalCategorSearchType) => {
             switch (searchType) {
                 case 'title':
                     if (text != title) {

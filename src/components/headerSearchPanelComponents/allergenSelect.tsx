@@ -19,9 +19,17 @@ import {
     Text,
     VStack,
 } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-import { searchType } from '~/data/useParams';
+import {
+    DROP_LIST_DRAWER_TITLE,
+    DROP_LIST_TITLE,
+    PLACEHOLDER_OTHER_ALLERGEN,
+    SWITCH_ALLERGEN_LABEL,
+    SWITCH_DRAWER_ALLERGEN_LABEL,
+} from '~/constants/allergents';
+import { useAllergenSelect } from '~/hooks/useAllergenSelect';
+import { GlobalCategorSearchType } from '~/types/searchType';
 
 const allergensList = [
     'Молочные продукты',
@@ -35,8 +43,8 @@ const allergensList = [
     'Шоколад',
 ];
 
-interface IAllergenSelectProps {
-    setParams(text: string, searchType: searchType): void;
+type AllergenSelectProps = {
+    setParams(text: string, searchType: GlobalCategorSearchType): void;
     allergensSearch: string;
     isOpen?: boolean;
     stateFullClear: boolean;
@@ -44,137 +52,48 @@ interface IAllergenSelectProps {
     setDrawerData?: React.Dispatch<React.SetStateAction<string[]>>;
 
     allergenSynchronData?: string[];
-}
 
-export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
+    setIsAllergen?: React.Dispatch<React.SetStateAction<boolean>>;
+    setSelectedAllergensLocal?: React.Dispatch<React.SetStateAction<string[]>>;
+};
+
+export const AllergenSelect: React.FC<AllergenSelectProps> = ({
     allergensSearch,
     setParams,
     isOpen = false,
     stateFullClear,
     setDrawerData,
     allergenSynchronData,
+    setIsAllergen,
+    setSelectedAllergensLocal,
 }) => {
-    const [indexAcc, setIndex] = useState(-1);
-    const ref = useRef<HTMLDivElement | null>(null);
-
-    const [selectedAllergens, setSelectedAllergens] = useState<string[]>(
-        allergensSearch
-            .split('--')
-            .map((allergen) => allergen.trim())
-            .filter(Boolean) || [],
-    );
-    const [isChecked, setIschecked] = useState(true);
-    const [otherAllergen, setOtherAllergen] = useState('');
-
-    useEffect(() => {
-        if (allergenSynchronData) {
-            setSelectedAllergens(allergenSynchronData);
-        }
-    }, [allergenSynchronData]);
-
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                setIndex(-1);
-            }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [ref]);
-
-    useEffect(() => {
-        setDrawerData && setDrawerData(selectedAllergens);
-    }, [selectedAllergens, setDrawerData]);
-
-    const toggleCheckbox = (allergen: string) => {
-        setSelectedAllergens((prev) => {
-            const newSelected = prev.includes(allergen)
-                ? prev.filter((item) => item !== allergen)
-                : [...prev, allergen];
-            return newSelected;
-        });
-
-        setDrawerData &&
-            setDrawerData((prev) => {
-                const newSelected = prev.includes(allergen)
-                    ? prev.filter((item) => item !== allergen)
-                    : [...prev, allergen];
-                return newSelected;
-            });
-    };
-
-    const addOtherAllergen = () => {
-        const trimmed = otherAllergen.trim();
-        if (trimmed && !selectedAllergens.includes(trimmed)) {
-            setSelectedAllergens((prev) => {
-                const newSelected = [...prev, trimmed];
-                return newSelected;
-            });
-
-            setDrawerData &&
-                setDrawerData((prev) => {
-                    const newSelected = [...prev, trimmed];
-                    return newSelected;
-                });
-
-            setOtherAllergen('');
-        }
-    };
-
-    const removeAllergen = (allergen: string) => {
-        setSelectedAllergens((prev) => {
-            const newSelected = prev.filter((item) => item !== allergen);
-            return newSelected;
-        });
-    };
-
-    const onChange = (): void => {
-        setIschecked(!isChecked);
-
-        if (!isOpen && allergensSearch.length > 0) {
-            setSelectedAllergens(selectedAllergens);
-        }
-    };
-
-    //Полная очистка аллергенов и выключение аллергенов
-    useEffect(() => {
-        if (stateFullClear) {
-            setSelectedAllergens([]);
-            setIschecked(false);
-        }
-    }, [stateFullClear]);
-
-    //Включение аллергенов из поисковой строки
-    useEffect(() => {
-        if (allergensSearch.length > 0) setIschecked(true);
-        else {
-            setIschecked(false);
-        }
-    }, [allergensSearch.length]);
-
-    //Удаление аллергенов, если выключить чек
-    useEffect(() => {
-        if (!isChecked) setSelectedAllergens([]);
-    }, [isChecked]);
-
-    //Фильтр аллергенов из шапки (срабатывает сразу-же при изменении)
-    useEffect(() => {
-        if (!isOpen) {
-            if (selectedAllergens.length > 0) {
-                setParams(selectedAllergens.join('--'), 'allergens');
-            } else {
-                setParams('', 'allergens');
-            }
-        }
-    }, [isOpen, selectedAllergens, setParams]);
+    const {
+        ref,
+        indexAcc,
+        isChecked,
+        addOtherAllergen,
+        toggleCheckbox,
+        onChange,
+        removeAllergen,
+        setIndex,
+        selectedAllergens,
+        otherAllergen,
+        setOtherAllergen,
+    } = useAllergenSelect({
+        allergensSearch,
+        setIsAllergen,
+        allergenSynchronData,
+        setDrawerData,
+        isOpen,
+        stateFullClear,
+        setSelectedAllergensLocal,
+        setParams,
+    });
 
     return (
         <Stack
             align={isOpen ? 'stretch' : 'center'}
-            justify='flex-end'
+            justify='center'
             gap='16px'
             direction='row'
             display={{ base: isOpen ? 'flex' : 'none', lg: 'flex' }}
@@ -190,7 +109,7 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                     letterSpacing='.0'
                     m='0'
                 >
-                    {isOpen ? 'Исключить аллергены' : 'Исключить мои аллергены'}
+                    {isOpen ? SWITCH_DRAWER_ALLERGEN_LABEL : SWITCH_ALLERGEN_LABEL}
                 </FormLabel>
 
                 <Switch
@@ -308,9 +227,7 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                     color='blackAlpha.700'
                                     whiteSpace='nowrap'
                                 >
-                                    {isOpen
-                                        ? 'Выберите из списка аллергенов'
-                                        : 'Выберите из списка...'}
+                                    {isOpen ? DROP_LIST_DRAWER_TITLE : DROP_LIST_TITLE}
                                 </Text>
                             )}
                         </Box>
@@ -322,7 +239,6 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                         h='fit-content'
                         w='100%'
                         data-test-id='allergens-menu'
-                        // position='absolute'
                         top='100%'
                         mt='4px'
                         bg='white'
@@ -363,7 +279,7 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                         fontWeight='400'
                                         fontSize='14px'
                                         lineHeight='20px'
-                                        placeholder='Другой аллерген'
+                                        placeholder={PLACEHOLDER_OTHER_ALLERGEN}
                                         value={otherAllergen}
                                         onChange={(e) => setOtherAllergen(e.target.value)}
                                         onKeyDown={(e) => {
@@ -373,8 +289,6 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                             }
                                         }}
                                         size='sm'
-                                        _placeholder={{ color: 'rgba(19, 75, 0, 1)' }}
-                                        // mr='12px'
                                     />
 
                                     <AddIcon
@@ -387,18 +301,6 @@ export const AllergenSelect: React.FC<IAllergenSelectProps> = ({
                                         p='2px'
                                         _hover={{ cursor: 'pointer' }}
                                     />
-
-                                    {/* <IconButton
-                                        data-test-id={setDrawerData ? 'add-allergen-button' : ''}
-                                        aria-label='Добавить'
-                                        isRound={true}
-                                        maxW='12px'
-                                        maxH='12px'
-                                        fontSize='12px'
-                                        onClick={addOtherAllergen}
-                                        colorScheme='green'
-                                        // icon={<AddIcon/>}
-                                    /> */}
                                 </HStack>
                             </VStack>
                         </FormControl>

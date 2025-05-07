@@ -7,13 +7,13 @@ import { BreadcrumbNav } from '../breadcrumb/breadcrumb';
 import { Footerleft } from '../footer/footerLeft';
 import { NavigationMenu } from '../navigationMenu/navigationMenu';
 
-interface IMenuBurgerProps {
+type MenuBurgerProps = {
     isOpenMenuMobile: boolean;
     onToggle(): void;
     onClose(): void;
-}
+};
 
-export const MenuBurger: FC<IMenuBurgerProps> = ({ isOpenMenuMobile, onToggle, onClose }) => {
+export const MenuBurger: FC<MenuBurgerProps> = ({ isOpenMenuMobile, onToggle, onClose }) => {
     const location = useLocation();
 
     const [pathtest, setpathtest] = useState('');
@@ -24,10 +24,7 @@ export const MenuBurger: FC<IMenuBurgerProps> = ({ isOpenMenuMobile, onToggle, o
     });
 
     useEffect(() => {
-        if (pathtest.split('/').length > location.pathname.split('/').length)
-            //Эмуляция
-            onClose();
-
+        if (pathtest.split('/').length > location.pathname.split('/').length) onClose();
         setpathtest(location.pathname);
     }, [location.pathname, onClose, pathtest]);
 
@@ -57,6 +54,7 @@ export const MenuBurger: FC<IMenuBurgerProps> = ({ isOpenMenuMobile, onToggle, o
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

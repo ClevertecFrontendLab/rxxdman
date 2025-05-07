@@ -12,19 +12,18 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
-import { users } from '~/data/user';
+import { COUNT_AUTHORS, DRAWER_AUTHORS_TITLE, NEW_AUTHORS_SEARCH } from '~/constants/drawer';
+import { users } from '~/mock/usersMock';
 
-interface IFilterDrawerAuthorProps {
+type FilterDrawerAuthorProps = {
     selectedAuthor: string[];
     setSelectedAuthor: React.Dispatch<React.SetStateAction<string[]>>;
-}
+};
 
-export const FilterDrawerAuthor: FC<IFilterDrawerAuthorProps> = ({
+export const FilterDrawerAuthor: FC<FilterDrawerAuthorProps> = ({
     selectedAuthor,
     setSelectedAuthor,
 }) => {
-    const count = 10 as number; //Количество отображаемых авторов
-
     const [index, setIndex] = useState(-1);
     const ref = useRef<HTMLDivElement | null>(null);
 
@@ -88,7 +87,7 @@ export const FilterDrawerAuthor: FC<IFilterDrawerAuthorProps> = ({
                         letterSpacing='0'
                         color='blackAlpha.700'
                     >
-                        Поиск по автору
+                        {DRAWER_AUTHORS_TITLE}
                     </Text>
                     <AccordionIcon ml={2} />
                 </AccordionButton>
@@ -106,7 +105,7 @@ export const FilterDrawerAuthor: FC<IFilterDrawerAuthorProps> = ({
                 >
                     <FormControl>
                         <VStack spacing={0} align='stretch'>
-                            {users.slice(0, count).map((author, index) => (
+                            {users.slice(0, COUNT_AUTHORS).map((author, index) => (
                                 <Box
                                     key={author.id}
                                     p='6px 16px'
@@ -121,7 +120,7 @@ export const FilterDrawerAuthor: FC<IFilterDrawerAuthorProps> = ({
                                         id={'select-user:' + author.id}
                                         isChecked={selectedAuthor.includes(author.id)}
                                         onChange={() => toggleCheckbox(author.id)}
-                                        colorScheme='green'
+                                        variant='limeCheckbox'
                                         size='sm'
                                         borderColor='rgba(215, 255, 148, 1)'
                                     >
@@ -131,9 +130,9 @@ export const FilterDrawerAuthor: FC<IFilterDrawerAuthorProps> = ({
                             ))}
 
                             <Box
-                                key={count + 1}
+                                key={COUNT_AUTHORS + 1}
                                 p='6px 16px'
-                                bg={count + (1 % 2) === 1 ? 'white' : 'blackAlpha.100'}
+                                bg={COUNT_AUTHORS + (1 % 2) === 1 ? 'white' : 'blackAlpha.100'}
                                 _hover={{ bg: 'gray.100' }}
                                 fontSize='14px'
                                 fontWeight='400'
@@ -141,14 +140,14 @@ export const FilterDrawerAuthor: FC<IFilterDrawerAuthorProps> = ({
                                 textAlign='left'
                             >
                                 <Checkbox
-                                    id={(count + 1).toString()}
-                                    isChecked={selectedAuthor.includes('Только новые авторы')}
-                                    onChange={() => toggleCheckbox('Только новые авторы')}
+                                    id={(COUNT_AUTHORS + 1).toString()}
+                                    isChecked={selectedAuthor.includes(NEW_AUTHORS_SEARCH)}
+                                    onChange={() => toggleCheckbox(NEW_AUTHORS_SEARCH)}
                                     colorScheme='green'
                                     size='sm'
                                     borderColor='rgba(215, 255, 148, 1)'
                                 >
-                                    Только новые авторы
+                                    {NEW_AUTHORS_SEARCH}
                                 </Checkbox>
                             </Box>
                         </VStack>

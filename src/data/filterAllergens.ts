@@ -1,11 +1,6 @@
-export type allergen = {
-    title: string;
-    options: string[];
-};
+import { AllergensList } from '~/types/allergen';
 
-export type allergensList = allergen[];
-
-export const allergensListOptions: allergensList = [
+export const allergensListOptions: AllergensList = [
     {
         title: 'Молочные продукты',
         options: ['Молоко'],

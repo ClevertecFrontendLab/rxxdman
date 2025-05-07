@@ -1,5 +1,7 @@
 import { Button, createIcon, Flex, Text } from '@chakra-ui/react';
 
+import { COPYRIGHT_APP, EXIT_LABEL, RIGHT_TO_USE_APP, VERSION_APP } from '~/constants/footer';
+
 export const Footerleft = () => {
     const FooterBtnIcoLeave = createIcon({
         displayName: 'footerBtnIcoLeave',
@@ -35,7 +37,7 @@ export const Footerleft = () => {
                 color='rgba(0, 0, 0, 0.24)'
                 w='100%'
             >
-                Версия программы 03.25
+                {VERSION_APP}
             </Text>
 
             <Text
@@ -45,8 +47,8 @@ export const Footerleft = () => {
                 color='rgba(0, 0, 0, 0.64)'
                 w='100%'
             >
-                Все права защищены, ученический файл, <br />
-                &copy;Клевер Технолоджи, 2025
+                {RIGHT_TO_USE_APP} <br />
+                &copy;{COPYRIGHT_APP}
             </Text>
 
             <Button
@@ -77,7 +79,7 @@ export const Footerleft = () => {
                     boxShadow: 'none',
                 }}
             >
-                Выйти
+                {EXIT_LABEL}
             </Button>
         </Flex>
     );

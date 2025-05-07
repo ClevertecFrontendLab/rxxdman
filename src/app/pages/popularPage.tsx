@@ -1,9 +1,12 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { AbsoluteCenter, Box, Flex } from '@chakra-ui/react';
 
+import { RECIPES_DEFAULT_LIMIT } from '~/api/constants/apiConstant';
 import { HeaderPages } from '~/components/headerSearchPanelComponents/headerPages';
+import { Loader } from '~/components/loader/loader';
 import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
-import { useParamsGlobal } from '~/data/useParams';
+import { useListParams } from '~/hooks/useListParams';
+import { useParamsGlobal } from '~/hooks/useParams';
 
 export const PopularPage = () => {
     const {
@@ -19,8 +22,18 @@ export const PopularPage = () => {
         stateFullClear,
     } = useParamsGlobal();
 
+    const { visibleList, isLoading, isSuccess, page, totalPage, onClickAddRecipes } = useListParams(
+        RECIPES_DEFAULT_LIMIT,
+        'popular',
+    );
+
     return (
-        <Flex direction='column'>
+        <Flex direction='column' h='100%' justify='space-between'>
+            {isLoading && (
+                <AbsoluteCenter zIndex={10} position='fixed'>
+                    <Loader testId='app-loader' />
+                </AbsoluteCenter>
+            )}
             {/* Хеддер страницы */}
             <Box mb={{ base: '31px', lg: '0' }}>
                 <HeaderPages
@@ -35,18 +48,30 @@ export const PopularPage = () => {
                     setParams={setParams}
                     clearParams={clearParams}
                     stateFullClear={stateFullClear}
+                    isLoading={isLoading}
+                    totalPage={totalPage}
                 />
             </Box>
 
             <Flex direction='column'>
                 {/* Самое сочное */}
                 <Box mb={{ base: '32px', md: '32px', lg: '38px' }}>
-                    <RecipeList filter='popular' count={8} />
+                    {isSuccess && (
+                        <RecipeList
+                            filter='popular'
+                            count={RECIPES_DEFAULT_LIMIT}
+                            list={visibleList}
+                            isLoading={isLoading}
+                            page={page}
+                            totalPage={totalPage}
+                            onClickAddPageRecipes={onClickAddRecipes}
+                        />
+                    )}
                 </Box>
 
                 {/* Рекомендованная кухня */}
                 <Box>
-                    <RelevantKitchen idCategor='6' />
+                    <RelevantKitchen />
                 </Box>
             </Flex>
         </Flex>

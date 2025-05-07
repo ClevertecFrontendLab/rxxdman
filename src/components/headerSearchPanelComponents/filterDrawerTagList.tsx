@@ -1,13 +1,17 @@
 import { Flex } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { categorListData } from '~/data/categor';
-import { garnishList, meatsList } from '~/data/recipes';
-import { users } from '~/data/user';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { Categories, Category } from '~/api/types/category';
+import { garnishList } from '~/data/filterGarnish';
+import { meatsList } from '~/data/filterMeats';
+import { users } from '~/mock/usersMock';
+import { SearchType } from '~/types/searchType';
+import { UserList } from '~/types/user';
 
-import { FilterDrawerTag } from './filterDrawerTag';
+import { RenderFilterTags } from './RenderFilterTags';
 
-interface IFilterDrawerTagList {
+type FilterDrawerTagList = {
     selectedCategor: string[];
     selectedAuthor: string[];
     selectedMeat: string[];
@@ -16,9 +20,9 @@ interface IFilterDrawerTagList {
     setSelectedAuthor: React.Dispatch<React.SetStateAction<string[]>>;
     setSelectedMeat: React.Dispatch<React.SetStateAction<string[]>>;
     setSelectedGarnish: React.Dispatch<React.SetStateAction<string[]>>;
-}
+};
 
-export const FilterDrawerTagList: FC<IFilterDrawerTagList> = ({
+export const FilterDrawerTagList: FC<FilterDrawerTagList> = ({
     selectedCategor,
     selectedAuthor,
     selectedMeat,
@@ -27,73 +31,59 @@ export const FilterDrawerTagList: FC<IFilterDrawerTagList> = ({
     setSelectedAuthor,
     setSelectedMeat,
     setSelectedGarnish,
-}) => (
-    <Flex gap='16px' flexWrap='wrap-reverse' mt='auto'>
-        {selectedCategor.length > 0 &&
-            selectedCategor
-                .filter(Boolean)
-                .map((categor, index) => (
-                    <FilterDrawerTag
-                        key={index}
-                        title={
-                            categorListData.find((categorSearch) => categorSearch.link === categor)
-                                ?.title || ''
-                        }
-                        setRemove={setSelectedCategor}
-                        removeTitle={categor}
-                    />
-                ))}
+}) => {
+    const { data: categories } = useGetCategoriesQuery();
+    const categorsArray = [...(categories as Categories)].filter(
+        (categor) => categor.subCategories,
+    );
 
-        {selectedAuthor.length > 0 &&
-            selectedAuthor
-                .filter(Boolean)
-                .map((author, index) => (
-                    <FilterDrawerTag
-                        key={selectedCategor.length + index + 1}
-                        title={
-                            users.find((user) => user.id === author)?.name +
+    return (
+        <Flex gap='16px' flexWrap='wrap-reverse' mt='auto'>
+            {selectedCategor.length > 0 && (
+                <RenderFilterTags
+                    searchList={selectedCategor}
+                    fullList={categorsArray}
+                    setRemove={setSelectedCategor}
+                    getTitle={(categor, fullList: Category[]) =>
+                        fullList.find((item) => item.category === categor)?.title || ''
+                    }
+                />
+            )}
+
+            {selectedAuthor.length > 0 && (
+                <RenderFilterTags
+                    searchList={selectedAuthor}
+                    fullList={users}
+                    setRemove={setSelectedAuthor}
+                    getTitle={(author, fullList: UserList) =>
+                        fullList.find((user) => user.id === author)?.name +
                             ' ' +
-                            users.find((user) => user.id === author)?.surname
-                        }
-                        setRemove={setSelectedAuthor}
-                        removeTitle={author}
-                    />
-                ))}
+                            fullList.find((user) => user.id === author)?.surname || ''
+                    }
+                />
+            )}
 
-        {selectedMeat.length > 0 &&
-            selectedMeat
-                .filter(Boolean)
-                .map((meat, index) => (
-                    <FilterDrawerTag
-                        key={selectedCategor.length + selectedAuthor.length + index + 1}
-                        title={
-                            meatsList.find((meatSearch) => meatSearch.titleEn === meat)?.titleRu ||
-                            ''
-                        }
-                        setRemove={setSelectedMeat}
-                        removeTitle={meat}
-                    />
-                ))}
+            {selectedMeat.length > 0 && (
+                <RenderFilterTags
+                    searchList={selectedMeat}
+                    fullList={meatsList}
+                    setRemove={setSelectedMeat}
+                    getTitle={(meat, fullList: SearchType[]) =>
+                        fullList.find((item) => item.title === meat)?.title || ''
+                    }
+                />
+            )}
 
-        {selectedGarnish.length > 0 &&
-            selectedGarnish
-                .filter(Boolean)
-                .map((garnish, index) => (
-                    <FilterDrawerTag
-                        key={
-                            selectedCategor.length +
-                            selectedAuthor.length +
-                            selectedMeat.length +
-                            index +
-                            1
-                        }
-                        title={
-                            garnishList.find((garnishSearch) => garnishSearch.titleEn === garnish)
-                                ?.titleRu || ''
-                        }
-                        setRemove={setSelectedGarnish}
-                        removeTitle={garnish}
-                    />
-                ))}
-    </Flex>
-);
+            {selectedGarnish.length > 0 && (
+                <RenderFilterTags
+                    searchList={selectedGarnish}
+                    fullList={garnishList}
+                    setRemove={setSelectedGarnish}
+                    getTitle={(garnish, fullList: SearchType[]) =>
+                        fullList.find((item) => item.title === garnish)?.title || ''
+                    }
+                />
+            )}
+        </Flex>
+    );
+};

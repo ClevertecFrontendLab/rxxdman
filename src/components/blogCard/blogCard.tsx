@@ -1,15 +1,15 @@
 import { Box, Card, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { blog } from '~/data/blogs';
+import { Blog } from '~/types/blog';
 
 import { UserCard } from '../userCard/userCard';
 
-interface IBlogCardProps {
-    blog: blog;
-}
+type BlogCardProps = {
+    blog: Blog;
+};
 
-export const BlogCard: FC<IBlogCardProps> = ({ blog }) => (
+export const BlogCard: FC<BlogCardProps> = ({ blog }) => (
     <Card
         w='100%'
         direction='column'

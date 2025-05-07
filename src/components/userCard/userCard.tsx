@@ -1,7 +1,7 @@
 import { Avatar, Flex, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { users } from '~/data/user';
+import { users } from '~/mock/usersMock';
 
 interface userCardProps {
     id: string;

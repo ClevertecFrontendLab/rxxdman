@@ -12,14 +12,16 @@ import {
 } from '@chakra-ui/react';
 import { FC, useEffect, useRef, useState } from 'react';
 
-import { categorListData } from '~/data/categor';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { Categories } from '~/api/types/category';
+import { DRAWER_CATEGOR_TITLE } from '~/constants/drawer';
 
-interface IFilterDrawerCategorsProps {
+type FilterDrawerCategorsProps = {
     selectedCategor: string[];
     setSelectedCategor: React.Dispatch<React.SetStateAction<string[]>>;
-}
+};
 
-export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
+export const FilterDrawerCategors: FC<FilterDrawerCategorsProps> = ({
     selectedCategor,
     setSelectedCategor,
 }) => {
@@ -44,6 +46,11 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
             prev.includes(categor) ? prev.filter((item) => item !== categor) : [...prev, categor],
         );
     };
+
+    const { data: categories } = useGetCategoriesQuery();
+    const categorsArray = [...(categories as Categories)].filter(
+        (categor) => categor.subCategories,
+    );
 
     return (
         <Accordion
@@ -88,7 +95,7 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
                         letterSpacing='0'
                         color='blackAlpha.700'
                     >
-                        Категория
+                        {DRAWER_CATEGOR_TITLE}
                     </Text>
                     <AccordionIcon ml={2} />
                 </AccordionButton>
@@ -106,9 +113,9 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
                 >
                     <FormControl>
                         <VStack spacing={0} align='stretch'>
-                            {categorListData.map((categor, index) => (
+                            {categorsArray.map((categor, index) => (
                                 <Box
-                                    key={categor.id}
+                                    key={categor._id}
                                     p='6px 16px'
                                     bg={index % 2 === 1 ? 'white' : 'blackAlpha.100'}
                                     _hover={{ bg: 'gray.100' }}
@@ -119,10 +126,10 @@ export const FilterDrawerCategors: FC<IFilterDrawerCategorsProps> = ({
                                 >
                                     <Checkbox
                                         data-test-id={`checkbox-${categor.title.toLowerCase()}`}
-                                        id={'select-' + categor.link}
-                                        isChecked={selectedCategor.includes(categor.link)}
-                                        onChange={() => toggleCheckbox(categor.link)}
-                                        colorScheme='green'
+                                        id={'select-' + categor.category}
+                                        isChecked={selectedCategor.includes(categor.category)}
+                                        onChange={() => toggleCheckbox(categor.category)}
+                                        variant='limeCheckbox'
                                         size='sm'
                                         borderColor='rgba(215, 255, 148, 1)'
                                     >
