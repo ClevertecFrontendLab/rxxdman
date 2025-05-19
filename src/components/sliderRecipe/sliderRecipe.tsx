@@ -21,11 +21,11 @@ type SliderRecipeProps = {
 
 export const SliderRecipe: React.FC<SliderRecipeProps> = ({ title, error, sliderList }) => {
     const [array, setArray] = useState<Recipe[]>([]);
+
     useEffect(() => {
         if (sliderList) {
-            const recipeListTest = [...sliderList.data].sort(
-                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-            );
+            const recipeListTest =
+                sliderList.data && Array.isArray(sliderList.data) ? [...sliderList.data] : [];
             setArray(recipeListTest);
         }
     }, [sliderList, sliderList?.data]);

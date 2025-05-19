@@ -12,7 +12,10 @@ import {
 import React, { FC, useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
-import { categories, categoriesResponse, useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { IMAGE_API_URL } from '~/api/constants/apiConstant';
+import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
+import { Categories } from '~/api/types/category';
+import { CategoriesResponse } from '~/api/types/responce';
 
 export const NavigationMenu: FC = React.memo(() => {
     const location = useLocation();
@@ -22,10 +25,8 @@ export const NavigationMenu: FC = React.memo(() => {
 
     const { data: categories, error, isLoading } = useGetCategoriesQuery();
 
-    // Локальный стейт для категорий с резервом из localStorage
-    const [categoriesData, setCategoriesData] = useState<categoriesResponse | null>(null);
+    const [categoriesData, setCategoriesData] = useState<CategoriesResponse | null>(null);
 
-    // При успешном получении сохраняем в localStorage и локальный стейт
     useEffect(() => {
         if (categories) {
             setCategoriesData(categories);
@@ -33,7 +34,6 @@ export const NavigationMenu: FC = React.memo(() => {
         }
     }, [categories]);
 
-    // Если ошибка — пытаемся загрузить из localStorage
     useEffect(() => {
         if (error && !categoriesData) {
             const backup = localStorage.getItem('categoriesBackup');
@@ -43,9 +43,10 @@ export const NavigationMenu: FC = React.memo(() => {
         }
     }, [error, categoriesData]);
 
-    const categorsArray =
-        [...(categories as categories)].filter((categor) => categor.subCategories) ||
-        [...(categoriesData as categories)].filter((categor) => categor.subCategories);
+    const categorsArray = Array.isArray(categories)
+        ? [...(categories as Categories)].filter((categor) => categor.subCategories) ||
+          [...(categoriesData as Categories)].filter((categor) => categor.subCategories)
+        : [];
 
     const categorIndex = [...categorsArray].findIndex(
         (categor) => categor.category === pathnames[0],
@@ -97,7 +98,7 @@ export const NavigationMenu: FC = React.memo(() => {
                                 }}
                             >
                                 <Image
-                                    src={`https://training-api.clevertec.ru/${categor.icon}`}
+                                    src={`${IMAGE_API_URL}${categor.icon}`}
                                     alt={categor.title}
                                 />
                                 <Text

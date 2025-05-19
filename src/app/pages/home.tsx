@@ -112,7 +112,7 @@ export const HomePage = () => {
                                     onClick={() => {
                                         navigate(PATH_THE_JUICIEST);
                                     }}
-                                    display={{ base: 'none', md: 'flex' }}
+                                    display={{ base: 'none', lg: 'flex' }}
                                     alignItems='center'
                                     fontWeight='600'
                                     fontSize='18px'

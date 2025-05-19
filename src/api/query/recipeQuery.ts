@@ -17,7 +17,7 @@ export const recipesApi = createApi({
             },
         }),
 
-        getRecipeId: builder.query<Recipe, string>({
+        getRecipeById: builder.query<Recipe, string>({
             query: (idRecipe) => `recipe/${idRecipe}`,
         }),
 
@@ -30,4 +30,5 @@ export const recipesApi = createApi({
     }),
 });
 
-export const { useGetRecipesQuery, useGetRecipeIdQuery, useGetRecipeFromCategorQuery } = recipesApi;
+export const { useGetRecipesQuery, useGetRecipeByIdQuery, useGetRecipeFromCategorQuery } =
+    recipesApi;

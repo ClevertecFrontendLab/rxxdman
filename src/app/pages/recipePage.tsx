@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 
 import { RECIPES_SLIDER_LIMIT } from '~/api/constants/apiConstant';
-import { useGetRecipeIdQuery, useGetRecipesQuery } from '~/api/query/recipeQuery';
-import { ErrorAllert } from '~/components/errorAlert/errorAllert';
+import { useGetRecipeByIdQuery, useGetRecipesQuery } from '~/api/query/recipeQuery';
+import { AllertApp } from '~/components/alertApp/alertApp';
 import { AuthorCard } from '~/components/recipePageComponents/authorCard';
 import { IngredientTable } from '~/components/recipePageComponents/ingredientsTable';
 import { NutritionValueList } from '~/components/recipePageComponents/nutritionValueList';
@@ -27,7 +27,7 @@ export const RecipePage = () => {
 
     const navigate = useNavigate();
 
-    const { data: recipe, error, isLoading } = useGetRecipeIdQuery(idRecipe ? idRecipe : '');
+    const { data: recipe, error, isLoading } = useGetRecipeByIdQuery(idRecipe || '');
 
     const { data: sliderList, error: errorSlider } = useGetRecipesQuery({
         limit: RECIPES_SLIDER_LIMIT,
@@ -47,7 +47,7 @@ export const RecipePage = () => {
     return (
         <Box>
             {isOpen && (
-                <ErrorAllert title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
+                <AllertApp title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
             )}
             {recipe && (
                 <Flex
