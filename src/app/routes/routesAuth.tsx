@@ -7,6 +7,7 @@ import { PATHS } from '~/constants/path';
 
 export const RoutesAuth = () => (
     <Routes>
+        <Route path='/' element={<LoginForm />} />
         <Route path={PATHS.AUTH_LOGIN} element={<LoginForm />} />
         <Route path={PATHS.AUTH_REGISTER} element={<RegisterForm />} />
         <Route path={PATHS.AUTH_VERIFICATION} element={<VerificationUser />} />

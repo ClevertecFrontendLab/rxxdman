@@ -13,7 +13,7 @@ export const AuthContainer = () => (
             bgGradient='linear-gradient(236.9deg, #EAFFC7 30.27%, #29813F 136.1%)'
             position='relative'
         >
-            <Center pt={{ base: '72px', md: '140px', lg: '170px', '2xl': '170px' }} mb='60px'>
+            <Center pt={{ base: '72px', md: '140px', lg: '170px', '2xl': '170px' }} mb='80px'>
                 <Flex
                     direction='column'
                     w={{ base: '328px', md: '355px', lg: '451px', '2xl': '461px' }}

@@ -78,7 +78,7 @@ export const SliderRecipe: React.FC<SliderRecipeProps> = ({ title, error, slider
                         spaceBetween={12}
                         modules={[Navigation]}
                         ref={swiperRef}
-                        loop={true}
+                        loop={array.length >= 1}
                         breakpoints={{
                             300: {
                                 spaceBetween: '12px',

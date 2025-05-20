@@ -1,7 +1,7 @@
 import './App.css';
 
 import { Center } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
 import { useCheckAuthQuery } from '~/api/query/authQuery';
@@ -19,14 +19,37 @@ function App() {
     const location = useLocation().pathname;
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (location === '/') navigate(PATHS.AUTH_LOGIN);
+    const hasCheckedAuth = useRef(false);
+    const [authChecked, setAuthChecked] = useState(false);
 
-        if (status != 'pending' && userLogin && !error) {
-            navigate('/');
+    useEffect(() => {
+        if (status !== 'pending' && !hasCheckedAuth.current) {
+            setAuthChecked(true);
+            hasCheckedAuth.current = true;
+
+            if (error) {
+                if (location === '/') {
+                    navigate(PATHS.AUTH_LOGIN);
+                }
+            } else if (userLogin) {
+                if (location === '/') {
+                    navigate('/');
+                }
+            } else {
+                if (location === '/') {
+                    navigate(PATHS.AUTH_LOGIN);
+                }
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [error, status, userLogin]);
+    }, [status, error, userLogin]);
+
+    useEffect(() => {
+        if (authChecked && location === '/' && !userLogin && !error) {
+            navigate(PATHS.AUTH_LOGIN);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location]);
 
     return (
         <div id='root'>
@@ -45,8 +68,7 @@ function App() {
 
             {location === PATHS.AUTH_LOGIN ||
             location === PATHS.AUTH_REGISTER ||
-            location === PATHS.AUTH_VERIFICATION ||
-            status === 'pending' ? (
+            location === PATHS.AUTH_VERIFICATION ? (
                 <AuthContainer />
             ) : (
                 <AppContainer />

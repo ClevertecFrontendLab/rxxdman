@@ -41,7 +41,7 @@ export const BreadcrumbNav: FC = () => {
             w='100%'
             display='flex'
         >
-            <BreadcrumbItem>
+            <BreadcrumbItem key='/'>
                 <BreadcrumbLink
                     whiteSpace='nowrap'
                     className='breadctrumpNav__link'
@@ -63,7 +63,7 @@ export const BreadcrumbNav: FC = () => {
                 );
 
                 return (
-                    <BreadcrumbItem>
+                    <BreadcrumbItem key={path}>
                         <BreadcrumbLink
                             whiteSpace='nowrap'
                             className='breadctrumpNav__link'
