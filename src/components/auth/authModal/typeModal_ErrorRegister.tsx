@@ -1,11 +1,6 @@
 import { Link, ModalBody, ModalFooter, Text } from '@chakra-ui/react';
 
-import {
-    AUTH_MODAL_ERROR_REGISTER_FOOTER,
-    AUTH_MODAL_ERROR_REGISTER_MESSAGE,
-    AUTH_MODAL_ERROR_REGISTER_TITLE,
-    AUTH_MODAL_REGISTER_SUPPORT,
-} from '~/constants/auth/modal';
+import { AUTH_MODAL } from '~/constants/auth/modal';
 
 export const Container_TypeModal_ErrorRegister = () => (
     <>
@@ -19,7 +14,7 @@ export const Container_TypeModal_ErrorRegister = () => (
                 whiteSpace='pre-line'
                 mb='16px'
             >
-                {AUTH_MODAL_ERROR_REGISTER_TITLE}
+                {AUTH_MODAL.ERROR_REGISTER_TITLE}
             </Text>
 
             <Text
@@ -30,7 +25,7 @@ export const Container_TypeModal_ErrorRegister = () => (
                 textAlign='center'
                 whiteSpace='pre-line'
             >
-                {AUTH_MODAL_ERROR_REGISTER_MESSAGE}
+                {AUTH_MODAL.ERROR_REGISTER_MESSAGE}
             </Text>
         </ModalBody>
 
@@ -43,10 +38,11 @@ export const Container_TypeModal_ErrorRegister = () => (
                 textAlign='center'
                 whiteSpace='pre-line'
             >
-                {AUTH_MODAL_ERROR_REGISTER_FOOTER}
-                <Link borderBottom='1px solid rgba(0, 0, 0, 0.48)'>
-                    {AUTH_MODAL_REGISTER_SUPPORT}
-                </Link>
+                {AUTH_MODAL.ERROR_REGISTER_FOOTER}
+                <Link
+                    borderBottom='1px solid rgba(0, 0, 0, 0.48)'
+                    dangerouslySetInnerHTML={{ __html: AUTH_MODAL.REGISTER_SUPPORT }}
+                />
             </Text>
         </ModalFooter>
     </>

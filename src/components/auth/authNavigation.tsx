@@ -2,6 +2,7 @@ import { Tab, TabList, TabPanels, Tabs } from '@chakra-ui/react';
 import { useLocation, useNavigate } from 'react-router';
 
 import { RoutesAuth } from '~/app/routes/routesAuth';
+import { PATHS } from '~/constants/path';
 
 type AutnNavigationType = {
     url: string;
@@ -10,11 +11,11 @@ type AutnNavigationType = {
 
 const autnMenu: AutnNavigationType[] = [
     {
-        url: '/login',
+        url: PATHS.AUTH_LOGIN,
         title: 'Вход на сайт',
     },
     {
-        url: '/register',
+        url: PATHS.AUTH_REGISTER,
         title: 'Регистрация',
     },
 ];
@@ -23,7 +24,7 @@ export const AuthNavigation = () => {
     const navigation = useNavigate();
     const path = useLocation().pathname;
 
-    const tabIndex = path === '/register' ? 1 : 0;
+    const tabIndex = Number(path === PATHS.AUTH_REGISTER);
 
     return (
         <Tabs w='100%' defaultIndex={tabIndex}>

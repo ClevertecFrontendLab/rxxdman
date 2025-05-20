@@ -11,7 +11,9 @@ import { FC, useState } from 'react';
 import React from 'react';
 import { useNavigate } from 'react-router';
 
-import { AUTH_MODAL_FORGOT_PASSWORD_STEP_THREE_TITLE } from '~/constants/auth/modal';
+import { AUTH_MODAL } from '~/constants/auth/modal';
+import { PATHS } from '~/constants/path';
+import { buildTestIdModalAndImagePath } from '~/utils/buildTestIdModalAndImagePath';
 
 import { Container_TypeModal_ErrorLogin } from './typeModal_ErrorLogin';
 import { Container_TypeModal_ErrorRegister } from './typeModal_ErrorRegister';
@@ -44,7 +46,7 @@ export const AuthModal: FC<AuthModalProps> = ({
 
     const HandlerOnCloseClick = () => {
         onClose();
-        if (typeModal === 'SuccessRegister') navigate('/login');
+        if (typeModal === 'SuccessRegister') navigate(PATHS.AUTH_LOGIN);
     };
 
     const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
@@ -53,22 +55,11 @@ export const AuthModal: FC<AuthModalProps> = ({
         <Modal isCentered finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent
-                data-test-id={
-                    typeModal === 'ErrorLogin'
-                        ? 'sign-in-error-modal'
-                        : typeModal === 'SuccessRegister'
-                          ? 'sign-up-success-modal'
-                          : typeModal === 'ErrorRegister'
-                            ? 'email-verification-failed-modal'
-                            : typeModal === 'ForgotPassword' && forgotPasswordStep === 1
-                              ? 'send-email-modal'
-                              : typeModal === 'ForgotPassword' && forgotPasswordStep === 2
-                                ? 'verification-code-modal'
-                                : 'reset-credentials-modal'
-                }
+                data-test-id={buildTestIdModalAndImagePath(typeModal, forgotPasswordStep).testId}
                 w={{ base: '316px', lg: '396px' }}
                 p={8}
                 alignItems='center'
+                borderRadius='16px'
             >
                 <ModalHeader p={0} mb='32px'>
                     {typeModal === 'ForgotPassword' && forgotPasswordStep === 3 ? (
@@ -80,21 +71,11 @@ export const AuthModal: FC<AuthModalProps> = ({
                             whiteSpace='pre-line'
                             textAlign='center'
                         >
-                            {AUTH_MODAL_FORGOT_PASSWORD_STEP_THREE_TITLE}
+                            {AUTH_MODAL.FORGOT_PASSWORD_STEP_THREE_TITLE}
                         </Text>
                     ) : (
                         <Image
-                            src={`src/assets/auth/${
-                                typeModal === 'ErrorLogin'
-                                    ? 'loginError.png'
-                                    : typeModal === 'ErrorRegister'
-                                      ? 'registerError.png'
-                                      : typeModal === 'SuccessRegister'
-                                        ? 'registerSuccess.png'
-                                        : typeModal === 'ForgotPassword' && forgotPasswordStep === 1
-                                          ? 'loginError.png'
-                                          : 'forgotPassword.png'
-                            }`}
+                            src={`src/assets/auth/${buildTestIdModalAndImagePath(typeModal, forgotPasswordStep).imagePath}`}
                             w={{ base: '108px', lg: '206px' }}
                             h={{ base: '108px', lg: '206px' }}
                         />

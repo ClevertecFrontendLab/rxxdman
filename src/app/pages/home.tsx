@@ -14,7 +14,7 @@ import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
 import { SliderRecipe } from '~/components/sliderRecipe/sliderRecipe';
 import { BUTTON_TITLE_ALL_AUTHORS, BUTTON_TITLE_ALL_SELECTION } from '~/constants/button';
-import { PATH_THE_JUICIEST } from '~/constants/path';
+import { PATHS } from '~/constants/path';
 import { DEFAULT_TITLE_SEARCH_PANEL } from '~/constants/searchPanel';
 import {
     CULINARY_BLOGS_TITLE,
@@ -110,7 +110,7 @@ export const HomePage = () => {
                                 <Button
                                     data-test-id='juiciest-link'
                                     onClick={() => {
-                                        navigate(PATH_THE_JUICIEST);
+                                        navigate(PATHS.THE_JUICIEST);
                                     }}
                                     display={{ base: 'none', lg: 'flex' }}
                                     alignItems='center'
@@ -143,7 +143,7 @@ export const HomePage = () => {
                                 <Button
                                     data-test-id='juiciest-link-mobile'
                                     onClick={() => {
-                                        navigate(PATH_THE_JUICIEST);
+                                        navigate(PATHS.THE_JUICIEST);
                                     }}
                                     fontWeight='600'
                                     fontSize='16px'

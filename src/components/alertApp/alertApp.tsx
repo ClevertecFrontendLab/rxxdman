@@ -44,7 +44,10 @@ export const AllertApp: FC<AllertProps> = ({ title, message, onClose, status = '
             >
                 <AlertIcon color='white' />
                 <Box>
-                    <AlertTitle fontWeight='700'>{title}</AlertTitle>
+                    <AlertTitle fontWeight='700' maxW='260px'>
+                        {title}
+                    </AlertTitle>
+
                     {message.length > 0 && (
                         <AlertDescription fontWeight='400'>{message}</AlertDescription>
                     )}
@@ -55,6 +58,8 @@ export const AllertApp: FC<AllertProps> = ({ title, message, onClose, status = '
                     position='absolute'
                     right='12px'
                     top='12px'
+                    w='12px'
+                    h='12px'
                     onClick={onClose}
                 />
             </Alert>

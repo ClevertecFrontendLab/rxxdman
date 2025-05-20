@@ -11,6 +11,7 @@ import { useGetRecipeByIdQuery } from '~/api/query/recipeQuery';
 import { Category } from '~/api/types/category';
 import { pagesApp } from '~/data/pages';
 import { selectRecipeId } from '~/store/slice/recipe-slice';
+import { buildBreadcrumbPaths } from '~/utils/buildBreadcrumbPaths';
 
 export const BreadcrumbNav: FC = () => {
     const location = useLocation();
@@ -27,17 +28,7 @@ export const BreadcrumbNav: FC = () => {
     });
 
     const breadcrumbOnClick = (index: number, categor: Category) => {
-        index != pathnames.length - 1 &&
-            navigate(
-                `/${[...pathnames]
-                    .slice(0, index + 1)
-                    .map((path) =>
-                        categor && categor.subCategories
-                            ? `${categor.category}/${categor.subCategories[0].category}`
-                            : path,
-                    )
-                    .join('/')}`,
-            );
+        index != pathnames.length - 1 && navigate(buildBreadcrumbPaths(index, categor, pathnames));
     };
 
     return (

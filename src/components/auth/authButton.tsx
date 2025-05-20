@@ -1,30 +1,18 @@
-import { Button } from '@chakra-ui/react';
+import { Button, ButtonProps } from '@chakra-ui/react';
 import { FC } from 'react';
 
-type AuthButtonProps = {
+type AuthButtonProps = ButtonProps & {
     title: string;
-    type?: 'button' | 'submit' | 'reset' | undefined;
-    onClick?(): void;
-    isDisabled?: boolean;
-
     testId?: string;
 };
 
-export const AuthButton: FC<AuthButtonProps> = ({
-    title,
-    onClick,
-    type = 'button',
-    isDisabled,
-    testId,
-}) => (
+export const AuthButton: FC<AuthButtonProps> = ({ title, testId, ...restProps }) => (
     <Button
         data-test-id={testId}
         w='100%'
         colorScheme='blackAplha'
         bg='blackAlpha.900'
-        onClick={onClick}
-        type={type}
-        isDisabled={isDisabled}
+        {...restProps}
     >
         {title}
     </Button>

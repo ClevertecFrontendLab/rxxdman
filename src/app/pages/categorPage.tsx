@@ -10,7 +10,7 @@ import { Loader } from '~/components/loader/loader';
 import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
 import { TabMenu } from '~/components/tabMenu/tabMenu';
-import { PATH_NOT_FOUND } from '~/constants/path';
+import { PATHS } from '~/constants/path';
 import { useListParams } from '~/hooks/useListParams';
 import { useParamsGlobal } from '~/hooks/useParams';
 import { FilterList } from '~/types/filterList';
@@ -67,7 +67,7 @@ export const CategorPage = () => {
     }, [categor?.subCategories, pathnames, subCategor?.category]);
 
     useEffect(() => {
-        if (isSuccess && (!categor || !subCategor)) navigate(PATH_NOT_FOUND);
+        if (isSuccess && (!categor || !subCategor)) navigate(PATHS.NOT_FOUND);
     }, [categor, isSuccess, navigate, subCategor]);
 
     return (
@@ -107,12 +107,7 @@ export const CategorPage = () => {
                     />
                 </Box>
 
-                {!searchState && (
-                    <TabMenu
-                        tabIndex={tabIndex}
-                        categor={categor ? (categor as Category) : undefined}
-                    />
-                )}
+                {!searchState && <TabMenu tabIndex={tabIndex} category={categor as Category} />}
 
                 <Flex h='100%' direction='column' justify='space-between'>
                     <RecipeList

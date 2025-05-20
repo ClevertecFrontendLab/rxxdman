@@ -2,6 +2,8 @@ import { Center } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 
+import { PATHS } from '~/constants/path';
+
 import { Loader } from '../loader/loader';
 import { LoginForm } from './loginForm';
 
@@ -14,11 +16,11 @@ export const VerificationUser = () => {
 
     useEffect(() => {
         if (emailVerified === 'false') {
-            navigate('/register?emailVerified=false');
+            navigate(`${PATHS.AUTH_REGISTER}?emailVerified=false`);
         }
 
         if (emailVerified === 'true') {
-            navigate('/login?emailVerified=true');
+            navigate(`${PATHS.AUTH_LOGIN}?emailVerified=true`);
         }
     }, [emailVerified, navigate]);
 

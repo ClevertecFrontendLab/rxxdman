@@ -1,8 +1,8 @@
 import { Box, Center, Flex, Progress, Text } from '@chakra-ui/react';
 import React from 'react';
 
-import { AUTH_BUTTON_NEXT, AUTH_BUTTON_REGISTER } from '~/constants/auth/button';
-import { AUTH_ERROR_FORMAT, AUTH_ERROR_PASSWORD_DO_NOT_MATCH } from '~/constants/auth/error';
+import { AUTH_BUTTONS } from '~/constants/auth/button';
+import { AUTH_ERRORS } from '~/constants/auth/error';
 import {
     MAX_LENGHT,
     MAX_LENGHT_ERROR,
@@ -11,21 +11,7 @@ import {
     REGISTER_STEP_ONE,
     REGISTER_STEP_TWO,
 } from '~/constants/auth/global';
-import {
-    AUTH_LOGIN_HELPER,
-    AUTH_LOGIN_PLACEHOLDER,
-    AUTH_LOGIN_TITLE,
-    AUTH_MAIL_PLACEHOLDER,
-    AUTH_MAIL_TITLE,
-    AUTH_NAME_PLACEHOLDER,
-    AUTH_NAME_TITLE,
-    AUTH_PASSWORD_HELPER,
-    AUTH_PASSWORD_PLACEHOLDER,
-    AUTH_PASSWORD_REPEAT_TITLE,
-    AUTH_PASSWORD_TITLE,
-    AUTH_SURNAME_PLACEHOLDER,
-    AUTH_SURNAME_TITLE,
-} from '~/constants/auth/input';
+import { AUTH_INPUT } from '~/constants/auth/input';
 import { UseAuthRegister } from '~/hooks/useAuthRegister';
 
 import { AllertApp } from '../alertApp/alertApp';
@@ -118,6 +104,18 @@ export const RegisterForm = () => {
                         colorScheme='lime'
                         hasStripe
                         value={progressValue}
+                        sx={{
+                            'div[role="progressbar"]': {
+                                backgroundImage: `linear-gradient(
+                        45deg, 
+                        rgba(255, 255, 255, 0.3) 25%, 
+                        rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 50%, 
+                        rgba(255, 255, 255, 0.3) 50%, 
+                        rgba(255, 255, 255, 0.3) 75%, 
+                        rgba(0, 0, 0, 0) 75%, 
+                        rgba(0, 0, 0, 0))`,
+                            },
+                        }}
                     />
                 </Box>
 
@@ -160,8 +158,8 @@ export const RegisterForm = () => {
                             value={name}
                             inputName='name'
                             error={errorsStepOne.name}
-                            title={AUTH_NAME_TITLE}
-                            placeholder={AUTH_NAME_PLACEHOLDER}
+                            title={AUTH_INPUT.NAME_TITLE}
+                            placeholder={AUTH_INPUT.NAME_PLACEHOLDER}
                             required='Введите имя'
                             maxLenght={MAX_LENGHT}
                             maxLenghtError={MAX_LENGHT_ERROR}
@@ -180,8 +178,8 @@ export const RegisterForm = () => {
                             value={surname}
                             inputName='surname'
                             error={errorsStepOne.surname}
-                            title={AUTH_SURNAME_TITLE}
-                            placeholder={AUTH_SURNAME_PLACEHOLDER}
+                            title={AUTH_INPUT.SURNAME_TITLE}
+                            placeholder={AUTH_INPUT.SURNAME_PLACEHOLDER}
                             required='Введите фамилию'
                             maxLenght={MAX_LENGHT}
                             maxLenghtError={MAX_LENGHT_ERROR}
@@ -200,8 +198,8 @@ export const RegisterForm = () => {
                             value={email}
                             inputName='email'
                             error={errorsStepOne.email}
-                            title={AUTH_MAIL_TITLE}
-                            placeholder={AUTH_MAIL_PLACEHOLDER}
+                            title={AUTH_INPUT.MAIL_TITLE}
+                            placeholder={AUTH_INPUT.MAIL_PLACEHOLDER}
                             required='Введите e-mail'
                             maxLenght={MAX_LENGHT}
                             maxLenghtError={MAX_LENGHT_ERROR}
@@ -212,7 +210,7 @@ export const RegisterForm = () => {
 
                         <Box mt='24px'>
                             <AuthButton
-                                title={AUTH_BUTTON_NEXT}
+                                title={AUTH_BUTTONS.NEXT}
                                 type='submit'
                                 testId={stepRegister === 1 ? 'submit-button' : ''}
                             />
@@ -244,12 +242,12 @@ export const RegisterForm = () => {
                             value={login}
                             inputName='login'
                             error={errorsStepTwo.login}
-                            title={AUTH_LOGIN_TITLE}
-                            placeholder={AUTH_LOGIN_PLACEHOLDER}
-                            helperText={AUTH_LOGIN_HELPER}
+                            title={AUTH_INPUT.LOGIN_TITLE}
+                            placeholder={AUTH_INPUT.LOGIN_PLACEHOLDER}
+                            helperText={AUTH_INPUT.LOGIN_HELPER}
                             required='Введите логин'
                             minLenght={MIN_LENGHT_LOGIN}
-                            minLenghtError={AUTH_ERROR_FORMAT}
+                            minLenghtError={AUTH_ERRORS.FORMAT}
                             maxLenght={MAX_LENGHT}
                             maxLenghtError={MAX_LENGHT_ERROR}
                             validate={{
@@ -265,13 +263,13 @@ export const RegisterForm = () => {
                             value={password}
                             inputName='password'
                             error={errorsStepTwo.password}
-                            title={AUTH_PASSWORD_TITLE}
-                            placeholder={AUTH_PASSWORD_PLACEHOLDER}
-                            helperText={AUTH_PASSWORD_HELPER}
+                            title={AUTH_INPUT.PASSWORD_TITLE}
+                            placeholder={AUTH_INPUT.PASSWORD_PLACEHOLDER}
+                            helperText={AUTH_INPUT.PASSWORD_HELPER}
                             type='password'
                             required='Введите пароль'
                             minLenght={MIN_LENGHT_PASSWORD}
-                            minLenghtError={AUTH_ERROR_FORMAT}
+                            minLenghtError={AUTH_ERRORS.FORMAT}
                             maxLenght={MAX_LENGHT}
                             maxLenghtError={MAX_LENGHT_ERROR}
                             validate={{
@@ -287,19 +285,19 @@ export const RegisterForm = () => {
                             value={password_repeat}
                             inputName='password_repeat'
                             error={errorsStepTwo.password_repeat}
-                            title={AUTH_PASSWORD_REPEAT_TITLE}
-                            placeholder={AUTH_PASSWORD_PLACEHOLDER}
+                            title={AUTH_INPUT.PASSWORD_REPEAT_TITLE}
+                            placeholder={AUTH_INPUT.PASSWORD_PLACEHOLDER}
                             type='password'
                             required='Повторите пароль'
                             validate={{
                                 passwordMatch: (value: string) =>
-                                    value === password || AUTH_ERROR_PASSWORD_DO_NOT_MATCH,
+                                    value === password || AUTH_ERRORS.PASSWORD_DO_NOT_MATCH,
                             }}
                         />
 
                         <Box mt='24px'>
                             <AuthButton
-                                title={AUTH_BUTTON_REGISTER}
+                                title={AUTH_BUTTONS.REGISTER}
                                 type='submit'
                                 testId={stepRegister === 2 ? 'submit-button' : ''}
                             />

@@ -11,3 +11,5 @@ export const REGISTER_STEP_TWO = 'Шаг 2. Логин и пароль';
 
 export const AUTH_VERIFY_SUCCESS_TITLE = 'Верификация прошла успешно';
 export const AUTH_RESET_PASSWORD_SUCCESS_TITLE = 'Восстановление данных успешно';
+
+export const PASSWORD = 'password';

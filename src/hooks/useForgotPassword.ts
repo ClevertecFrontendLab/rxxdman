@@ -8,14 +8,7 @@ import {
     useResetPasswordMutation,
     useVerifyOTPMutation,
 } from '~/api/query/authQuery';
-import {
-    AUTH_ERROR_5XX_MESSAGE,
-    AUTH_ERROR_5XX_TITLE,
-    AUTH_ERROR_FORGOT_OTP_VALIDATE_MESSAGE,
-    AUTH_ERROR_FORGOT_OTP_VALIDATE_TITLE,
-    AUTH_ERROR_FORGOT_PASSWORD_EMAIL_MESSAGE,
-    AUTH_ERROR_FORGOT_PASSWORD_EMAIL_TITLE,
-} from '~/constants/auth/error';
+import { AUTH_ERRORS } from '~/constants/auth/error';
 
 type PropsUseForgotPassword = {
     forgotPasswordStep: number;
@@ -32,7 +25,7 @@ export const useForgotPassword = ({
         formState: { errors },
         trigger: triggerStepOne,
         setValue: setValueStepOne,
-    } = useForm();
+    } = useForm({ mode: 'onChange' });
     const {
         register: registerStepThree,
         handleSubmit: handleSubmitStepThree,
@@ -83,13 +76,13 @@ export const useForgotPassword = ({
             const errorCode = errorForgotPasswordMutation.status;
             setAlertTitle(
                 errorCode === 403
-                    ? AUTH_ERROR_FORGOT_PASSWORD_EMAIL_TITLE
-                    : AUTH_ERROR_5XX_TITLE || 'Ошибка!',
+                    ? AUTH_ERRORS.FORGOT_PASSWORD_EMAIL_TITLE
+                    : AUTH_ERRORS.GLOBAL_5XX_TITLE || 'Ошибка!',
             );
             setAlertMessage(
                 errorCode === 403
-                    ? AUTH_ERROR_FORGOT_PASSWORD_EMAIL_MESSAGE
-                    : AUTH_ERROR_5XX_MESSAGE || '',
+                    ? AUTH_ERRORS.FORGOT_PASSWORD_EMAIL_MESSAGE
+                    : AUTH_ERRORS.GLOBAL_5XX_MESSAGE || '',
             );
             setEmail('');
             onOpenAlert();
@@ -98,13 +91,13 @@ export const useForgotPassword = ({
             const errorCode = errorVerifyOTPMutation.status;
             setAlertTitle(
                 errorCode === 403
-                    ? AUTH_ERROR_FORGOT_OTP_VALIDATE_TITLE
-                    : AUTH_ERROR_5XX_TITLE || 'Ошибка!',
+                    ? AUTH_ERRORS.FORGOT_OTP_VALIDATE_TITLE
+                    : AUTH_ERRORS.GLOBAL_5XX_TITLE || 'Ошибка!',
             );
             setAlertMessage(
                 errorCode === 403
-                    ? AUTH_ERROR_FORGOT_OTP_VALIDATE_MESSAGE
-                    : AUTH_ERROR_5XX_MESSAGE || '',
+                    ? AUTH_ERRORS.FORGOT_OTP_VALIDATE_MESSAGE
+                    : AUTH_ERRORS.GLOBAL_5XX_MESSAGE || '',
             );
 
             onOpenAlert();
@@ -115,8 +108,8 @@ export const useForgotPassword = ({
         if (errorResetPasswordMutation) {
             const errorCode = errorResetPasswordMutation.status;
             if (errorCode.toString().indexOf('5') === 0) {
-                setAlertTitle(AUTH_ERROR_5XX_TITLE);
-                setAlertMessage(AUTH_ERROR_5XX_MESSAGE);
+                setAlertTitle(AUTH_ERRORS.GLOBAL_5XX_TITLE);
+                setAlertMessage(AUTH_ERRORS.GLOBAL_5XX_MESSAGE);
                 onOpenAlert();
             }
         }

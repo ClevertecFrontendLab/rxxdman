@@ -1,14 +1,9 @@
 import { Center, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 
-import { AUTH_BUTTON_FORGOT_PASSWORD, AUTH_BUTTON_LOGIN } from '~/constants/auth/button';
+import { AUTH_BUTTONS } from '~/constants/auth/button';
 import { MAX_LENGHT, MAX_LENGHT_ERROR } from '~/constants/auth/global';
-import {
-    AUTH_LOGIN_PLACEHOLDER,
-    AUTH_LOGIN_TITLE,
-    AUTH_PASSWORD_PLACEHOLDER,
-    AUTH_PASSWORD_TITLE,
-} from '~/constants/auth/input';
+import { AUTH_INPUT } from '~/constants/auth/input';
 import { useAuthLogin } from '~/hooks/useAuthLogin';
 
 import { AllertApp, StatusAlert } from '../alertApp/alertApp';
@@ -92,8 +87,8 @@ export const LoginForm = () => {
                         value={login}
                         inputName='login'
                         error={errors.login || errorLogin}
-                        title={AUTH_LOGIN_TITLE}
-                        placeholder={AUTH_LOGIN_PLACEHOLDER}
+                        title={AUTH_INPUT.LOGIN_TITLE}
+                        placeholder={AUTH_INPUT.LOGIN_PLACEHOLDER}
                         required='Введите логин'
                         maxLenght={MAX_LENGHT}
                         maxLenghtError={MAX_LENGHT_ERROR}
@@ -106,8 +101,8 @@ export const LoginForm = () => {
                         value={password}
                         inputName='password'
                         error={errors.password || errorLogin}
-                        title={AUTH_PASSWORD_TITLE}
-                        placeholder={AUTH_PASSWORD_PLACEHOLDER}
+                        title={AUTH_INPUT.PASSWORD_TITLE}
+                        placeholder={AUTH_INPUT.PASSWORD_PLACEHOLDER}
                         type='password'
                         required='Введите пароль'
                         maxLenght={MAX_LENGHT}
@@ -115,7 +110,7 @@ export const LoginForm = () => {
                     />
                 </Flex>
 
-                <AuthButton testId='submit-button' title={AUTH_BUTTON_LOGIN} type='submit' />
+                <AuthButton testId='submit-button' title={AUTH_BUTTONS.LOGIN} type='submit' />
             </form>
 
             <Text
@@ -128,7 +123,7 @@ export const LoginForm = () => {
                 cursor='pointer'
                 onClick={forgotPasswordOpenModal}
             >
-                {AUTH_BUTTON_FORGOT_PASSWORD}
+                {AUTH_BUTTONS.FORGOT_PASSWORD}
             </Text>
         </>
     );

@@ -5,12 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router';
 
 import { useLoginMutation } from '~/api/query/authQuery';
-import {
-    AUTH_ERROR_LOGIN_401_MESSAGE,
-    AUTH_ERROR_LOGIN_401_TITLE,
-    AUTH_ERROR_LOGIN_403_MESSAGE,
-    AUTH_ERROR_LOGIN_403_TITLE,
-} from '~/constants/auth/error';
+import { AUTH_ERRORS } from '~/constants/auth/error';
 import {
     AUTH_RESET_PASSWORD_SUCCESS_TITLE,
     AUTH_VERIFY_SUCCESS_TITLE,
@@ -46,11 +41,11 @@ export const useAuthLogin = () => {
             const errorCode = errorLogin.status;
 
             setAlertTitle(
-                errorCode === 401 ? AUTH_ERROR_LOGIN_401_TITLE : AUTH_ERROR_LOGIN_403_TITLE,
+                errorCode === 401 ? AUTH_ERRORS.LOGIN_401_TITLE : AUTH_ERRORS.LOGIN_403_TITLE,
             );
 
             setAlertMessage(
-                errorCode === 401 ? AUTH_ERROR_LOGIN_401_MESSAGE : AUTH_ERROR_LOGIN_403_MESSAGE,
+                errorCode === 401 ? AUTH_ERRORS.LOGIN_401_MESSAGE : AUTH_ERRORS.LOGIN_403_MESSAGE,
             );
 
             setAlertStatus('error');

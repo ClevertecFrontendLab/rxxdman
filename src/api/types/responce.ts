@@ -53,8 +53,10 @@ export type GetRecipesCategorFetch = {
     params: GetRecipesCategorParams;
 };
 
-export type ErrorResponce = {
-    error?: string;
-    message?: string;
-    statusCode?: number;
+export type IErrorResponce = {
+    error: string;
+    message: string;
+    statusCode: number;
 };
+
+export type ErrorResponce = Partial<IErrorResponce>;

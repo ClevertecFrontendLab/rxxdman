@@ -4,9 +4,8 @@ import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router';
 
 import { useRegisterMutation } from '~/api/query/authQuery';
-import { validateLoginPattern, validatePasswordPattern } from '~/components/auth/validatePattern';
-import { AUTH_ERROR_5XX_MESSAGE, AUTH_ERROR_5XX_TITLE } from '~/constants/auth/error';
-import { MIN_LENGHT_LOGIN, MIN_LENGHT_PASSWORD } from '~/constants/auth/global';
+import { AUTH_ERRORS } from '~/constants/auth/error';
+import { buildProgressValue } from '~/utils/buildProgressValue';
 
 export const UseAuthRegister = () => {
     const {
@@ -49,48 +48,38 @@ export const UseAuthRegister = () => {
 
     useEffect(() => {
         setProgressValue(
-            (name.length && !errorsStepOne.name ? 100 / 6 : 0) +
-                (surname.length && !errorsStepOne.surname ? 100 / 6 : 0) +
-                (email.length && !errorsStepOne.email ? 100 / 6 : 0) +
-                (login.length >= MIN_LENGHT_LOGIN && validateLoginPattern(login) === true
-                    ? 100 / 6
-                    : 0) +
-                (password.length >= MIN_LENGHT_PASSWORD &&
-                validatePasswordPattern(password) === true
-                    ? 100 / 6
-                    : 0) +
-                (password_repeat.length >= MIN_LENGHT_PASSWORD && password === password_repeat
-                    ? 100 / 6
-                    : 0),
+            buildProgressValue(
+                name,
+                surname,
+                email,
+                login,
+                password,
+                password_repeat,
+                errorsStepOne,
+            ),
         );
-    }, [
-        email.length,
-        errorsStepOne.email,
-        errorsStepOne.name,
-        errorsStepOne.surname,
-        login,
-        name.length,
-        password,
-        password_repeat,
-        surname.length,
-    ]);
+    }, [email, errorsStepOne, login, name, password, password_repeat, surname]);
 
     useEffect(() => {
         if (errorRegister) {
             const errorCode = errorRegister.status;
 
-            setErrorTitle(errorCode === 400 ? errorRegister.data.message : AUTH_ERROR_5XX_TITLE);
+            setErrorTitle(
+                errorCode === 400 ? errorRegister.data.message : AUTH_ERRORS.GLOBAL_5XX_TITLE,
+            );
 
-            setErrorMessage(errorCode === 400 ? '' : AUTH_ERROR_5XX_MESSAGE);
+            setErrorMessage(errorCode === 400 ? '' : AUTH_ERRORS.GLOBAL_5XX_MESSAGE);
 
             onOpenAlert();
         }
+    }, [errorRegister, onOpenAlert, onOpenModal]);
 
+    useEffect(() => {
         if (isSuccess) {
             setTypeModal('SuccessRegister');
             onOpenModal();
         }
-    }, [errorRegister, isSuccess, onOpenAlert, onOpenModal]);
+    }, [isSuccess, onOpenModal]);
 
     const [searchParams, setSearchParams] = useSearchParams();
 

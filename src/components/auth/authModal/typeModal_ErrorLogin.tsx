@@ -1,8 +1,8 @@
 import { ModalBody, ModalFooter, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { AUTH_BUTTON_REFETCH } from '~/constants/auth/button';
-import { AUTH_ERROR_LOGIN_5XX_MESSAGE, AUTH_ERROR_LOGIN_5XX_TITLE } from '~/constants/auth/error';
+import { AUTH_BUTTONS } from '~/constants/auth/button';
+import { AUTH_ERRORS } from '~/constants/auth/error';
 
 import { AuthButton } from '../authButton';
 
@@ -14,7 +14,7 @@ export const Container_TypeModal_ErrorLogin: FC<PropsContainerTypeModal_ErrorLog
     refetch,
 }) => {
     const HandlerOnClick = () => {
-        refetch && refetch();
+        if (refetch) refetch();
     };
 
     return (
@@ -29,7 +29,7 @@ export const Container_TypeModal_ErrorLogin: FC<PropsContainerTypeModal_ErrorLog
                     whiteSpace='pre-line'
                     mb='16px'
                 >
-                    {AUTH_ERROR_LOGIN_5XX_TITLE}
+                    {AUTH_ERRORS.LOGIN_5XX_TITLE}
                 </Text>
 
                 <Text
@@ -40,13 +40,13 @@ export const Container_TypeModal_ErrorLogin: FC<PropsContainerTypeModal_ErrorLog
                     textAlign='center'
                     whiteSpace='pre-line'
                 >
-                    {AUTH_ERROR_LOGIN_5XX_MESSAGE}
+                    {AUTH_ERRORS.LOGIN_5XX_MESSAGE}
                 </Text>
             </ModalBody>
 
             <ModalFooter w='100%' mt={8} p={0} justifyContent='center'>
                 <AuthButton
-                    title={AUTH_BUTTON_REFETCH}
+                    title={AUTH_BUTTONS.REFETCH}
                     onClick={HandlerOnClick}
                     testId='repeat-button'
                 />

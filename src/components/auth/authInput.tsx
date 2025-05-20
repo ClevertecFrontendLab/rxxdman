@@ -22,7 +22,9 @@ import {
     Validate,
 } from 'react-hook-form';
 
-type TypeInputAuth = 'password' | 'text' | 'password_repeat';
+import { PASSWORD } from '~/constants/auth/global';
+
+type TypeInputAuth = 'password' | 'text' | 'passwordConfirm';
 
 type AuthInputProps = {
     title: string;
@@ -82,10 +84,10 @@ export const AuthInput: FC<AuthInputProps> = ({
     const [typePassword, setTypePassword] = useState(type);
 
     const onMouseDownShowPassword = () => {
-        if (type === 'password') setTypePassword('text');
+        if (type === PASSWORD) setTypePassword('text');
     };
     const onMouseUpShowPassword = () => {
-        if (type === 'password') setTypePassword('password');
+        if (type === PASSWORD) setTypePassword(PASSWORD);
     };
 
     return (
@@ -105,7 +107,16 @@ export const AuthInput: FC<AuthInputProps> = ({
                     lineHeight='100%'
                     border='1px solid rgba(215, 255, 148, 1)'
                     placeholder={placeholder}
-                    type={type === 'password' ? typePassword : type}
+                    _placeholder={{ color: 'rgba(19, 75, 0, 1)' }}
+                    _focus={{
+                        border: error
+                            ? '1px solid rgba(229, 62, 62, 1)'
+                            : '1px solid rgba(49, 130, 206, 1)',
+                        boxShadow: error
+                            ? 'rgb(229, 62, 62, 1) 0 0 0 1px'
+                            : 'rgb(49, 130, 206, 1) 0 0 0 1px',
+                    }}
+                    type={type === PASSWORD ? typePassword : type}
                     value={value}
                     {...registerForm(inputName, {
                         required: required,
@@ -134,7 +145,7 @@ export const AuthInput: FC<AuthInputProps> = ({
                     })}
                 />
 
-                {(type === 'password' || type === 'password_repeat') && (
+                {(type === PASSWORD || type === 'passwordConfirm') && (
                     <InputRightElement
                         data-test-id='password-visibility-button'
                         p='0'
@@ -142,8 +153,8 @@ export const AuthInput: FC<AuthInputProps> = ({
                         onMouseDown={onMouseDownShowPassword}
                         onMouseUp={onMouseUpShowPassword}
                     >
-                        {type === 'password' ? (
-                            typePassword === 'password' ? (
+                        {type === PASSWORD ? (
+                            typePassword === PASSWORD ? (
                                 <ViewOffIcon />
                             ) : (
                                 <ViewIcon />
