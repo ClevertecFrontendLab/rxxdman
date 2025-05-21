@@ -19,7 +19,6 @@ export const RenderFilterTags: FC<RenderFilterTagsProps> = ({
     getTitle,
     fullList,
 }) =>
-    searchList.length &&
     searchList
         .filter(Boolean)
         .map((item) => (

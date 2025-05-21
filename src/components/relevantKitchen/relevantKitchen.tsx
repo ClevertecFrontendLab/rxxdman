@@ -8,7 +8,7 @@ import { useGetRecipeFromCategorQuery } from '~/api/query/recipeQuery';
 import { Category, SubCategory } from '~/api/types/category';
 import { ERROR_DESCRIPTION, ERROR_TITLE } from '~/constants/errorAlert';
 
-import { ErrorAllert } from '../errorAlert/errorAllert';
+import { AllertApp } from '../alertApp/alertApp';
 import { RelevantKitchenCard } from './relevantKitchenCard';
 
 export const RelevantKitchen: FC = () => {
@@ -28,20 +28,24 @@ export const RelevantKitchen: FC = () => {
         }
     }, [location.pathname, path]);
 
-    const subCategies =
-        categories && [...categories].filter((subcategor) => subcategor.rootCategoryId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const subCategories = Array.isArray(categories)
+        ? categories.filter((subcategor) => subcategor.rootCategoryId)
+        : [];
 
     useEffect(() => {
-        if (categories && refetchRelevant && subCategies) {
-            const random = Math.floor(Math.random() * (subCategies.length - 0) + 0);
-            setSubCategor(subCategies[random] as SubCategory);
-            const categor = categories.find(
-                (categor) => categor._id === subCategies[random].rootCategoryId,
-            ) as Category;
-            setCategor(categor);
+        if (categories && refetchRelevant && subCategories) {
+            const random = Math.floor(Math.random() * (subCategories.length - 0) + 0);
+            setSubCategor(subCategories[random] as SubCategory);
+            const category = Array.isArray(categories)
+                ? (categories.find(
+                      (categor) => categor._id === subCategories[random].rootCategoryId,
+                  ) as Category)
+                : undefined;
+            setCategor(category);
             setRefetchRelevant(false);
         }
-    }, [categories, refetchRelevant, subCategies]);
+    }, [categories, refetchRelevant, subCategories]);
 
     const { data: categorData, error } = useGetRecipeFromCategorQuery(
         {
@@ -64,7 +68,7 @@ export const RelevantKitchen: FC = () => {
     return (
         <Box borderTop='1px solid rgba(0, 0, 0, 0.08)'>
             {isOpen && (
-                <ErrorAllert title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
+                <AllertApp title={ERROR_TITLE} message={ERROR_DESCRIPTION} onClose={onClose} />
             )}
 
             <Flex

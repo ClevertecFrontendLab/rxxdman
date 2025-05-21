@@ -11,7 +11,7 @@ type CategoryResponce = {
     rootCategoryId?: string;
 };
 
-export type categoriesResponse = Array<CategoryResponce>;
+export type CategoriesResponse = Array<CategoryResponce>;
 
 export type Meta = {
     total: number;
@@ -25,7 +25,7 @@ export type RecipeResponse = {
     meta: Meta;
 };
 
-export interface IGetRecipesAllParams {
+export type IGetRecipesAllParams = {
     page: number;
     limit: number;
     allergens: string;
@@ -35,16 +35,16 @@ export interface IGetRecipesAllParams {
     subcategoriesIds: string;
     sortBy: string;
     sortOrder: string;
-}
+};
 
 export type GetRecipesAllParams = Partial<IGetRecipesAllParams>;
 
-export interface IGetRecipesCategorParams {
+export type IGetRecipesCategorParams = {
     page: number;
     limit: number;
     allergens: string;
     searchString: string;
-}
+};
 
 export type GetRecipesCategorParams = Partial<IGetRecipesCategorParams>;
 
@@ -52,3 +52,11 @@ export type GetRecipesCategorFetch = {
     idCategor: string;
     params: GetRecipesCategorParams;
 };
+
+export type IErrorResponce = {
+    error: string;
+    message: string;
+    statusCode: number;
+};
+
+export type ErrorResponce = Partial<IErrorResponce>;

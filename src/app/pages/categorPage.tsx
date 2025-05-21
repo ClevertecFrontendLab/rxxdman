@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Center, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -6,10 +6,11 @@ import { RECIPES_DEFAULT_LIMIT } from '~/api/constants/apiConstant';
 import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
 import { Category } from '~/api/types/category';
 import { HeaderPages } from '~/components/headerSearchPanelComponents/headerPages';
+import { Loader } from '~/components/loader/loader';
 import { RecipeList } from '~/components/recipeList/recipeList';
 import { RelevantKitchen } from '~/components/relevantKitchen/relevantKitchen';
 import { TabMenu } from '~/components/tabMenu/tabMenu';
-import { PATH_NOT_FOUND } from '~/constants/path';
+import { PATHS } from '~/constants/path';
 import { useListParams } from '~/hooks/useListParams';
 import { useParamsGlobal } from '~/hooks/useParams';
 import { FilterList } from '~/types/filterList';
@@ -66,52 +67,64 @@ export const CategorPage = () => {
     }, [categor?.subCategories, pathnames, subCategor?.category]);
 
     useEffect(() => {
-        if (isSuccess && (!categor || !subCategor)) navigate(PATH_NOT_FOUND);
+        if (isSuccess && (!categor || !subCategor)) navigate(PATHS.NOT_FOUND);
     }, [categor, isSuccess, navigate, subCategor]);
 
     return (
-        <Flex direction='column' h='100%'>
-            <Box mb={{ base: '31px', lg: '20px' }}>
-                <HeaderPages
-                    title={categor?.title || ''}
-                    subtitle={categor?.description}
-                    searchState={searchState}
-                    textSearch={title}
-                    allergensSearch={allergens}
-                    categorsSearch={categors}
-                    authorsSearch={authorsId}
-                    meatSearch={meat}
-                    garnishSearch={garnish}
-                    setParams={setParams}
-                    clearParams={clearParams}
-                    stateFullClear={stateFullClear}
-                    isLoading={isLoading}
-                    totalPage={totalPage}
-                />
-            </Box>
-
-            {!searchState && (
-                <TabMenu
-                    tabIndex={tabIndex}
-                    categor={categor ? (categor as Category) : undefined}
-                />
+        <>
+            {isLoading && (
+                <Center
+                    zIndex={1001}
+                    left={0}
+                    top={0}
+                    bg='rgba(0, 0, 0, 0.16)'
+                    position='fixed'
+                    h='100vh'
+                    w='100vw'
+                    backdropFilter='blur(1px)'
+                >
+                    <Loader testId='app-loader' />
+                </Center>
             )}
 
-            <Flex h='100%' direction='column' justify='space-between'>
-                <RecipeList
-                    filter={listFilter}
-                    count={RECIPES_DEFAULT_LIMIT}
-                    list={visibleList}
-                    isLoading={isLoading}
-                    page={page}
-                    totalPage={totalPage}
-                    onClickAddPageRecipes={onClickAddRecipes}
-                />
-
-                <Box>
-                    <RelevantKitchen />
+            <Flex direction='column' h='100%'>
+                <Box mb={{ base: '31px', lg: '20px' }}>
+                    <HeaderPages
+                        title={categor?.title || ''}
+                        subtitle={categor?.description}
+                        searchState={searchState}
+                        textSearch={title}
+                        allergensSearch={allergens}
+                        categorsSearch={categors}
+                        authorsSearch={authorsId}
+                        meatSearch={meat}
+                        garnishSearch={garnish}
+                        setParams={setParams}
+                        clearParams={clearParams}
+                        stateFullClear={stateFullClear}
+                        isLoading={isLoading}
+                        totalPage={totalPage}
+                    />
                 </Box>
+
+                {!searchState && <TabMenu tabIndex={tabIndex} category={categor as Category} />}
+
+                <Flex h='100%' direction='column' justify='space-between'>
+                    <RecipeList
+                        filter={listFilter}
+                        count={RECIPES_DEFAULT_LIMIT}
+                        list={visibleList}
+                        isLoading={isLoading}
+                        page={page}
+                        totalPage={totalPage}
+                        onClickAddPageRecipes={onClickAddRecipes}
+                    />
+
+                    <Box>
+                        <RelevantKitchen />
+                    </Box>
+                </Flex>
             </Flex>
-        </Flex>
+        </>
     );
 };

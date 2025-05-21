@@ -2,14 +2,14 @@ import { Center, Tab, TabList, Tabs } from '@chakra-ui/react';
 import { FC, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 
-import { category } from '~/api/query/categorsQuery';
+import { Category } from '~/api/types/category';
 
-interface UTabMenuProps {
+type TabMenuProps = {
     tabIndex: number;
-    categor: category | undefined;
-}
+    category?: Category;
+};
 
-export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
+export const TabMenu: FC<TabMenuProps> = ({ tabIndex, category }) => {
     const navigation = useNavigate();
     const tabListRef = useRef<HTMLDivElement>(null);
     const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -47,7 +47,7 @@ export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
                         },
                     }}
                 >
-                    {categor?.subCategories.map((tab, index) => (
+                    {category?.subCategories.map((tab, index) => (
                         <Tab
                             data-test-id={`tab-${tab.category}-${index}`}
                             key={index}
@@ -69,7 +69,7 @@ export const TabMenu: FC<UTabMenuProps> = ({ tabIndex, categor }) => {
                             }}
                             onClick={() =>
                                 navigation(
-                                    `/${categor?.category}/${categor?.subCategories[index].category}`,
+                                    `/${category?.category}/${category?.subCategories[index].category}`,
                                 )
                             }
                         >

@@ -1,4 +1,4 @@
-import { PATH_THE_JUICIEST } from '~/constants/path';
+import { PATHS } from '~/constants/path';
 import { Page } from '~/types/pages';
 
 export const pagesApp: Page[] = [
@@ -8,6 +8,6 @@ export const pagesApp: Page[] = [
     },
     {
         title: 'Самое сочное',
-        path: PATH_THE_JUICIEST,
+        path: PATHS.THE_JUICIEST,
     },
 ];

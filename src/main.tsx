@@ -15,6 +15,12 @@ const theme = extendTheme({
     components: {
         Checkbox: checkboxTheme,
     },
+    colors: {
+        lime: {
+            300: '#C4FF61',
+            500: '#C4FF61',
+        },
+    },
 });
 
 createRoot(document.getElementById('root')!).render(

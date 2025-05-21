@@ -7,9 +7,11 @@ import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 
 import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
-import { useGetRecipeIdQuery } from '~/api/query/recipeQuery';
+import { useGetRecipeByIdQuery } from '~/api/query/recipeQuery';
+import { Category } from '~/api/types/category';
 import { pagesApp } from '~/data/pages';
 import { selectRecipeId } from '~/store/slice/recipe-slice';
+import { buildBreadcrumbPaths } from '~/utils/buildBreadcrumbPaths';
 
 export const BreadcrumbNav: FC = () => {
     const location = useLocation();
@@ -21,9 +23,13 @@ export const BreadcrumbNav: FC = () => {
 
     const recipeId = useSelector(selectRecipeId);
 
-    const { data: recipe, status } = useGetRecipeIdQuery(recipeId || '', {
+    const { data: recipe, status } = useGetRecipeByIdQuery(recipeId || '', {
         skip: !recipeId,
     });
+
+    const breadcrumbOnClick = (index: number, categor: Category) => {
+        index != pathnames.length - 1 && navigate(buildBreadcrumbPaths(index, categor, pathnames));
+    };
 
     return (
         <Breadcrumb
@@ -35,7 +41,7 @@ export const BreadcrumbNav: FC = () => {
             w='100%'
             display='flex'
         >
-            <BreadcrumbItem>
+            <BreadcrumbItem key='/'>
                 <BreadcrumbLink
                     whiteSpace='nowrap'
                     className='breadctrumpNav__link'
@@ -57,23 +63,11 @@ export const BreadcrumbNav: FC = () => {
                 );
 
                 return (
-                    <BreadcrumbItem>
+                    <BreadcrumbItem key={path}>
                         <BreadcrumbLink
                             whiteSpace='nowrap'
                             className='breadctrumpNav__link'
-                            onClick={() =>
-                                index != pathnames.length - 1 &&
-                                navigate(
-                                    `/${[...pathnames]
-                                        .slice(0, index + 1)
-                                        .map((path) =>
-                                            categor && categor.subCategories
-                                                ? `${categor.category}/${categor.subCategories[0].category}`
-                                                : path,
-                                        )
-                                        .join('/')}`,
-                                )
-                            }
+                            onClick={() => breadcrumbOnClick(index, categor as Category)}
                         >
                             {page?.title ||
                                 categor?.title ||

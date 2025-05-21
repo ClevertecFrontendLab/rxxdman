@@ -56,14 +56,16 @@ export const useListParams = (count: number, filter: FilterList) => {
             newParams.set('allergens', allergenSearch);
         }
 
-        const categor = categories?.find(
-            (categor) => categor.subCategories && categor.category === pathname[0],
-        );
+        const categor = Array.isArray(categories)
+            ? categories?.find(
+                  (categor) => categor.subCategories && categor.category === pathname[0],
+              )
+            : null;
 
         const findCategor = categorsSearch.split(',');
 
-        const categorsSearchParam = categories
-            ?.flatMap((categor) => {
+        const categorsSearchParam = (Array.isArray(categories) ? categories : [])
+            .flatMap((categor) => {
                 if (findCategor.includes(categor.category) && categor.subCategories) {
                     return categor.subCategories.map((subCat) => subCat._id);
                 }
@@ -112,7 +114,10 @@ export const useListParams = (count: number, filter: FilterList) => {
         status: statusCategor,
     } = useGetRecipeFromCategorQuery(
         {
-            idCategor: categories?.find((categor) => categor.category === pathname[1])?._id || '',
+            idCategor:
+                (Array.isArray(categories) &&
+                    categories?.find((categor) => categor.category === pathname[1])?._id) ||
+                '',
             params: {
                 limit: count,
                 page: page,
@@ -170,18 +175,12 @@ export const useListParams = (count: number, filter: FilterList) => {
     useEffect(() => {
         if (filter === 'popular') {
             setIsError(popularIsError);
-            setIsTotalPage(dataRecipeListPopular?.meta.totalPages || 0);
+            setIsTotalPage(dataRecipeListPopular?.meta?.totalPages ?? 0);
         } else {
             setIsError(categorIsError);
-            setIsTotalPage(dataRecipeListCategor?.meta.totalPages || 0);
+            setIsTotalPage(dataRecipeListCategor?.meta?.totalPages ?? 0);
         }
-    }, [
-        categorIsError,
-        dataRecipeListCategor?.meta.totalPages,
-        dataRecipeListPopular?.meta.totalPages,
-        filter,
-        popularIsError,
-    ]);
+    }, [categorIsError, dataRecipeListCategor, dataRecipeListPopular, filter, popularIsError]);
 
     useEffect(() => {
         if (filter === 'popular') {
