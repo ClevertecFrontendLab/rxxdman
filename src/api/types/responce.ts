@@ -1,5 +1,5 @@
 import { SubCategories } from './category';
-import { Recipe } from './recipe';
+import { MeasureUnit, Recipe } from './recipe';
 
 type CategoryResponce = {
     _id: string;
@@ -60,3 +60,5 @@ export type IErrorResponce = {
 };
 
 export type ErrorResponce = Partial<IErrorResponce>;
+
+export type GetMeasureUnitsResponse = MeasureUnit[];

@@ -1,12 +1,12 @@
 import { Box, Heading, List, ListItem } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { stepsList } from '~/data/recipes';
+import { StepRecipe } from '~/api/types/recipe';
 
 import { StepCard } from './stepCard';
 
 interface IStepsListProps {
-    steps: stepsList;
+    steps: StepRecipe[];
 }
 
 export const StepsList: FC<IStepsListProps> = ({ steps }) => (

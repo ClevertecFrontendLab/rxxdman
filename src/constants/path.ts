@@ -4,4 +4,5 @@ export const PATHS = {
     AUTH_LOGIN: '/login',
     AUTH_REGISTER: '/register',
     AUTH_VERIFICATION: '/verification',
+    NEW_RECIPE: '/new-recipe',
 };

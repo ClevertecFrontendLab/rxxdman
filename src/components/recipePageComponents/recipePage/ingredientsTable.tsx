@@ -15,13 +15,13 @@ import {
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 
-import { ingredientsList } from '~/data/recipes';
+import { Ingredient } from '~/api/types/recipe';
 
 import { IngredientTableRow } from './ingredientsTableRow';
 
 interface IIngredientTableProps {
     portions: number;
-    ingredients: ingredientsList;
+    ingredients: Ingredient[];
 }
 
 export const IngredientTable: FC<IIngredientTableProps> = ({ portions, ingredients }) => {

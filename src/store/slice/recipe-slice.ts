@@ -1,25 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { Recipe } from '~/api/types/recipe';
+
 import { RootState } from '../configure-store';
 
 export interface RecipeState {
-    recipeId?: string;
+    recipe?: Recipe;
 }
 
 const initialState: RecipeState = {
-    recipeId: undefined,
+    recipe: undefined,
 };
 
 export const recipeSlice = createSlice({
     name: 'recipe',
     initialState,
     reducers: {
-        setRecipeId: (state, action) => {
-            state.recipeId = action.payload;
+        setRecipe: (state, action) => {
+            state.recipe = action.payload;
         },
     },
 });
 
-export const { setRecipeId } = recipeSlice.actions;
-export const selectRecipeId = (state: RootState) => state.recipe.recipeId;
+export const { setRecipe } = recipeSlice.actions;
+export const selectRecipe = (state: RootState) => state.recipe.recipe;
 export default recipeSlice.reducer;

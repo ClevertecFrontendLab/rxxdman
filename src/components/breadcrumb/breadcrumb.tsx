@@ -9,8 +9,9 @@ import { useLocation, useNavigate } from 'react-router';
 import { useGetCategoriesQuery } from '~/api/query/categorsQuery';
 import { useGetRecipeByIdQuery } from '~/api/query/recipeQuery';
 import { Category } from '~/api/types/category';
+import { PATHS } from '~/constants/path';
 import { pagesApp } from '~/data/pages';
-import { selectRecipeId } from '~/store/slice/recipe-slice';
+import { selectRecipe } from '~/store/slice/recipe-slice';
 import { buildBreadcrumbPaths } from '~/utils/buildBreadcrumbPaths';
 
 export const BreadcrumbNav: FC = () => {
@@ -21,7 +22,7 @@ export const BreadcrumbNav: FC = () => {
 
     const { data: categories } = useGetCategoriesQuery();
 
-    const recipeId = useSelector(selectRecipeId);
+    const recipeId = useSelector(selectRecipe)?._id;
 
     const { data: recipe, status } = useGetRecipeByIdQuery(recipeId || '', {
         skip: !recipeId,
@@ -62,19 +63,24 @@ export const BreadcrumbNav: FC = () => {
                     (categor) => categor.category === path && categor.rootCategoryId,
                 );
 
+                const isStopNewRecipe =
+                    index - 1 > pathnames.findIndex((path) => path === PATHS.NEW_RECIPE);
+
                 return (
-                    <BreadcrumbItem key={path}>
-                        <BreadcrumbLink
-                            whiteSpace='nowrap'
-                            className='breadctrumpNav__link'
-                            onClick={() => breadcrumbOnClick(index, categor as Category)}
-                        >
-                            {page?.title ||
-                                categor?.title ||
-                                subcategor?.title ||
-                                (status !== 'pending' && recipe?.title)}
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
+                    !isStopNewRecipe && (
+                        <BreadcrumbItem key={path}>
+                            <BreadcrumbLink
+                                whiteSpace='nowrap'
+                                className='breadctrumpNav__link'
+                                onClick={() => breadcrumbOnClick(index, categor as Category)}
+                            >
+                                {page?.title ||
+                                    categor?.title ||
+                                    subcategor?.title ||
+                                    (status !== 'pending' && recipe?.title)}
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                    )
                 );
             })}
         </Breadcrumb>

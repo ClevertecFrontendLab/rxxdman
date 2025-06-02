@@ -1,4 +1,5 @@
 export type StepRecipe = {
+    id?: string;
     stepNumber: number;
     description: string;
     image?: string;
@@ -12,6 +13,7 @@ export type NutritionValue = {
 };
 
 export type Ingredient = {
+    id?: string;
     title: string;
     count: string;
     measureUnit: string;
@@ -43,4 +45,9 @@ export type Recipe = {
     createdAt: string;
     _id: string;
     authorData: Author;
+};
+
+export type MeasureUnit = {
+    _id: string;
+    name: string;
 };

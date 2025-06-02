@@ -2,7 +2,7 @@ import { Box, Spinner } from '@chakra-ui/react';
 import { FC } from 'react';
 
 interface ILoaderTest {
-    testId: string;
+    testId?: string;
 }
 
 export const Loader: FC<ILoaderTest> = ({ testId }) => (

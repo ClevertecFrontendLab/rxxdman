@@ -1,11 +1,12 @@
 import { Card, CardBody, CardHeader, Image, Stack, Tag, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { stepRecipe } from '~/data/recipes';
+import { IMAGE_API_URL } from '~/api/constants/apiConstant';
+import { StepRecipe } from '~/api/types/recipe';
 
 interface IStepCardProps {
     lastElement?: boolean;
-    step: stepRecipe;
+    step: StepRecipe;
 }
 
 export const StepCard: FC<IStepCardProps> = ({ lastElement, step }) => (
@@ -19,7 +20,7 @@ export const StepCard: FC<IStepCardProps> = ({ lastElement, step }) => (
         {step.image && (
             <Image
                 objectFit='cover'
-                src={`https://training-api.clevertec.ru/${step.image}`}
+                src={`${IMAGE_API_URL}/${step.image}`}
                 alt={step.description}
                 w={{ base: '158px', lg: '158px', xl: '346px' }}
                 h={{ base: '128px', lg: '244px' }}

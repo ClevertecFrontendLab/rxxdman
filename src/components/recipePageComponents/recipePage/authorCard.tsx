@@ -1,13 +1,13 @@
 import { Avatar, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { FC } from 'react';
 
-import { author } from '~/api/query/recipeQuery';
+import { Author } from '~/api/types/recipe';
 import { SubsctibeIco, UsersCount } from '~/assets/createSvg';
 
-import { ProfileNotificationAtribute } from '../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
+import { ProfileNotificationAtribute } from '../../profileNotification/profileNotificationAtribute/profileNotificationAtribute';
 
 interface IAuthorCardProps {
-    author: author;
+    author: Author;
 }
 
 export const AuthorCard: FC<IAuthorCardProps> = ({ author }) => (

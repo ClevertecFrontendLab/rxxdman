@@ -8,9 +8,10 @@ type SelectIco = 'home' | 'search' | 'write';
 type FooterAtributeProps = {
     title: string;
     ico: SelectIco;
+    onClick?(): void;
 };
 
-export const FooterAtribute: FC<FooterAtributeProps> = ({ title, ico }) => {
+export const FooterAtribute: FC<FooterAtributeProps> = ({ title, ico, onClick }) => {
     const [checkMove, setCheckMove] = useState(false);
 
     const HomeIco = (
@@ -93,6 +94,7 @@ export const FooterAtribute: FC<FooterAtributeProps> = ({ title, ico }) => {
                       ? 'radial-gradient(62.5% 62.5% at 48.89% 37.5%, rgba(196, 255, 97, 0.7) 0%, rgba(255, 255, 255, 0) 100%)'
                       : ''
             }
+            onClick={() => onClick && onClick()}
         >
             <IconButton
                 isRound={true}

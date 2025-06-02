@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { API_URL } from '../constants/apiConstant';
@@ -8,6 +9,10 @@ export const authApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: API_URL,
         prepareHeaders: (headers) => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`);
+            }
             headers.set('Accept', 'application/json');
             return headers;
         },
@@ -25,6 +30,19 @@ export const authApi = createApi({
                 method: 'POST',
                 body,
             }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const result = await queryFulfilled;
+                    const headers = result.meta.response.headers;
+                    const authAccessHeader = headers.get('authentication-access');
+
+                    if (authAccessHeader) {
+                        localStorage.setItem('accessToken', authAccessHeader);
+                    }
+                } catch (err) {
+                    console.error('Login failed:', err);
+                }
+            },
         }),
 
         register: builder.mutation({

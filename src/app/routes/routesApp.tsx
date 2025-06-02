@@ -7,6 +7,8 @@ import { PopularPage } from '~/app/pages/popularPage';
 import { RecipePage } from '~/app/pages/recipePage';
 import { PATHS } from '~/constants/path';
 
+import { NewRecipePage } from '../pages/newRecipePage';
+
 export const RoutesApp = () => (
     <Routes>
         <Route path='/' element={<HomePage />} />
@@ -15,6 +17,12 @@ export const RoutesApp = () => (
         <Route path='/:category/:subcategor' element={<CategorPage />} />
         <Route path='/:category/:subcategor/:idRecipe' element={<RecipePage />} />
         <Route path={`${PATHS.THE_JUICIEST}/:idRecipe`} element={<RecipePage />} />
+
+        <Route path={`${PATHS.NEW_RECIPE}`} element={<NewRecipePage />} />
+        <Route
+            path={`${PATHS.NEW_RECIPE}/:category/:subcategor/:idRecipe`}
+            element={<NewRecipePage />}
+        />
 
         <Route path={PATHS.NOT_FOUND} element={<NotFoundPage />} />
     </Routes>
