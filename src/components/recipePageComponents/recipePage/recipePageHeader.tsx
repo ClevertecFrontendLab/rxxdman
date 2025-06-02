@@ -11,41 +11,22 @@ import {
     Stack,
     Tag,
     Text,
-    useBreakpointValue,
 } from '@chakra-ui/react';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC } from 'react';
 
-import { recipe } from '~/api/query/recipeQuery';
+import { Recipe } from '~/api/types/recipe';
 import { LikesCount, SaveCount } from '~/assets/createSvg';
+import { useRecipePageImageSize } from '~/hooks/useRecipePageImageSize';
 
-import { RecipeCardTag } from '../recipeCard/recipeCardTag';
+import { RecipeCardTag } from '../../recipeCard/recipeCardTag';
+import { RecipeImage } from '../recipeImage';
 
 interface IRecipePageHeaderProps {
-    recipe: recipe;
+    recipe: Recipe;
 }
 
 export const RecipePageHeader: FC<IRecipePageHeaderProps> = ({ recipe }) => {
-    const xl2 = useBreakpointValue({
-        base: false,
-        '2xl': true,
-    });
-
-    const textRef = useRef(null);
-    const [textHeight, setTextHeight] = useState(224);
-
-    useEffect(() => {
-        function updateHeight() {
-            if (textRef.current) {
-                const height = textRef.current.offsetHeight;
-                setTextHeight(height < 224 ? 224 : height);
-            }
-        }
-
-        updateHeight();
-
-        window.addEventListener('resize', updateHeight);
-        return () => window.removeEventListener('resize', updateHeight);
-    }, [recipe]);
+    const { xl2, textHeight, textRef } = useRecipePageImageSize();
 
     return (
         <Card
@@ -57,21 +38,7 @@ export const RecipePageHeader: FC<IRecipePageHeaderProps> = ({ recipe }) => {
             minH={{ base: '224px', lg: '410px' }}
             flexShrink={1}
         >
-            <Image
-                src={`https://training-api.clevertec.ru/${recipe.image}`}
-                alt={recipe.title}
-                borderRadius='8px'
-                objectFit='cover'
-                w={{
-                    base: '100%',
-                    md: '232px',
-                    lg: 'calc(100% - 503px)',
-                    '2xl': 'calc(100% - 783px)',
-                }}
-                maxW={{ base: '100%', md: '232px', lg: '353px', '2xl': '553px' }}
-                h={{ base: '224px', md: `${textHeight}px` }}
-                flexShrink={0}
-            />
+            <RecipeImage imageUrl={recipe.image} alt={recipe.title} textHeight={textHeight} />
 
             <Stack
                 ref={textRef}

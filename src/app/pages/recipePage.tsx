@@ -6,28 +6,28 @@ import { useNavigate, useParams } from 'react-router';
 import { RECIPES_SLIDER_LIMIT } from '~/api/constants/apiConstant';
 import { useGetRecipeByIdQuery, useGetRecipesQuery } from '~/api/query/recipeQuery';
 import { AllertApp } from '~/components/alertApp/alertApp';
-import { AuthorCard } from '~/components/recipePageComponents/authorCard';
-import { IngredientTable } from '~/components/recipePageComponents/ingredientsTable';
-import { NutritionValueList } from '~/components/recipePageComponents/nutritionValueList';
-import { RecipePageHeader } from '~/components/recipePageComponents/recipePageHeader';
-import { StepsList } from '~/components/recipePageComponents/stepsList';
+import { AuthorCard } from '~/components/recipePageComponents/recipePage/authorCard';
+import { IngredientTable } from '~/components/recipePageComponents/recipePage/ingredientsTable';
+import { NutritionValueList } from '~/components/recipePageComponents/recipePage/nutritionValueList';
+import { RecipePageHeader } from '~/components/recipePageComponents/recipePage/recipePageHeader';
+import { StepsList } from '~/components/recipePageComponents/recipePage/stepsList';
 import { SliderRecipe } from '~/components/sliderRecipe/sliderRecipe';
 import { ERROR_DESCRIPTION, ERROR_TITLE } from '~/constants/errorAlert';
 import { NEW_RECIPES_TITLE } from '~/constants/titleBlocks';
-import { setRecipeId } from '~/store/slice/recipe-slice';
+import { setRecipe } from '~/store/slice/recipe-slice';
 
 export const RecipePage = () => {
     const { idRecipe } = useParams();
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(setRecipeId(idRecipe));
-    }, [idRecipe, dispatch]);
-
     const navigate = useNavigate();
 
     const { data: recipe, error, isLoading } = useGetRecipeByIdQuery(idRecipe || '');
+
+    useEffect(() => {
+        dispatch(setRecipe(recipe));
+    }, [recipe, dispatch]);
 
     const { data: sliderList, error: errorSlider } = useGetRecipesQuery({
         limit: RECIPES_SLIDER_LIMIT,

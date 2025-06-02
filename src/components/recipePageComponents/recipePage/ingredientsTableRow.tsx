@@ -1,12 +1,12 @@
 import { Flex, Td, Text, Tr } from '@chakra-ui/react';
 import { FC, useEffect, useState } from 'react';
 
-import { ingredient } from '~/data/recipes';
+import { Ingredient } from '~/api/types/recipe';
 
 interface IIngredientTableRowProps {
     portionsDefault: number; //Количество порций в рецепте
     portionsSelect: number; //Желаемое количество порций
-    ingredient: ingredient;
+    ingredient: Ingredient;
     index: number;
 }
 
